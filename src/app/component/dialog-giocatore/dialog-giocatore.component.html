@@ -1,0 +1,68 @@
+<!-- Modal Dialog -->
+<div class="modal fade" id="giocatoreModal" tabindex="-1" aria-labelledby="giocatoreModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="giocatoreModalLabel">{{ isEditMode ? 'Modifica Giocatore' : 'Aggiungi Giocatore' }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="giocatoreForm">
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="nome" class="form-label">Nome *</label>
+              <input type="text" class="form-control" id="nome" formControlName="nome"
+                     [class.is-invalid]="giocatoreForm.get('nome')?.invalid && giocatoreForm.get('nome')?.touched">
+              <div class="invalid-feedback">Il nome è obbligatorio</div>
+            </div>
+            <div class="col-md-6">
+              <label for="cognome" class="form-label">Cognome *</label>
+              <input type="text" class="form-control" id="cognome" formControlName="cognome"
+                     [class.is-invalid]="giocatoreForm.get('cognome')?.invalid && giocatoreForm.get('cognome')?.touched">
+              <div class="invalid-feedback">Il cognome è obbligatorio</div>
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="numeroMaglia" class="form-label">Numero Maglia *</label>
+              <input type="number" class="form-control" id="numeroMaglia" formControlName="numeroMaglia"
+                     [class.is-invalid]="giocatoreForm.get('numeroMaglia')?.invalid && giocatoreForm.get('numeroMaglia')?.touched">
+              <div class="invalid-feedback">Il numero maglia è obbligatorio</div>
+            </div>
+            <div class="col-md-6">
+              <label for="dataDiNascita" class="form-label">Data di Nascita *</label>
+              <input type="date" class="form-control" id="dataDiNascita" formControlName="dataDiNascita"
+                     [class.is-invalid]="giocatoreForm.get('dataDiNascita')?.invalid && giocatoreForm.get('dataDiNascita')?.touched">
+              <div class="invalid-feedback">La data di nascita è obbligatoria</div>
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="ruolo" class="form-label">Ruolo *</label>
+              <select class="form-select" id="ruolo" formControlName="ruolo"
+                      [class.is-invalid]="giocatoreForm.get('ruolo')?.invalid && giocatoreForm.get('ruolo')?.touched">
+                <option value="">Seleziona un ruolo</option>
+                <option *ngFor="let ruolo of ruoli" [value]="ruolo.label">{{ ruolo.label }}</option>
+              </select>
+              <div class="invalid-feedback">Il ruolo è obbligatorio</div>
+            </div>
+            <div class="col-md-6">
+              <label for="tesseraUisp" class="form-label">Tessera UISP *</label>
+              <input type="text" class="form-control" id="tesseraUisp" formControlName="tesseraUisp"
+                     [class.is-invalid]="giocatoreForm.get('tesseraUisp')?.invalid && giocatoreForm.get('tesseraUisp')?.touched">
+              <div class="invalid-feedback">La tessera UISP è obbligatoria</div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="onCancel()">Annulla</button>
+        <button type="button" class="btn btn-primary" (click)="salvaGiocatore()" [disabled]="giocatoreForm.invalid">
+          {{ isEditMode ? 'Salva Modifiche' : 'Aggiungi' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

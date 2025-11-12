@@ -1,0 +1,54 @@
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Elenco Giocatori</h2>
+    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#giocatoreModal" (click)="openDialog()">
+      <i class="bi bi-plus-circle"></i> Aggiungi Giocatore
+    </button>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-striped table-hover">
+      <thead class="table-primary">
+      <tr>
+        <th>Numero Maglia</th>
+        <th>Nome</th>
+        <th>Cognome</th>
+        <th>Data di Nascita</th>
+        <th>Ruolo</th>
+        <th>Tessera UISP</th>
+        <th>Azioni</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let giocatore of giocatori; let i = index">
+        <td>{{ giocatore.numeroMaglia }}</td>
+        <td>{{ giocatore.nome }}</td>
+        <td>{{ giocatore.cognome }}</td>
+        <td>{{ giocatore.dataDiNascita | date: 'dd/MM/yyyy' }}</td>
+        <td>{{ giocatore.ruolo }}</td>
+        <td>{{ giocatore.tesseraUisp }}</td>
+        <td>
+          <button class="btn btn-sm btn-primary me-2" data-bs-toggle="modal" data-bs-target="#giocatoreModal" (click)="openDialog(i)">
+            <i class="bi bi-pencil"></i> Modifica
+          </button>
+          <button class="btn btn-sm btn-danger" (click)="eliminaGiocatore(i)">
+            <i class="bi bi-trash"></i> Elimina
+          </button>
+        </td>
+      </tr>
+      <tr *ngIf="giocatori.length === 0">
+        <td colspan="7" class="text-center text-muted">
+          Nessun giocatore presente
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<app-dialog-giocatore
+  [giocatore]="selectedGiocatore"
+  [isEditMode]="isEditMode"
+  (onSave)="handleSave($event)"
+  (onClose)="handleClose()">
+</app-dialog-giocatore>
