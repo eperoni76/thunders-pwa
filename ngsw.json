@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1761836792088,
+  "timestamp": 1762991653238,
   "index": "https://eperoni76.github.io/thunders-pwa/index.html",
   "assetGroups": [
     {
@@ -13,10 +13,11 @@
       "urls": [
         "https://eperoni76.github.io/thunders-pwa/favicon.ico",
         "https://eperoni76.github.io/thunders-pwa/index.html",
-        "https://eperoni76.github.io/thunders-pwa/main.53c231ebd0f40039.js",
+        "https://eperoni76.github.io/thunders-pwa/main.0b1656f0fd37085c.js",
         "https://eperoni76.github.io/thunders-pwa/manifest.webmanifest",
         "https://eperoni76.github.io/thunders-pwa/polyfills.d4f398ea760a3beb.js",
         "https://eperoni76.github.io/thunders-pwa/runtime.fc0807968b388a21.js",
+        "https://eperoni76.github.io/thunders-pwa/scripts.425520de70bbab43.js",
         "https://eperoni76.github.io/thunders-pwa/styles.38ca6442189fb9ad.css"
       ],
       "patterns": []
@@ -52,11 +53,12 @@
     "https://eperoni76.github.io/thunders-pwa/assets/icons/icon-72x72.png": "279825a1ac4377032ae996a1832c641e33ccf1b6",
     "https://eperoni76.github.io/thunders-pwa/assets/icons/icon-96x96.png": "592885efcbfee27e5e20be4fa3043589390d2740",
     "https://eperoni76.github.io/thunders-pwa/favicon.ico": "22f6a4a3bcaafafb0254e0f2fa4ceb89e505e8b2",
-    "https://eperoni76.github.io/thunders-pwa/index.html": "e22e4286246195430d5fb0a15d9b715f1b3dfd4d",
-    "https://eperoni76.github.io/thunders-pwa/main.53c231ebd0f40039.js": "84f2b25b4b80ab689f8d40af10bcd03a171f8faf",
+    "https://eperoni76.github.io/thunders-pwa/index.html": "3001341aea56d9076e798c0697aa45042c8effbe",
+    "https://eperoni76.github.io/thunders-pwa/main.0b1656f0fd37085c.js": "af76fe0b5ac8d004ec9d0649aa6cdccc5eeb776c",
     "https://eperoni76.github.io/thunders-pwa/manifest.webmanifest": "7d23a884addb95569286d94c250ed2282883a5c8",
     "https://eperoni76.github.io/thunders-pwa/polyfills.d4f398ea760a3beb.js": "4fcf149f1e342cddbeba75fd2295a649e9d748ad",
     "https://eperoni76.github.io/thunders-pwa/runtime.fc0807968b388a21.js": "94bc10f32f5e55867579990397c3d30268d0a902",
+    "https://eperoni76.github.io/thunders-pwa/scripts.425520de70bbab43.js": "7211c1b6834a647c20c392e955cec24fcf063731",
     "https://eperoni76.github.io/thunders-pwa/styles.38ca6442189fb9ad.css": "7ddc1f0d33b5ae7eead9c2db4e0817a64d18b3b8"
   },
   "navigationUrls": [
