@@ -8,13 +8,19 @@ import { HomepageComponent } from './component/homepage/homepage.component';
 import { GiocatoriComponent } from './component/giocatori/giocatori.component';
 import { DialogGiocatoreComponent } from './component/dialog-giocatore/dialog-giocatore.component';
 import {ReactiveFormsModule} from "@angular/forms";
+import { HeaderComponent } from './component/header/header.component';
+import { CalendarioComponent } from './component/calendario/calendario.component';
+import { TesseratiComponent } from './component/tesserati/tesserati.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomepageComponent,
     GiocatoriComponent,
-    DialogGiocatoreComponent
+    DialogGiocatoreComponent,
+    HeaderComponent,
+    CalendarioComponent,
+    TesseratiComponent
   ],
   imports: [
     BrowserModule,

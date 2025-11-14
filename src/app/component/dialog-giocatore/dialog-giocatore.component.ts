@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Costanti} from '../../costanti';
 
@@ -7,7 +7,7 @@ import {Costanti} from '../../costanti';
   templateUrl: './dialog-giocatore.component.html',
   styleUrls: ['./dialog-giocatore.component.css']
 })
-export class DialogGiocatoreComponent implements OnInit {
+export class DialogGiocatoreComponent implements OnInit, OnChanges {
   @Input() giocatore: any = null;
   @Input() isEditMode: boolean = false;
   @Output() onSave = new EventEmitter<any>();
@@ -29,9 +29,15 @@ export class DialogGiocatoreComponent implements OnInit {
       ruolo: ['', Validators.required],
       tesseraUisp: ['', Validators.required]
     });
+  }
 
-    if (this.giocatore) {
-      this.giocatoreForm.patchValue(this.giocatore);
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['giocatore'] && this.giocatoreForm) {
+      if (this.giocatore) {
+        this.giocatoreForm.patchValue(this.giocatore);
+      } else {
+        this.giocatoreForm.reset();
+      }
     }
   }
 
