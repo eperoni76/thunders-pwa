@@ -10,7 +10,6 @@ import { DialogGiocatoreComponent } from './component/dialog-giocatore/dialog-gi
 import {ReactiveFormsModule} from "@angular/forms";
 import { HeaderComponent } from './component/header/header.component';
 import { CalendarioComponent } from './component/calendario/calendario.component';
-import { TesseratiComponent } from './component/tesserati/tesserati.component';
 import { DialogCalendarioComponent } from './component/dialog-calendario/dialog-calendario.component';
 
 @NgModule({
@@ -21,7 +20,6 @@ import { DialogCalendarioComponent } from './component/dialog-calendario/dialog-
     DialogGiocatoreComponent,
     HeaderComponent,
     CalendarioComponent,
-    TesseratiComponent,
     DialogCalendarioComponent
   ],
   imports: [

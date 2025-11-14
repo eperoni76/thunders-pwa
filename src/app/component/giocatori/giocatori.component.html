@@ -3,8 +3,8 @@
     <h2>Elenco Giocatori</h2>
     <div>
       <input type="file" #fileInput accept=".txt" (change)="handleFileUpload($event)" style="display: none">
-      <button class="btn btn-secondary me-2" (click)="fileInput.click()">
-        <i class="bi bi-upload"></i> Carica File
+      <button class="btn btn-primary me-2" (click)="fileInput.click()">
+        <i class="bi bi-upload"></i>
       </button>
       <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#giocatoreModal" (click)="openDialog()">
         <i class="bi bi-plus-circle"></i>
