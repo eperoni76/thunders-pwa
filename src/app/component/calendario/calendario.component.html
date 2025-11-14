@@ -1,1 +1,97 @@
-<p>calendario works!</p>
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Calendario Partite</h2>
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#calendarioModal" (click)="openDialog()">
+      <i class="bi bi-plus-circle"></i>
+    </button>
+  </div>
+
+  <!-- Vista desktop (tabella) -->
+  <div class="table-responsive d-none d-md-block">
+    <table class="table table-striped table-hover">
+      <thead class="table-primary">
+      <tr>
+        <th>N. Gara</th>
+        <th>Data</th>
+        <th>Ora</th>
+        <th>Campionato</th>
+        <th>Indirizzo</th>
+        <th>Ospitante</th>
+        <th>Ospite</th>
+        <th>Azioni</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let partita of partite; let i = index">
+        <td>{{ partita.numeroGara }}</td>
+        <td>{{ partita.data }}</td>
+        <td>{{ partita.ora }}</td>
+        <td>{{ partita.campionato }}</td>
+        <td>{{ partita.indirizzo }}</td>
+        <td>{{ partita.ospitante }}</td>
+        <td>{{ partita.ospite }}</td>
+        <td>
+          <button class="btn btn-sm btn-primary me-2" data-bs-toggle="modal" data-bs-target="#calendarioModal" (click)="openDialog(i)">
+            <i class="bi bi-pencil"></i>
+          </button>
+          <button class="btn btn-sm btn-danger" (click)="eliminaPartita(i)">
+            <i class="bi bi-trash"></i>
+          </button>
+        </td>
+      </tr>
+      <tr *ngIf="partite.length === 0">
+        <td colspan="8" class="text-center text-muted">
+          Nessuna partita in calendario
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Vista mobile (card) -->
+  <div class="d-md-none">
+    <div *ngIf="partite.length === 0" class="text-center text-muted py-4">
+      Nessuna partita in calendario
+    </div>
+    <div *ngFor="let partita of partite; let i = index" class="card mb-3">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-start mb-2">
+          <div>
+            <h5 class="card-title mb-1">
+              <span class="badge bg-primary me-2">Gara {{ partita.numeroGara }}</span>
+              {{ partita.data }} - {{ partita.ora }}
+            </h5>
+            <h6 class="text-muted">{{ partita.campionato }}</h6>
+          </div>
+          <div>
+            <button class="btn btn-sm btn-primary me-1" data-bs-toggle="modal" data-bs-target="#calendarioModal" (click)="openDialog(i)">
+              <i class="bi bi-pencil"></i>
+            </button>
+            <button class="btn btn-sm btn-danger" (click)="eliminaPartita(i)">
+              <i class="bi bi-trash"></i>
+            </button>
+          </div>
+        </div>
+        <div class="card-text">
+          <div class="row g-2">
+            <div class="col-12">
+              <small class="text-muted">Partita:</small>
+              <div><strong>{{ partita.ospitante }}</strong> vs <strong>{{ partita.ospite }}</strong></div>
+            </div>
+            <div class="col-12">
+              <small class="text-muted">Indirizzo:</small>
+              <div>{{ partita.indirizzo }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-dialog-calendario
+  [partita]="selectedPartita"
+  [isEditMode]="isEditMode"
+  (onSave)="handleSave($event)"
+  (onClose)="handleClose()">
+</app-dialog-calendario>

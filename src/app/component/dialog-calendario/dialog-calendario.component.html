@@ -1,0 +1,74 @@
+<!-- Modal Dialog -->
+<div class="modal fade" id="calendarioModal" tabindex="-1" aria-labelledby="calendarioModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="calendarioModalLabel">{{ isEditMode ? 'Modifica Partita' : 'Aggiungi Partita' }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="partitaForm">
+          <div class="row mb-3">
+            <div class="col-md-4">
+              <label for="numeroGara" class="form-label">Numero Gara *</label>
+              <input type="text" class="form-control" id="numeroGara" formControlName="numeroGara"
+                     [class.is-invalid]="partitaForm.get('numeroGara')?.invalid && partitaForm.get('numeroGara')?.touched">
+              <div class="invalid-feedback">Il numero gara è obbligatorio</div>
+            </div>
+            <div class="col-md-4">
+              <label for="data" class="form-label">Data *</label>
+              <input type="text" class="form-control" id="data" formControlName="data" placeholder="es: Dom 26/10"
+                     [class.is-invalid]="partitaForm.get('data')?.invalid && partitaForm.get('data')?.touched">
+              <div class="invalid-feedback">La data è obbligatoria</div>
+            </div>
+            <div class="col-md-4">
+              <label for="ora" class="form-label">Ora *</label>
+              <input type="text" class="form-control" id="ora" formControlName="ora" placeholder="es: 12:30"
+                     [class.is-invalid]="partitaForm.get('ora')?.invalid && partitaForm.get('ora')?.touched">
+              <div class="invalid-feedback">L'ora è obbligatoria</div>
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md-12">
+              <label for="campionato" class="form-label">Campionato *</label>
+              <input type="text" class="form-control" id="campionato" formControlName="campionato"
+                     [class.is-invalid]="partitaForm.get('campionato')?.invalid && partitaForm.get('campionato')?.touched">
+              <div class="invalid-feedback">Il campionato è obbligatorio</div>
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md-12">
+              <label for="indirizzo" class="form-label">Indirizzo *</label>
+              <input type="text" class="form-control" id="indirizzo" formControlName="indirizzo"
+                     [class.is-invalid]="partitaForm.get('indirizzo')?.invalid && partitaForm.get('indirizzo')?.touched">
+              <div class="invalid-feedback">L'indirizzo è obbligatorio</div>
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="ospitante" class="form-label">Ospitante *</label>
+              <input type="text" class="form-control" id="ospitante" formControlName="ospitante"
+                     [class.is-invalid]="partitaForm.get('ospitante')?.invalid && partitaForm.get('ospitante')?.touched">
+              <div class="invalid-feedback">L'ospitante è obbligatorio</div>
+            </div>
+            <div class="col-md-6">
+              <label for="ospite" class="form-label">Ospite *</label>
+              <input type="text" class="form-control" id="ospite" formControlName="ospite"
+                     [class.is-invalid]="partitaForm.get('ospite')?.invalid && partitaForm.get('ospite')?.touched">
+              <div class="invalid-feedback">L'ospite è obbligatorio</div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="onCancel()">Annulla</button>
+        <button type="button" class="btn btn-primary" (click)="salvaPartita()" [disabled]="partitaForm.invalid">
+          {{ isEditMode ? 'Salva Modifiche' : 'Aggiungi' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
