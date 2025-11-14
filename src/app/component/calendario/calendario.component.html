@@ -39,7 +39,7 @@
         <td>{{ partita.ospite }}</td>
         <td>{{ partita.risultato }}</td>
         <td class="text-end" style="white-space: nowrap;">
-          <button class="btn btn-success btn-sm me-1" title="Inserisci risultato" (click)="apriDialogRisultato(i)">
+          <button *ngIf="!partita.risultato" class="btn btn-success btn-sm me-1" title="Inserisci risultato" (click)="apriDialogRisultato(i)">
             <i class="bi bi-check2-square"></i>
           </button>
           <button class="btn btn-secondary btn-sm me-1" title="Crea lista gara">
@@ -88,7 +88,7 @@
               </div>
             </div>
             <div class="mt-3 d-flex flex-wrap gap-2 justify-content-end">
-              <button class="btn btn-success btn-sm" (click)="apriDialogRisultato(i)">Inserisci risultato</button>
+              <button *ngIf="!partita.risultato" class="btn btn-success btn-sm" (click)="apriDialogRisultato(i)">Inserisci risultato</button>
               <button class="btn btn-secondary btn-sm">Crea lista gara</button>
               <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#calendarioModal" (click)="openDialog(i)">
                 <i class="bi bi-pencil"></i>
@@ -112,7 +112,6 @@
 </app-dialog-calendario>
 <app-dialog-risultato
   [partita]="selectedPartita"
-  [isOpen]="isDialogRisultatoOpen"
   (onSave)="salvaRisultato($event)"
   (onClose)="chiudiDialogRisultato()">
 </app-dialog-risultato>

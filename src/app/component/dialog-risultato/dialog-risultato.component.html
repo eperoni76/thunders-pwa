@@ -1,9 +1,10 @@
-<div class="modal fade" [class.show]="isOpen" [style.display]="isOpen ? 'block' : 'none'" tabindex="-1" role="dialog" aria-labelledby="dialogRisultatoLabel" aria-modal="true" [attr.aria-hidden]="!isOpen">
-  <div class="modal-dialog" role="document">
+<!-- Modal Risultato -->
+<div class="modal fade" id="risultatoModal" tabindex="-1" aria-labelledby="dialogRisultatoLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="dialogRisultatoLabel">Inserisci Risultato</h5>
-        <button type="button" class="btn-close" aria-label="Close" (click)="chiudi()"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="chiudi()"></button>
       </div>
       <div class="modal-body">
         <form (ngSubmit)="salva()" autocomplete="off">
@@ -18,7 +19,7 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" (click)="chiudi()">Annulla</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="chiudi()">Annulla</button>
         <button type="button" class="btn btn-success" (click)="salva()" [disabled]="ospitanteRis == null || ospiteRis == null || ospitanteRis < 0 || ospitanteRis > 3 || ospiteRis < 0 || ospiteRis > 3">Salva</button>
       </div>
     </div>

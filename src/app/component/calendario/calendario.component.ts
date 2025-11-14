@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CalendarioService } from '../../service/calendario.service';
-import {Partita} from "../../model/partita";
+import { Partita } from '../../model/partita';
+import { DialogRisultatoComponent } from '../dialog-risultato/dialog-risultato.component';
 
 declare var bootstrap: any;
 
@@ -15,7 +16,7 @@ export class CalendarioComponent implements OnInit {
   selectedPartita: Partita | null = null;
   isEditMode: boolean = false;
   selectedIndex: number | null = null;
-  isDialogRisultatoOpen = false;
+  @ViewChild(DialogRisultatoComponent) dialogRisultatoComp!: DialogRisultatoComponent;
 
   constructor(
     private calendarioService: CalendarioService
@@ -27,7 +28,7 @@ export class CalendarioComponent implements OnInit {
 
   openDialog(index?: number): void {
     if (index !== undefined) {
-      this.selectedPartita = {...this.partite[index]};
+      this.selectedPartita = { ...this.partite[index] };
       this.selectedIndex = index;
       this.isEditMode = true;
     } else {
@@ -119,30 +120,27 @@ export class CalendarioComponent implements OnInit {
 
   apriDialogRisultato(index: number) {
     this.selectedPartita = this.partite[index];
-    this.isDialogRisultatoOpen = true;
+    if (this.dialogRisultatoComp) {
+      this.dialogRisultatoComp.open();
+    }
   }
 
   chiudiDialogRisultato() {
-    this.isDialogRisultatoOpen = false;
+    // nessuna azione aggiuntiva necessaria
   }
 
   salvaRisultato(valori: { ospitante: number; ospite: number }) {
     if (this.selectedPartita == null) {
-      this.isDialogRisultatoOpen = false;
       return;
     }
-    // Valida range 0-3
     if (
       valori.ospitante < 0 || valori.ospitante > 3 ||
       valori.ospite < 0 || valori.ospite > 3
     ) {
-      this.isDialogRisultatoOpen = false;
-      return; // Ignora se fuori range
+      return;
     }
     this.selectedPartita.risultato = `${valori.ospitante}-${valori.ospite}`;
-    // Persisti
     this.calendarioService.setPartite(this.partite);
-    this.isDialogRisultatoOpen = false;
   }
 
 }
