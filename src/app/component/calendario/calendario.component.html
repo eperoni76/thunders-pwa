@@ -54,39 +54,37 @@
     </table>
   </div>
 
-  <!-- Vista mobile (card) -->
+  <!-- Vista mobile (accordion) -->
   <div class="d-md-none">
     <div *ngIf="partite.length === 0" class="text-center text-muted py-4">
       Nessuna partita in calendario
     </div>
-    <div *ngFor="let partita of partite; let i = index" class="card mb-3">
-      <div class="card-body">
-        <div class="d-flex justify-content-between align-items-start mb-2">
-          <div>
-            <h5 class="card-title mb-1">
-              <span class="badge bg-primary me-2">Gara {{ partita.numeroGara }}</span>
-              {{ partita.data | date: 'dd/MM/yyyy' }} - {{ partita.ora }}
-            </h5>
-            <h6 class="text-muted">{{ partita.campionato }}</h6>
-          </div>
-          <div>
-            <button class="btn btn-sm btn-primary me-1" data-bs-toggle="modal" data-bs-target="#calendarioModal" (click)="openDialog(i)">
-              <i class="bi bi-pencil"></i>
-            </button>
-            <button class="btn btn-sm btn-danger" (click)="eliminaPartita(i)">
-              <i class="bi bi-trash"></i>
-            </button>
-          </div>
-        </div>
-        <div class="card-text">
-          <div class="row g-2">
-            <div class="col-12">
-              <small class="text-muted">Partita:</small>
-              <div><strong>{{ partita.ospitante }}</strong> vs <strong>{{ partita.ospite }}</strong></div>
+    <div class="accordion" id="calendarioAccordion">
+      <div *ngFor="let partita of partite; let i = index" class="accordion-item">
+        <h2 class="accordion-header" [attr.id]="'heading' + i">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                  [attr.data-bs-target]="'#collapse' + i" aria-expanded="false" [attr.aria-controls]="'collapse' + i">
+            Gara {{ partita.numeroGara }} - {{ partita.data | date: 'dd/MM/yyyy' }} - {{ partita.ora }}
+          </button>
+        </h2>
+        <div [attr.id]="'collapse' + i" class="accordion-collapse collapse" [attr.aria-labelledby]="'heading' + i"
+             data-bs-parent="#calendarioAccordion">
+          <div class="accordion-body">
+            <div>
+              <strong>Campionato:</strong> {{ partita.campionato }}<br>
+              <strong>Ospitante:</strong> {{ partita.ospitante }}<br>
+              <strong>Ospite:</strong> {{ partita.ospite }}<br>
+              <strong>Indirizzo:</strong> {{ partita.indirizzo }}
             </div>
-            <div class="col-12">
-              <small class="text-muted">Indirizzo:</small>
-              <div>{{ partita.indirizzo }}</div>
+            <div class="mt-3 d-flex flex-wrap gap-2 justify-content-end">
+              <button class="btn btn-success btn-sm">Inserisci risultato</button>
+              <button class="btn btn-secondary btn-sm">Crea lista gara</button>
+              <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#calendarioModal" (click)="openDialog(i)">
+                <i class="bi bi-pencil"></i>
+              </button>
+              <button class="btn btn-danger btn-sm" (click)="eliminaPartita(i)">
+                <i class="bi bi-trash"></i>
+              </button>
             </div>
           </div>
         </div>

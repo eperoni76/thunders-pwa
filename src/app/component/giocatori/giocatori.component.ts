@@ -13,7 +13,7 @@ export class GiocatoriComponent implements OnInit {
   giocatori: any[] = [];
   selectedGiocatore: any = null;
   isEditMode: boolean = false;
-  selectedIndex: number | null = null; // aggiunto per la gestione della modifica
+  selectedIndex: number | null = null;
 
   constructor(
     private giocatoriService: GiocatoriService
@@ -35,11 +35,11 @@ export class GiocatoriComponent implements OnInit {
   openDialog(index?: number): void {
     if (index !== undefined) {
       this.selectedGiocatore = {...this.giocatori[index]};
-      this.selectedIndex = index; // salva l'indice selezionato
+      this.selectedIndex = index;
       this.isEditMode = true;
     } else {
       this.selectedGiocatore = null;
-      this.selectedIndex = null; // resetta l'indice
+      this.selectedIndex = null;
       this.isEditMode = false;
     }
   }
@@ -53,12 +53,12 @@ export class GiocatoriComponent implements OnInit {
     this.sortGiocatoriByNumeroMaglia();
     this.giocatoriService.setGiocatori(this.giocatori);
     this.closeModal();
-    this.handleClose(); // pulizia stato
+    this.handleClose();
   }
 
   handleClose(): void {
     this.selectedGiocatore = null;
-    this.selectedIndex = null; // resetta l'indice
+    this.selectedIndex = null;
     this.isEditMode = false;
   }
 
@@ -136,7 +136,6 @@ export class GiocatoriComponent implements OnInit {
         }
       }
 
-      // Reset input file
       event.target.value = '';
     };
 

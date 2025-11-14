@@ -13,7 +13,7 @@ export class CalendarioComponent implements OnInit {
   partite: any[] = [];
   selectedPartita: any = null;
   isEditMode: boolean = false;
-  selectedIndex: number | null = null; // aggiunto per la gestione della modifica
+  selectedIndex: number | null = null;
 
   constructor(
     private calendarioService: CalendarioService
@@ -26,11 +26,11 @@ export class CalendarioComponent implements OnInit {
   openDialog(index?: number): void {
     if (index !== undefined) {
       this.selectedPartita = {...this.partite[index]};
-      this.selectedIndex = index; // salva l'indice selezionato
+      this.selectedIndex = index;
       this.isEditMode = true;
     } else {
       this.selectedPartita = null;
-      this.selectedIndex = null; // resetta l'indice
+      this.selectedIndex = null;
       this.isEditMode = false;
     }
   }
@@ -43,12 +43,12 @@ export class CalendarioComponent implements OnInit {
     }
     this.calendarioService.setPartite(this.partite);
     this.closeModal();
-    this.handleClose(); // pulizia stato
+    this.handleClose();
   }
 
   handleClose(): void {
     this.selectedPartita = null;
-    this.selectedIndex = null; // resetta l'indice
+    this.selectedIndex = null;
     this.isEditMode = false;
   }
 
