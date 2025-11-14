@@ -13,7 +13,7 @@ export class GiocatoriComponent implements OnInit {
   giocatori: any[] = [];
   selectedGiocatore: any = null;
   isEditMode: boolean = false;
-  private modalInstance: any;
+  selectedIndex: number | null = null; // aggiunto per la gestione della modifica
 
   constructor(
     private giocatoriService: GiocatoriService
@@ -35,29 +35,30 @@ export class GiocatoriComponent implements OnInit {
   openDialog(index?: number): void {
     if (index !== undefined) {
       this.selectedGiocatore = {...this.giocatori[index]};
+      this.selectedIndex = index; // salva l'indice selezionato
       this.isEditMode = true;
     } else {
       this.selectedGiocatore = null;
+      this.selectedIndex = null; // resetta l'indice
       this.isEditMode = false;
     }
   }
 
   handleSave(giocatore: any): void {
-    if (this.isEditMode) {
-      const index = this.giocatori.findIndex(g => g === this.selectedGiocatore);
-      if (index !== -1) {
-        this.giocatori[index] = giocatore;
-      }
+    if (this.isEditMode && this.selectedIndex !== null) {
+      this.giocatori[this.selectedIndex] = giocatore;
     } else {
       this.giocatori.push(giocatore);
     }
     this.sortGiocatoriByNumeroMaglia();
     this.giocatoriService.setGiocatori(this.giocatori);
     this.closeModal();
+    this.handleClose(); // pulizia stato
   }
 
   handleClose(): void {
     this.selectedGiocatore = null;
+    this.selectedIndex = null; // resetta l'indice
     this.isEditMode = false;
   }
 
