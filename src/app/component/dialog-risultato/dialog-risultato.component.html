@@ -1,0 +1,26 @@
+<div class="modal fade" [class.show]="isOpen" [style.display]="isOpen ? 'block' : 'none'" tabindex="-1" role="dialog" aria-labelledby="dialogRisultatoLabel" aria-modal="true" [attr.aria-hidden]="!isOpen">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="dialogRisultatoLabel">Inserisci Risultato</h5>
+        <button type="button" class="btn-close" aria-label="Close" (click)="chiudi()"></button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="salva()" autocomplete="off">
+          <div class="mb-3 d-flex align-items-center justify-content-between">
+            <label class="form-label mb-0">{{ partita?.ospitante }}</label>
+            <input type="number" class="form-control w-auto ms-2" [(ngModel)]="ospitanteRis" name="ospitanteRis" min="0" max="3" required>
+          </div>
+          <div class="mb-3 d-flex align-items-center justify-content-between">
+            <label class="form-label mb-0">{{ partita?.ospite }}</label>
+            <input type="number" class="form-control w-auto ms-2" [(ngModel)]="ospiteRis" name="ospiteRis" min="0" max="3" required>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="chiudi()">Annulla</button>
+        <button type="button" class="btn btn-success" (click)="salva()" [disabled]="ospitanteRis == null || ospiteRis == null || ospitanteRis < 0 || ospitanteRis > 3 || ospiteRis < 0 || ospiteRis > 3">Salva</button>
+      </div>
+    </div>
+  </div>
+</div>
