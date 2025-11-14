@@ -1,9 +1,15 @@
 <div class="container mt-4">
   <div class="d-flex justify-content-between align-items-center mb-3">
     <h2>Elenco Giocatori</h2>
-    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#giocatoreModal" (click)="openDialog()">
-      <i class="bi bi-plus-circle"></i>
-    </button>
+    <div>
+      <input type="file" #fileInput accept=".txt" (change)="handleFileUpload($event)" style="display: none">
+      <button class="btn btn-secondary me-2" (click)="fileInput.click()">
+        <i class="bi bi-upload"></i> Carica File
+      </button>
+      <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#giocatoreModal" (click)="openDialog()">
+        <i class="bi bi-plus-circle"></i>
+      </button>
+    </div>
   </div>
 
   <!-- Vista desktop (tabella) -->

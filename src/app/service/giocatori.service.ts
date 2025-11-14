@@ -27,4 +27,10 @@ export class GiocatoriService {
     const giocatori = this.getGiocatori();
     this.setGiocatori(giocatori.filter(g => g.id !== id));
   }
+
+  addMultipleGiocatori(giocatori: any[]) {
+    const currentGiocatori = this.getGiocatori();
+    const updatedGiocatori = [...currentGiocatori, ...giocatori];
+    this.setGiocatori(updatedGiocatori);
+  }
 }

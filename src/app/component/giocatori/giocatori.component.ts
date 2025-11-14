@@ -21,6 +21,15 @@ export class GiocatoriComponent implements OnInit {
 
   ngOnInit(): void {
     this.giocatori = this.giocatoriService.getGiocatori();
+    this.sortGiocatoriByNumeroMaglia();
+  }
+
+  private sortGiocatoriByNumeroMaglia(): void {
+    this.giocatori.sort((a, b) => {
+      const numA = parseInt(a.numeroMaglia) || 0;
+      const numB = parseInt(b.numeroMaglia) || 0;
+      return numA - numB;
+    });
   }
 
   openDialog(index?: number): void {
@@ -42,6 +51,7 @@ export class GiocatoriComponent implements OnInit {
     } else {
       this.giocatori.push(giocatore);
     }
+    this.sortGiocatoriByNumeroMaglia();
     this.giocatoriService.setGiocatori(this.giocatori);
     this.closeModal();
   }
@@ -66,6 +76,70 @@ export class GiocatoriComponent implements OnInit {
         modal.hide();
       }
     }
+  }
+
+  handleFileUpload(event: any): void {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e: any) => {
+      const text = e.target.result;
+      const lines = text.split('\n').filter((line: string) => line.trim() !== '');
+
+      const currentGiocatori = this.giocatoriService.getGiocatori();
+      const newGiocatori: any[] = [];
+      let skippedCount = 0;
+
+      lines.forEach((line: string) => {
+        const parts = line.split(';').map((part: string) => part.trim());
+
+        if (parts.length === 6) {
+          const giocatore = {
+            nome: parts[0],
+            cognome: parts[1],
+            numeroMaglia: parts[2],
+            dataDiNascita: parts[3],
+            ruolo: parts[4],
+            tesseraUisp: parts[5]
+          };
+
+          // Controlla se esiste già un giocatore con lo stesso nome e cognome
+          const exists = currentGiocatori.some(g =>
+            g.nome.toLowerCase() === giocatore.nome.toLowerCase() &&
+            g.cognome.toLowerCase() === giocatore.cognome.toLowerCase()
+          );
+
+          if (!exists) {
+            newGiocatori.push(giocatore);
+          } else {
+            skippedCount++;
+          }
+        }
+      });
+
+      if (newGiocatori.length > 0) {
+        this.giocatoriService.addMultipleGiocatori(newGiocatori);
+        this.giocatori = this.giocatoriService.getGiocatori();
+
+        let message = `${newGiocatori.length} giocatori caricati con successo!`;
+        if (skippedCount > 0) {
+          message += `\n${skippedCount} giocatori già presenti sono stati ignorati.`;
+        }
+        alert(message);
+      } else {
+        if (skippedCount > 0) {
+          alert(`Nessun giocatore caricato.\n${skippedCount} giocatori erano già presenti.`);
+        } else {
+          alert('Nessun giocatore valido trovato nel file');
+        }
+      }
+
+      // Reset input file
+      event.target.value = '';
+    };
+
+    reader.readAsText(file);
   }
 
 }

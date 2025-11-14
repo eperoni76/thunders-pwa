@@ -59,7 +59,7 @@
           <div>
             <h5 class="card-title mb-1">
               <span class="badge bg-primary me-2">Gara {{ partita.numeroGara }}</span>
-              {{ partita.data }} - {{ partita.ora }}
+              {{ partita.data | date: 'dd/MM/yyyy' }} - {{ partita.ora }}
             </h5>
             <h6 class="text-muted">{{ partita.campionato }}</h6>
           </div>
