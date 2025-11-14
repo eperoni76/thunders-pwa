@@ -17,13 +17,13 @@
             </div>
             <div class="col-md-4">
               <label for="data" class="form-label">Data *</label>
-              <input type="text" class="form-control" id="data" formControlName="data" placeholder="es: Dom 26/10"
+              <input type="date" class="form-control" id="data" formControlName="data"
                      [class.is-invalid]="partitaForm.get('data')?.invalid && partitaForm.get('data')?.touched">
               <div class="invalid-feedback">La data è obbligatoria</div>
             </div>
             <div class="col-md-4">
               <label for="ora" class="form-label">Ora *</label>
-              <input type="text" class="form-control" id="ora" formControlName="ora" placeholder="es: 12:30"
+              <input type="time" class="form-control" id="ora" formControlName="ora"
                      [class.is-invalid]="partitaForm.get('ora')?.invalid && partitaForm.get('ora')?.touched">
               <div class="invalid-feedback">L'ora è obbligatoria</div>
             </div>

@@ -24,7 +24,7 @@
       <tbody>
       <tr *ngFor="let partita of partite; let i = index">
         <td>{{ partita.numeroGara }}</td>
-        <td>{{ partita.data }}</td>
+        <td>{{ partita.data | date: 'dd/MM/yyyy' }}</td>
         <td>{{ partita.ora }}</td>
         <td>{{ partita.campionato }}</td>
         <td>{{ partita.indirizzo }}</td>
