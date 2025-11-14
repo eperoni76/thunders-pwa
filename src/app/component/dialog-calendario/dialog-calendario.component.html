@@ -61,6 +61,15 @@
               <div class="invalid-feedback">L'ospite è obbligatorio</div>
             </div>
           </div>
+
+          <div class="row mb-3">
+            <div class="col-md-4">
+              <label for="risultato" class="form-label">Risultato (opzionale)</label>
+              <input type="text" class="form-control" id="risultato" placeholder="es. 3-2" formControlName="risultato"
+                     [class.is-invalid]="partitaForm.get('risultato')?.invalid && partitaForm.get('risultato')?.touched">
+              <div class="invalid-feedback">Formato non valido (usa X-Y con valori 0-3)</div>
+            </div>
+          </div>
         </form>
       </div>
       <div class="modal-footer">

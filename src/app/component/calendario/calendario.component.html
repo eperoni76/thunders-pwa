@@ -24,6 +24,7 @@
         <th>Indirizzo</th>
         <th>Ospitante</th>
         <th>Ospite</th>
+        <th>Risultato</th>
         <th>Azioni</th>
       </tr>
       </thead>
@@ -36,17 +37,24 @@
         <td>{{ partita.indirizzo }}</td>
         <td>{{ partita.ospitante }}</td>
         <td>{{ partita.ospite }}</td>
-        <td>
-          <button class="btn btn-sm btn-primary me-2" data-bs-toggle="modal" data-bs-target="#calendarioModal" (click)="openDialog(i)">
+        <td>{{ partita.risultato }}</td>
+        <td class="text-end" style="white-space: nowrap;">
+          <button class="btn btn-success btn-sm me-1" title="Inserisci risultato" (click)="apriDialogRisultato(i)">
+            <i class="bi bi-check2-square"></i>
+          </button>
+          <button class="btn btn-secondary btn-sm me-1" title="Crea lista gara">
+            <i class="bi bi-list-check"></i>
+          </button>
+          <button class="btn btn-primary btn-sm me-1" data-bs-toggle="modal" data-bs-target="#calendarioModal" (click)="openDialog(i)" title="Modifica">
             <i class="bi bi-pencil"></i>
           </button>
-          <button class="btn btn-sm btn-danger" (click)="eliminaPartita(i)">
+          <button class="btn btn-danger btn-sm" (click)="eliminaPartita(i)" title="Elimina">
             <i class="bi bi-trash"></i>
           </button>
         </td>
       </tr>
       <tr *ngIf="partite.length === 0">
-        <td colspan="8" class="text-center text-muted">
+        <td colspan="9" class="text-center text-muted">
           Nessuna partita in calendario
         </td>
       </tr>
@@ -75,9 +83,12 @@
               <strong>Ospitante:</strong> {{ partita.ospitante }}<br>
               <strong>Ospite:</strong> {{ partita.ospite }}<br>
               <strong>Indirizzo:</strong> {{ partita.indirizzo }}
+              <div *ngIf="partita.risultato" class="mt-2">
+                <strong>Risultato:</strong> {{ partita.risultato }}
+              </div>
             </div>
             <div class="mt-3 d-flex flex-wrap gap-2 justify-content-end">
-              <button class="btn btn-success btn-sm">Inserisci risultato</button>
+              <button class="btn btn-success btn-sm" (click)="apriDialogRisultato(i)">Inserisci risultato</button>
               <button class="btn btn-secondary btn-sm">Crea lista gara</button>
               <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#calendarioModal" (click)="openDialog(i)">
                 <i class="bi bi-pencil"></i>
@@ -99,3 +110,9 @@
   (onSave)="handleSave($event)"
   (onClose)="handleClose()">
 </app-dialog-calendario>
+<app-dialog-risultato
+  [partita]="selectedPartita"
+  [isOpen]="isDialogRisultatoOpen"
+  (onSave)="salvaRisultato($event)"
+  (onClose)="chiudiDialogRisultato()">
+</app-dialog-risultato>

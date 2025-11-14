@@ -24,7 +24,8 @@ export class DialogCalendarioComponent implements OnInit, OnChanges {
       campionato: ['', Validators.required],
       indirizzo: ['', Validators.required],
       ospitante: ['', Validators.required],
-      ospite: ['', Validators.required]
+      ospite: ['', Validators.required],
+      risultato: ['', [Validators.pattern(/^([0-3]-[0-3])$/)]]
     });
   }
 
@@ -40,7 +41,7 @@ export class DialogCalendarioComponent implements OnInit, OnChanges {
 
   salvaPartita(): void {
     if (this.partitaForm.valid) {
-      this.onSave.emit(this.partitaForm.value);
+      this.onSave.emit(this.partitaForm.value); // include anche risultato se presente
       this.partitaForm.reset();
     }
   }

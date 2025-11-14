@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CalendarioService } from '../../service/calendario.service';
+import {Partita} from "../../model/partita";
 
 declare var bootstrap: any;
 
@@ -10,10 +11,11 @@ declare var bootstrap: any;
 })
 export class CalendarioComponent implements OnInit {
 
-  partite: any[] = [];
-  selectedPartita: any = null;
+  partite: Partita[] = [];
+  selectedPartita: Partita | null = null;
   isEditMode: boolean = false;
   selectedIndex: number | null = null;
+  isDialogRisultatoOpen = false;
 
   constructor(
     private calendarioService: CalendarioService
@@ -35,7 +37,7 @@ export class CalendarioComponent implements OnInit {
     }
   }
 
-  handleSave(partita: any): void {
+  handleSave(partita: Partita): void {
     if (this.isEditMode && this.selectedIndex !== null) {
       this.partite[this.selectedIndex] = partita;
     } else {
@@ -113,6 +115,34 @@ export class CalendarioComponent implements OnInit {
     const datePart = dateString.split(' ')[1]; // "20/11/2025"
     const [day, month, year] = datePart.split('/');
     return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+  }
+
+  apriDialogRisultato(index: number) {
+    this.selectedPartita = this.partite[index];
+    this.isDialogRisultatoOpen = true;
+  }
+
+  chiudiDialogRisultato() {
+    this.isDialogRisultatoOpen = false;
+  }
+
+  salvaRisultato(valori: { ospitante: number; ospite: number }) {
+    if (this.selectedPartita == null) {
+      this.isDialogRisultatoOpen = false;
+      return;
+    }
+    // Valida range 0-3
+    if (
+      valori.ospitante < 0 || valori.ospitante > 3 ||
+      valori.ospite < 0 || valori.ospite > 3
+    ) {
+      this.isDialogRisultatoOpen = false;
+      return; // Ignora se fuori range
+    }
+    this.selectedPartita.risultato = `${valori.ospitante}-${valori.ospite}`;
+    // Persisti
+    this.calendarioService.setPartite(this.partite);
+    this.isDialogRisultatoOpen = false;
   }
 
 }
