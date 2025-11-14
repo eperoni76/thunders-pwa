@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1763137563752,
+  "timestamp": 1763162053307,
   "index": "https://eperoni76.github.io/thunders-pwa/index.html",
   "assetGroups": [
     {
@@ -11,9 +11,8 @@
         "ignoreVary": true
       },
       "urls": [
-        "https://eperoni76.github.io/thunders-pwa/favicon.ico",
         "https://eperoni76.github.io/thunders-pwa/index.html",
-        "https://eperoni76.github.io/thunders-pwa/main.67355c9f6dc1ddc9.js",
+        "https://eperoni76.github.io/thunders-pwa/main.1c1d66bfdc54a02e.js",
         "https://eperoni76.github.io/thunders-pwa/manifest.webmanifest",
         "https://eperoni76.github.io/thunders-pwa/polyfills.d4f398ea760a3beb.js",
         "https://eperoni76.github.io/thunders-pwa/runtime.fc0807968b388a21.js",
@@ -52,9 +51,8 @@
     "https://eperoni76.github.io/thunders-pwa/assets/icons/icon-512x512.png": "559d9c4318b45a1f2b10596bbb4c960fe521dbcc",
     "https://eperoni76.github.io/thunders-pwa/assets/icons/icon-72x72.png": "279825a1ac4377032ae996a1832c641e33ccf1b6",
     "https://eperoni76.github.io/thunders-pwa/assets/icons/icon-96x96.png": "592885efcbfee27e5e20be4fa3043589390d2740",
-    "https://eperoni76.github.io/thunders-pwa/favicon.ico": "22f6a4a3bcaafafb0254e0f2fa4ceb89e505e8b2",
-    "https://eperoni76.github.io/thunders-pwa/index.html": "16647ca9bd10528ada63b9f356f2f34801bc9adc",
-    "https://eperoni76.github.io/thunders-pwa/main.67355c9f6dc1ddc9.js": "eae09d791ba803a3dc49567be1635edd538d6345",
+    "https://eperoni76.github.io/thunders-pwa/index.html": "0e20a75a241c751f9461a2c3eeb5fda1f719e917",
+    "https://eperoni76.github.io/thunders-pwa/main.1c1d66bfdc54a02e.js": "153b27c617f76c6dfc777e4fb3796c12019a9e49",
     "https://eperoni76.github.io/thunders-pwa/manifest.webmanifest": "7d23a884addb95569286d94c250ed2282883a5c8",
     "https://eperoni76.github.io/thunders-pwa/polyfills.d4f398ea760a3beb.js": "4fcf149f1e342cddbeba75fd2295a649e9d748ad",
     "https://eperoni76.github.io/thunders-pwa/runtime.fc0807968b388a21.js": "94bc10f32f5e55867579990397c3d30268d0a902",
