@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1763163653005,
+  "timestamp": 1763203517471,
   "index": "https://eperoni76.github.io/thunders-pwa/index.html",
   "assetGroups": [
     {
@@ -12,7 +12,7 @@
       },
       "urls": [
         "https://eperoni76.github.io/thunders-pwa/index.html",
-        "https://eperoni76.github.io/thunders-pwa/main.ffb3b6379c7a3219.js",
+        "https://eperoni76.github.io/thunders-pwa/main.f0db2e9bf7abce29.js",
         "https://eperoni76.github.io/thunders-pwa/manifest.webmanifest",
         "https://eperoni76.github.io/thunders-pwa/polyfills.d4f398ea760a3beb.js",
         "https://eperoni76.github.io/thunders-pwa/runtime.fc0807968b388a21.js",
@@ -36,7 +36,8 @@
         "https://eperoni76.github.io/thunders-pwa/assets/icons/icon-384x384.png",
         "https://eperoni76.github.io/thunders-pwa/assets/icons/icon-512x512.png",
         "https://eperoni76.github.io/thunders-pwa/assets/icons/icon-72x72.png",
-        "https://eperoni76.github.io/thunders-pwa/assets/icons/icon-96x96.png"
+        "https://eperoni76.github.io/thunders-pwa/assets/icons/icon-96x96.png",
+        "https://eperoni76.github.io/thunders-pwa/assets/images/thunders.JPG"
       ],
       "patterns": []
     }
@@ -51,8 +52,9 @@
     "https://eperoni76.github.io/thunders-pwa/assets/icons/icon-512x512.png": "559d9c4318b45a1f2b10596bbb4c960fe521dbcc",
     "https://eperoni76.github.io/thunders-pwa/assets/icons/icon-72x72.png": "279825a1ac4377032ae996a1832c641e33ccf1b6",
     "https://eperoni76.github.io/thunders-pwa/assets/icons/icon-96x96.png": "592885efcbfee27e5e20be4fa3043589390d2740",
-    "https://eperoni76.github.io/thunders-pwa/index.html": "a4955638e87ac36016d986ba702fe12b68f8ba1b",
-    "https://eperoni76.github.io/thunders-pwa/main.ffb3b6379c7a3219.js": "af5664306faffac1e7f8519dc5f95561846f40eb",
+    "https://eperoni76.github.io/thunders-pwa/assets/images/thunders.JPG": "18124ba0e85a36a8536488e9c3004ba1f15d8874",
+    "https://eperoni76.github.io/thunders-pwa/index.html": "d391d839e5a929972ac838a5a9a1535f720ea5f8",
+    "https://eperoni76.github.io/thunders-pwa/main.f0db2e9bf7abce29.js": "ca5108fdd984aad49c027835e32ece7030a84bce",
     "https://eperoni76.github.io/thunders-pwa/manifest.webmanifest": "7d23a884addb95569286d94c250ed2282883a5c8",
     "https://eperoni76.github.io/thunders-pwa/polyfills.d4f398ea760a3beb.js": "4fcf149f1e342cddbeba75fd2295a649e9d748ad",
     "https://eperoni76.github.io/thunders-pwa/runtime.fc0807968b388a21.js": "94bc10f32f5e55867579990397c3d30268d0a902",
