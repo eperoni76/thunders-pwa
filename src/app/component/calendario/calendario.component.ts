@@ -125,9 +125,7 @@ export class CalendarioComponent implements OnInit {
     }
   }
 
-  chiudiDialogRisultato() {
-    // nessuna azione aggiuntiva necessaria
-  }
+  chiudiDialogRisultato() {}
 
   salvaRisultato(valori: { ospitante: number; ospite: number }) {
     if (this.selectedPartita == null) {
@@ -141,6 +139,17 @@ export class CalendarioComponent implements OnInit {
     }
     this.selectedPartita.risultato = `${valori.ospitante}-${valori.ospite}`;
     this.calendarioService.setPartite(this.partite);
+  }
+
+  openMaps(indirizzo: string): void {
+    const encodedAddress = encodeURIComponent(indirizzo);
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+    if (isMobile) {
+      window.location.href = `https://maps.google.com/?q=${encodedAddress}`;
+    } else {
+      window.open(`https://www.google.com/maps?q=${encodedAddress}`, '_blank');
+    }
   }
 
 }

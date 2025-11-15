@@ -1,0 +1,16 @@
+.maps-link {
+  transition: all 0.2s ease;
+}
+
+.maps-link:hover {
+  background-color: rgba(var(--bs-primary-rgb), 0.1);
+  border-radius: 4px;
+  padding: 2px 4px;
+  transform: translateX(2px);
+}
+
+@media (max-width: 768px) {
+  .maps-link:hover {
+    transform: none;
+  }
+}

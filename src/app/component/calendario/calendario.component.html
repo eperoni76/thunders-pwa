@@ -34,7 +34,15 @@
         <td>{{ partita.data | date: 'dd/MM/yyyy' }}</td>
         <td>{{ partita.ora }}</td>
         <td>{{ partita.campionato }}</td>
-        <td>{{ partita.indirizzo }}</td>
+        <td>
+          <a href="javascript:void(0)"
+             (click)="openMaps(partita.indirizzo)"
+             class="text-decoration-none text-primary d-inline-flex align-items-center maps-link"
+             title="Apri in Google Maps">
+            <i class="bi bi-geo-alt-fill me-1"></i>
+            {{ partita.indirizzo }}
+          </a>
+        </td>
         <td>{{ partita.ospitante }}</td>
         <td>{{ partita.ospite }}</td>
         <td>{{ partita.risultato }}</td>
@@ -82,7 +90,14 @@
               <strong>Campionato:</strong> {{ partita.campionato }}<br>
               <strong>Ospitante:</strong> {{ partita.ospitante }}<br>
               <strong>Ospite:</strong> {{ partita.ospite }}<br>
-              <strong>Indirizzo:</strong> {{ partita.indirizzo }}
+              <strong>Indirizzo:</strong>
+              <a href="javascript:void(0)"
+                 (click)="openMaps(partita.indirizzo)"
+                 class="text-decoration-none text-primary d-inline-flex align-items-center maps-link"
+                 title="Apri in Google Maps">
+                <i class="bi bi-geo-alt-fill me-1"></i>
+                {{ partita.indirizzo }}
+              </a>
               <div *ngIf="partita.risultato" class="mt-2">
                 <strong>Risultato:</strong> {{ partita.risultato }}
               </div>
