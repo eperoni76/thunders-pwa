@@ -1,4 +1,98 @@
-<div class="container text-center mt-5">
-  <h1 class="display-2 fw-bold">Thunders</h1>
-</div>
+<div class="container mt-4">
+  <!-- Card con immagine della squadra -->
+  <div class="row justify-content-center mb-4">
+    <div class="col-12 col-md-8 col-lg-6">
+      <div class="card shadow rounded-4 overflow-hidden">
+        <div class="position-relative">
+          <a routerLink="/squadra" class="text-decoration-none d-block">
+            <img src="assets/images/thunders.JPG"
+                 alt="Punto Volley CR ASD Thunders"
+                 class="img-fluid w-100 team-image-enhanced clickable-image">
+            <div class="position-absolute bottom-0 start-0 end-0 bg-dark bg-opacity-75 text-white text-center py-3">
+              <h4 class="mb-0 fw-bold">Punto Volley CR ASD Thunders</h4>
+              <small class="opacity-75">
+                <i class="bi bi-arrow-right-circle me-1"></i>
+                Clicca per vedere la squadra
+              </small>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
 
+  <!-- Card con orari di allenamento -->
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-6">
+      <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+          <h4 class="mb-0">
+            <i class="bi bi-calendar3 me-2"></i>
+            Orari di Allenamento
+          </h4>
+        </div>
+        <div class="card-body">
+          <!-- Layout responsive ottimizzato -->
+          <div class="row g-3">
+            <!-- Su mobile: stack verticale, su tablet e desktop: layout orizzontale -->
+            <div class="col-12 col-sm-6 col-md-4 mb-2">
+              <div class="text-center p-3 bg-light rounded h-100">
+                <h5 class="text-primary mb-2">
+                  <i class="bi bi-calendar-day me-1"></i>
+                  Martedì
+                </h5>
+                <p class="mb-1 fw-bold">20:30 - 22:30</p>
+                <small class="text-muted">Allenamento</small>
+              </div>
+            </div>
+            <div class="col-12 col-sm-6 col-md-4 mb-2">
+              <div class="text-center p-3 bg-light rounded h-100">
+                <h5 class="text-primary mb-2">
+                  <i class="bi bi-calendar-day me-1"></i>
+                  Venerdì
+                </h5>
+                <p class="mb-1 fw-bold">20:15 - 22:15</p>
+                <small class="text-muted">Allenamento</small>
+              </div>
+            </div>
+            <div class="col-12 col-md-4 mb-2">
+              <div class="text-center p-3 bg-light rounded h-100 position-relative">
+                <h5 class="text-primary mb-2">
+                  <i class="bi bi-calendar-event me-1"></i>
+                  Partite
+                </h5>
+                <p class="mb-1 fw-bold">Varie</p>
+                <a routerLink="/calendario" class="text-decoration-none stretched-link">
+                  <small class="text-primary fw-semibold">
+                    <i class="bi bi-arrow-right-circle me-1"></i>
+                    Vedi calendario
+                  </small>
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="mt-4 text-center">
+            <a href="https://www.google.com/maps?q=Via+Ercolano+11,+Castel+Gandolfo,+Italy"
+               target="_blank"
+               class="text-decoration-none d-block">
+              <div class="bg-primary bg-opacity-10 rounded p-3 position-relative maps-link">
+                <p class="text-muted mb-2">
+                  <i class="bi bi-geo-alt-fill me-1"></i>
+                  <strong>Palestra</strong>
+                </p>
+                <p class="mb-1 small text-primary fw-semibold">Via Ercolano 11, Castel Gandolfo</p>
+                <p class="text-muted mb-1">
+                  <small>Palestra Scuola Pontificia Paolo VI</small>
+                </p>
+                <small class="text-primary">
+                  <i class="bi bi-box-arrow-up-right me-1"></i>
+                  Clicca per aprire in Google Maps
+                </small>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
