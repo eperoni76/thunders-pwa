@@ -102,7 +102,8 @@ export class GiocatoriComponent implements OnInit {
             numeroMaglia: parts[2],
             dataDiNascita: parts[3],
             ruolo: parts[4],
-            tesseraUisp: parts[5]
+            tesseraUisp: parts[5],
+            capitano: false
           };
 
           // Controlla se esiste già un giocatore con lo stesso nome e cognome

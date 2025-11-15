@@ -50,7 +50,7 @@
           <button *ngIf="!partita.risultato" class="btn btn-success btn-sm me-1" title="Inserisci risultato" (click)="apriDialogRisultato(i)">
             <i class="bi bi-check2-square"></i>
           </button>
-          <button class="btn btn-secondary btn-sm me-1" title="Crea lista gara">
+          <button class="btn btn-secondary btn-sm me-1" title="Crea lista gara" (click)="creaListaGara(i)">
             <i class="bi bi-list-check"></i>
           </button>
           <button class="btn btn-primary btn-sm me-1" data-bs-toggle="modal" data-bs-target="#calendarioModal" (click)="openDialog(i)" title="Modifica">
@@ -104,7 +104,7 @@
             </div>
             <div class="mt-3 d-flex flex-wrap gap-2 justify-content-end">
               <button *ngIf="!partita.risultato" class="btn btn-success btn-sm" (click)="apriDialogRisultato(i)">Inserisci risultato</button>
-              <button class="btn btn-secondary btn-sm">Crea lista gara</button>
+              <button class="btn btn-secondary btn-sm" (click)="creaListaGara(i)">Crea lista gara</button>
               <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#calendarioModal" (click)="openDialog(i)">
                 <i class="bi bi-pencil"></i>
               </button>

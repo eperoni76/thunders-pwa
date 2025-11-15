@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { CalendarioService } from '../../service/calendario.service';
+import { PdfService } from '../../service/pdf.service';
 import { Partita } from '../../model/partita';
 import { DialogRisultatoComponent } from '../dialog-risultato/dialog-risultato.component';
 
@@ -19,7 +20,8 @@ export class CalendarioComponent implements OnInit {
   @ViewChild(DialogRisultatoComponent) dialogRisultatoComp!: DialogRisultatoComponent;
 
   constructor(
-    private calendarioService: CalendarioService
+    private calendarioService: CalendarioService,
+    private pdfService: PdfService
   ) { }
 
   ngOnInit(): void {
@@ -149,6 +151,16 @@ export class CalendarioComponent implements OnInit {
       window.location.href = `https://maps.google.com/?q=${encodedAddress}`;
     } else {
       window.open(`https://www.google.com/maps?q=${encodedAddress}`, '_blank');
+    }
+  }
+
+  async creaListaGara(index: number): Promise<void> {
+    try {
+      const partita = this.partite[index];
+      await this.pdfService.generaListaGara(partita);
+    } catch (error) {
+      console.error('Errore nella generazione del PDF:', error);
+      alert('Errore nella generazione del PDF. Riprova più tardi.');
     }
   }
 

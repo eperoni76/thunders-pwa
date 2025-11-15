@@ -24,10 +24,11 @@ export class DialogGiocatoreComponent implements OnInit, OnChanges {
     this.giocatoreForm = this.fb.group({
       nome: ['', Validators.required],
       cognome: ['', Validators.required],
-      numeroMaglia: ['', Validators.required],
+      numeroMaglia: [''],
       dataDiNascita: ['', Validators.required],
       ruolo: ['', Validators.required],
-      tesseraUisp: ['', Validators.required]
+      tesseraUisp: ['', Validators.required],
+      capitano: [false]
     });
   }
 
@@ -43,8 +44,11 @@ export class DialogGiocatoreComponent implements OnInit, OnChanges {
 
   salvaGiocatore(): void {
     if (this.giocatoreForm.valid) {
-      this.onSave.emit(this.giocatoreForm.value);
-      this.giocatoreForm.reset();
+      const value = this.giocatoreForm.value;
+      this.onSave.emit(value);
+      this.giocatoreForm.reset({
+        nome: '', cognome: '', numeroMaglia: '', dataDiNascita: '', ruolo: '', tesseraUisp: '', capitano: false
+      });
     }
   }
 
