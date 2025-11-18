@@ -1,5 +1,6 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, OnDestroy} from '@angular/core';
 import {GiocatoriService} from "../../service/giocatori.service";
+import { Subscription } from 'rxjs';
 
 declare var bootstrap: any;
 
@@ -8,20 +9,33 @@ declare var bootstrap: any;
   templateUrl: './giocatori.component.html',
   styleUrls: ['./giocatori.component.css']
 })
-export class GiocatoriComponent implements OnInit {
+export class GiocatoriComponent implements OnInit, OnDestroy {
 
   giocatori: any[] = [];
   selectedGiocatore: any = null;
   isEditMode: boolean = false;
   selectedIndex: number | null = null;
+  private giocatoriSubscription?: Subscription;
 
   constructor(
     private giocatoriService: GiocatoriService
   ) { }
 
   ngOnInit(): void {
-    this.giocatori = this.giocatoriService.getGiocatori();
-    this.sortGiocatoriByNumeroMaglia();
+    // Usa Observable per aggiornamenti real-time
+    this.giocatoriSubscription = this.giocatoriService.getGiocatoriObservable().subscribe(
+      giocatori => {
+        this.giocatori = giocatori;
+        this.sortGiocatoriByNumeroMaglia();
+      }
+    );
+  }
+
+  ngOnDestroy(): void {
+    // Pulisci la subscription
+    if (this.giocatoriSubscription) {
+      this.giocatoriSubscription.unsubscribe();
+    }
   }
 
   private sortGiocatoriByNumeroMaglia(): void {
@@ -44,16 +58,23 @@ export class GiocatoriComponent implements OnInit {
     }
   }
 
-  handleSave(giocatore: any): void {
-    if (this.isEditMode && this.selectedIndex !== null) {
-      this.giocatori[this.selectedIndex] = giocatore;
-    } else {
-      this.giocatori.push(giocatore);
+  async handleSave(giocatore: any): Promise<void> {
+    try {
+      if (this.isEditMode && this.selectedIndex !== null) {
+        // Aggiorna giocatore esistente
+        const giocatoreId = this.giocatori[this.selectedIndex].id;
+        const { id, ...giocatoreData } = giocatore; // Rimuovi id dai dati da aggiornare
+        await this.giocatoriService.updateGiocatore(giocatoreId, giocatoreData);
+      } else {
+        // Aggiungi nuovo giocatore
+        await this.giocatoriService.addGiocatore(giocatore);
+      }
+      this.closeModal();
+      this.handleClose();
+    } catch (error) {
+      console.error('Errore nel salvataggio del giocatore:', error);
+      alert('Errore nel salvataggio. Riprova.');
     }
-    this.sortGiocatoriByNumeroMaglia();
-    this.giocatoriService.setGiocatori(this.giocatori);
-    this.closeModal();
-    this.handleClose();
   }
 
   handleClose(): void {
@@ -62,10 +83,15 @@ export class GiocatoriComponent implements OnInit {
     this.isEditMode = false;
   }
 
-  eliminaGiocatore(index: number): void {
+  async eliminaGiocatore(index: number): Promise<void> {
     if (confirm('Sei sicuro di voler eliminare questo giocatore?')) {
-      this.giocatori.splice(index, 1);
-      this.giocatoriService.setGiocatori(this.giocatori);
+      try {
+        const giocatoreId = this.giocatori[index].id;
+        await this.giocatoriService.deleteGiocatore(giocatoreId);
+      } catch (error) {
+        console.error('Errore nell\'eliminazione del giocatore:', error);
+        alert('Errore nell\'eliminazione. Riprova.');
+      }
     }
   }
 
@@ -84,11 +110,11 @@ export class GiocatoriComponent implements OnInit {
     if (!file) return;
 
     const reader = new FileReader();
-    reader.onload = (e: any) => {
+    reader.onload = async (e: any) => {
       const text = e.target.result;
       const lines = text.split('\n').filter((line: string) => line.trim() !== '');
 
-      const currentGiocatori = this.giocatoriService.getGiocatori();
+      const currentGiocatori = await this.giocatoriService.getGiocatori();
       const newGiocatori: any[] = [];
       let skippedCount = 0;
 
@@ -121,14 +147,18 @@ export class GiocatoriComponent implements OnInit {
       });
 
       if (newGiocatori.length > 0) {
-        this.giocatoriService.addMultipleGiocatori(newGiocatori);
-        this.giocatori = this.giocatoriService.getGiocatori();
+        try {
+          await this.giocatoriService.addMultipleGiocatori(newGiocatori);
 
-        let message = `${newGiocatori.length} giocatori caricati con successo!`;
-        if (skippedCount > 0) {
-          message += `\n${skippedCount} giocatori già presenti sono stati ignorati.`;
+          let message = `${newGiocatori.length} giocatori caricati con successo!`;
+          if (skippedCount > 0) {
+            message += `\n${skippedCount} giocatori già presenti sono stati ignorati.`;
+          }
+          alert(message);
+        } catch (error) {
+          console.error('Errore nel caricamento dei giocatori:', error);
+          alert('Errore nel caricamento. Riprova.');
         }
-        alert(message);
       } else {
         if (skippedCount > 0) {
           alert(`Nessun giocatore caricato.\n${skippedCount} giocatori erano già presenti.`);

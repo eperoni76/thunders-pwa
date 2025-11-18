@@ -13,6 +13,11 @@ import { CalendarioComponent } from './component/calendario/calendario.component
 import { DialogCalendarioComponent } from './component/dialog-calendario/dialog-calendario.component';
 import { DialogRisultatoComponent } from './component/dialog-risultato/dialog-risultato.component';
 
+// Firebase imports
+import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
+import { getFirestore, provideFirestore } from '@angular/fire/firestore';
+import { environment } from '../environments/environment';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -34,7 +39,9 @@ import { DialogRisultatoComponent } from './component/dialog-risultato/dialog-ri
       registrationStrategy: 'registerWhenStable:30000'
     }),
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    provideFirebaseApp(() => initializeApp(environment.firebase)),
+    provideFirestore(() => getFirestore())
   ],
   providers: [],
   bootstrap: [AppComponent]

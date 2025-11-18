@@ -133,7 +133,7 @@ export class PdfService {
     doc.text(`    ${partita.campionato}`, tableStartX + 2 + campionatoWidth, gara3Y);
     yPosition += garaRowHeight + 6;
 
-    const tuttiGiocatori = this.giocatoriService.getGiocatori();
+    const tuttiGiocatori = await this.giocatoriService.getGiocatori();
     const giocatoriFiltrati = tuttiGiocatori.filter((g: any) => {
       const ruolo = (g.ruolo || '').toLowerCase();
       return ruolo !== 'allenatore' && ruolo !== 'dirigente';

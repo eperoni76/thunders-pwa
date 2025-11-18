@@ -1,8 +1,9 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { CalendarioService } from '../../service/calendario.service';
 import { PdfService } from '../../service/pdf.service';
 import { Partita } from '../../model/partita';
 import { DialogRisultatoComponent } from '../dialog-risultato/dialog-risultato.component';
+import { Subscription } from 'rxjs';
 
 declare var bootstrap: any;
 
@@ -11,12 +12,13 @@ declare var bootstrap: any;
   templateUrl: './calendario.component.html',
   styleUrls: ['./calendario.component.css']
 })
-export class CalendarioComponent implements OnInit {
+export class CalendarioComponent implements OnInit, OnDestroy {
 
   partite: Partita[] = [];
   selectedPartita: Partita | null = null;
   isEditMode: boolean = false;
   selectedIndex: number | null = null;
+  private partiteSubscription?: Subscription;
   @ViewChild(DialogRisultatoComponent) dialogRisultatoComp!: DialogRisultatoComponent;
 
   constructor(
@@ -25,7 +27,19 @@ export class CalendarioComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.partite = this.calendarioService.getPartite();
+    // Usa Observable per aggiornamenti real-time
+    this.partiteSubscription = this.calendarioService.getPartiteObservable().subscribe(
+      partite => {
+        this.partite = partite;
+      }
+    );
+  }
+
+  ngOnDestroy(): void {
+    // Pulisci la subscription
+    if (this.partiteSubscription) {
+      this.partiteSubscription.unsubscribe();
+    }
   }
 
   openDialog(index?: number): void {
@@ -40,15 +54,23 @@ export class CalendarioComponent implements OnInit {
     }
   }
 
-  handleSave(partita: Partita): void {
-    if (this.isEditMode && this.selectedIndex !== null) {
-      this.partite[this.selectedIndex] = partita;
-    } else {
-      this.partite.push(partita);
+  async handleSave(partita: Partita): Promise<void> {
+    try {
+      if (this.isEditMode && this.selectedIndex !== null) {
+        // Aggiorna partita esistente
+        const partitaId = (this.partite[this.selectedIndex] as any).id;
+        const { id, ...partitaData } = partita as any; // Rimuovi id dai dati da aggiornare
+        await this.calendarioService.updatePartita(partitaId, partitaData);
+      } else {
+        // Aggiungi nuova partita
+        await this.calendarioService.addPartita(partita);
+      }
+      this.closeModal();
+      this.handleClose();
+    } catch (error) {
+      console.error('Errore nel salvataggio della partita:', error);
+      alert('Errore nel salvataggio. Riprova.');
     }
-    this.calendarioService.setPartite(this.partite);
-    this.closeModal();
-    this.handleClose();
   }
 
   handleClose(): void {
@@ -57,10 +79,15 @@ export class CalendarioComponent implements OnInit {
     this.isEditMode = false;
   }
 
-  eliminaPartita(index: number): void {
+  async eliminaPartita(index: number): Promise<void> {
     if (confirm('Sei sicuro di voler eliminare questa partita?')) {
-      this.partite.splice(index, 1);
-      this.calendarioService.setPartite(this.partite);
+      try {
+        const partitaId = (this.partite[index] as any).id;
+        await this.calendarioService.deletePartita(partitaId);
+      } catch (error) {
+        console.error('Errore nell\'eliminazione della partita:', error);
+        alert('Errore nell\'eliminazione. Riprova.');
+      }
     }
   }
 
@@ -78,15 +105,15 @@ export class CalendarioComponent implements OnInit {
     const file = event.target.files[0];
     if (file && file.type === 'text/plain') {
       const reader = new FileReader();
-      reader.onload = (e) => {
+      reader.onload = async (e) => {
         const content = e.target?.result as string;
-        this.parsePartiteFromFile(content);
+        await this.parsePartiteFromFile(content);
       };
       reader.readAsText(file);
     }
   }
 
-  private parsePartiteFromFile(content: string): void {
+  private async parsePartiteFromFile(content: string): Promise<void> {
     const lines = content.split('\n').filter(line => line.trim() !== '');
     const partite = [];
 
@@ -106,11 +133,16 @@ export class CalendarioComponent implements OnInit {
       }
     }
 
-    // Aggiungi le partite al calendario esistente
-    this.partite = [...this.partite, ...partite];
-    // Ordina per data se necessario
-    this.partite.sort((a, b) => new Date(a.data).getTime() - new Date(b.data).getTime());
-    this.calendarioService.setPartite(this.partite);
+    // Aggiungi le partite a Firestore
+    try {
+      for (const partita of partite) {
+        await this.calendarioService.addPartita(partita);
+      }
+      alert(`${partite.length} partite caricate con successo!`);
+    } catch (error) {
+      console.error('Errore nel caricamento delle partite:', error);
+      alert('Errore nel caricamento. Riprova.');
+    }
   }
 
   private parseDate(dateString: string): string {
@@ -129,7 +161,7 @@ export class CalendarioComponent implements OnInit {
 
   chiudiDialogRisultato() {}
 
-  salvaRisultato(valori: { ospitante: number; ospite: number }) {
+  async salvaRisultato(valori: { ospitante: number; ospite: number }): Promise<void> {
     if (this.selectedPartita == null) {
       return;
     }
@@ -139,8 +171,16 @@ export class CalendarioComponent implements OnInit {
     ) {
       return;
     }
-    this.selectedPartita.risultato = `${valori.ospitante}-${valori.ospite}`;
-    this.calendarioService.setPartite(this.partite);
+
+    try {
+      this.selectedPartita.risultato = `${valori.ospitante}-${valori.ospite}`;
+      const partitaId = (this.selectedPartita as any).id;
+      const { id, ...partitaData } = this.selectedPartita as any;
+      await this.calendarioService.updatePartita(partitaId, partitaData);
+    } catch (error) {
+      console.error('Errore nel salvataggio del risultato:', error);
+      alert('Errore nel salvataggio. Riprova.');
+    }
   }
 
   openMaps(indirizzo: string): void {
