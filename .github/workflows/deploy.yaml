@@ -33,7 +33,7 @@ jobs:
         run: node generate-env.js
 
       - name: Build Angular app
-        run: ng build --configuration production --base-href "https://eperoni76.github.io/thunders-pwa/"
+        run: npx ng build --configuration production --base-href "https://eperoni76.github.io/thunders-pwa/"
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
