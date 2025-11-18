@@ -18,6 +18,7 @@ export class DialogCalendarioComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     this.partitaForm = this.fb.group({
+      id: [null],
       numeroGara: ['', Validators.required],
       data: ['', Validators.required],
       ora: ['', Validators.required],
@@ -41,7 +42,7 @@ export class DialogCalendarioComponent implements OnInit, OnChanges {
 
   salvaPartita(): void {
     if (this.partitaForm.valid) {
-      this.onSave.emit(this.partitaForm.value); // include anche risultato se presente
+      this.onSave.emit(this.partitaForm.value);
       this.partitaForm.reset();
     }
   }

@@ -22,6 +22,7 @@ export class DialogGiocatoreComponent implements OnInit, OnChanges {
     this.ruoli = Object.values(Costanti.RUOLI);
 
     this.giocatoreForm = this.fb.group({
+      id: [null],
       nome: ['', Validators.required],
       cognome: ['', Validators.required],
       numeroMaglia: [''],
