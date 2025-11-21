@@ -1,3 +1,11 @@
+.file-input-hidden {
+  display: none;
+}
+
+.actions-cell {
+  white-space: nowrap;
+}
+
 .maps-link {
   transition: all 0.2s ease;
 }

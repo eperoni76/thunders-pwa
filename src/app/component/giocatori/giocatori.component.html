@@ -9,7 +9,7 @@
   <!-- Pulsanti allineati a destra -->
   <div class="row mb-3">
     <div class="col-12 d-flex justify-content-end">
-      <input type="file" #fileInput accept=".json" (change)="handleFileUpload($event)" style="display: none">
+      <input type="file" #fileInput accept=".json" (change)="handleFileUpload($event)" class="file-input-hidden">
       <button class="btn btn-primary me-2" (click)="fileInput.click()" title="Importa giocatori da JSON">
         <i class="bi bi-upload"></i>
       </button>
@@ -72,7 +72,7 @@
         <h2 class="accordion-header" [attr.id]="'headingGiocatore' + i">
           <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                   [attr.data-bs-target]="'#collapseGiocatore' + i" aria-expanded="false" [attr.aria-controls]="'collapseGiocatore' + i">
-            <span class="badge bg-primary me-2">{{ giocatore.numeroMaglia }}</span>
+            <span class="badge bg-primary me-2 numero-maglia-badge">{{ giocatore.numeroMaglia || '-' }}</span>
             {{ giocatore.cognome | capitalize }} {{ giocatore.nome | capitalize }}
           </button>
         </h2>
