@@ -101,6 +101,33 @@ export class CalendarioComponent implements OnInit, OnDestroy {
     }
   }
 
+  // Metodo per verificare se è una vittoria
+  isVittoria(partita: Partita): boolean | null {
+    if (!partita.risultato) return null;
+
+    const risultatoSplit = partita.risultato.split('-');
+    if (risultatoSplit.length !== 2) return null;
+
+    const punteggioOspitante = parseInt(risultatoSplit[0].trim());
+    const punteggioOspite = parseInt(risultatoSplit[1].trim());
+
+    if (isNaN(punteggioOspitante) || isNaN(punteggioOspite)) return null;
+
+    // Determina se i Thunders sono ospitanti o ospiti
+    const thundersOspitanti = partita.ospitante.toLowerCase().includes('thunders');
+    const thundersOspiti = partita.ospite.toLowerCase().includes('thunders');
+
+    // Se i Thunders non sono né ospitanti né ospiti, ritorna null
+    if (!thundersOspitanti && !thundersOspiti) return null;
+
+    // Calcola se è vittoria in base a chi sono i Thunders
+    if (thundersOspitanti) {
+      return punteggioOspitante > punteggioOspite;
+    } else {
+      return punteggioOspite > punteggioOspitante;
+    }
+  }
+
   handleFileUpload(event: any): void {
     const file = event.target.files[0];
     if (file && file.type === 'text/plain') {
