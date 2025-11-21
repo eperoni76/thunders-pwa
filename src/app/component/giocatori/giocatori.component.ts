@@ -43,6 +43,13 @@ export class GiocatoriComponent implements OnInit, OnDestroy {
     return GenericUtils.ordinaGiocatoriPerCognome(this.giocatori);
   }
 
+  get numeroGiocatori(): number {
+    return this.giocatori.filter(g => {
+      const ruolo = (g.ruolo || '').toLowerCase();
+      return !ruolo.includes('allenatore') && !ruolo.includes('dirigente');
+    }).length;
+  }
+
   openDialog(giocatore?: any): void {
     if (giocatore !== undefined) {
       this.selectedGiocatore = {...giocatore};
@@ -103,68 +110,105 @@ export class GiocatoriComponent implements OnInit, OnDestroy {
     const file = event.target.files[0];
     if (!file) return;
 
+    if (!file.name.endsWith('.json')) {
+      alert('Seleziona un file JSON valido.');
+      event.target.value = '';
+      return;
+    }
+
     const reader = new FileReader();
     reader.onload = async (e: any) => {
-      const text = e.target.result;
-      const lines = text.split('\n').filter((line: string) => line.trim() !== '');
+      try {
+        const data = JSON.parse(e.target.result);
 
-      const currentGiocatori = await this.giocatoriService.getGiocatori();
-      const newGiocatori: any[] = [];
-      let skippedCount = 0;
+        if (!Array.isArray(data)) {
+          alert('Il file JSON deve contenere un array di giocatori.');
+          event.target.value = '';
+          return;
+        }
 
-      lines.forEach((line: string) => {
-        const parts = line.split(';').map((part: string) => part.trim());
+        const currentGiocatori = await this.giocatoriService.getGiocatori();
+        const newGiocatori: any[] = [];
+        let skippedCount = 0;
 
-        if (parts.length === 6) {
-          const giocatore = {
-            nome: parts[0],
-            cognome: parts[1],
-            numeroMaglia: parts[2],
-            dataDiNascita: parts[3],
-            ruolo: parts[4],
-            tesseraUisp: parts[5],
-            capitano: false
-          };
+        data.forEach((giocatore: any) => {
+          const nome = (giocatore.nome || '').toLowerCase();
+          const cognome = (giocatore.cognome || '').toLowerCase();
 
           // Controlla se esiste già un giocatore con lo stesso nome e cognome
           const exists = currentGiocatori.some(g =>
-            g.nome.toLowerCase() === giocatore.nome.toLowerCase() &&
-            g.cognome.toLowerCase() === giocatore.cognome.toLowerCase()
+            g.nome.toLowerCase() === nome && g.cognome.toLowerCase() === cognome
           );
 
           if (!exists) {
-            newGiocatori.push(giocatore);
+            // Normalizza nome e cognome a lowercase prima di salvare
+            newGiocatori.push({
+              ...giocatore,
+              nome: nome,
+              cognome: cognome,
+              capitano: giocatore.capitano || false
+            });
           } else {
             skippedCount++;
           }
-        }
-      });
+        });
 
-      if (newGiocatori.length > 0) {
-        try {
-          await this.giocatoriService.addMultipleGiocatori(newGiocatori);
+        if (newGiocatori.length > 0) {
+          try {
+            await this.giocatoriService.addMultipleGiocatori(newGiocatori);
 
-          let message = `${newGiocatori.length} giocatori caricati con successo!`;
-          if (skippedCount > 0) {
-            message += `\n${skippedCount} giocatori già presenti sono stati ignorati.`;
+            let message = `${newGiocatori.length} giocatori caricati con successo!`;
+            if (skippedCount > 0) {
+              message += `\n${skippedCount} giocatori già presenti sono stati ignorati.`;
+            }
+            alert(message);
+          } catch (error) {
+            console.error('Errore nel caricamento dei giocatori:', error);
+            alert('Errore nel caricamento. Riprova.');
           }
-          alert(message);
-        } catch (error) {
-          console.error('Errore nel caricamento dei giocatori:', error);
-          alert('Errore nel caricamento. Riprova.');
-        }
-      } else {
-        if (skippedCount > 0) {
-          alert(`Nessun giocatore caricato.\n${skippedCount} giocatori erano già presenti.`);
         } else {
-          alert('Nessun giocatore valido trovato nel file');
+          if (skippedCount > 0) {
+            alert(`Nessun giocatore caricato.\n${skippedCount} giocatori erano già presenti.`);
+          } else {
+            alert('Nessun giocatore valido trovato nel file');
+          }
         }
-      }
 
-      event.target.value = '';
+        event.target.value = '';
+      } catch (err) {
+        console.error('Errore nel parsing del file JSON:', err);
+        alert('Errore nel parsing del file JSON. Assicurati che il formato sia corretto.');
+        event.target.value = '';
+      }
     };
 
     reader.readAsText(file);
+  }
+
+  exportToJSON(): void {
+    if (this.giocatori.length === 0) {
+      alert('Nessun giocatore da esportare.');
+      return;
+    }
+
+    // Crea una copia dei giocatori senza l'id di Firestore
+    const giocatoriToExport = this.giocatori.map(g => {
+      const { id, ...giocatoreData } = g as any;
+      return giocatoreData;
+    });
+
+    const dataStr = JSON.stringify(giocatoriToExport, null, 2);
+    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+
+    const url = window.URL.createObjectURL(dataBlob);
+    const link = document.createElement('a');
+    link.href = url;
+
+    const today = new Date().toISOString().split('T')[0];
+    link.download = `giocatori_${today}.json`;
+
+    link.click();
+    window.URL.revokeObjectURL(url);
   }
 
 }

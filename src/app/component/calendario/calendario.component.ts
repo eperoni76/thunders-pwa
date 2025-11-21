@@ -42,6 +42,10 @@ export class CalendarioComponent implements OnInit, OnDestroy {
     }
   }
 
+  get partiteRimanenti(): number {
+    return this.partite.filter(p => !p.risultato || p.risultato.trim() === '').length;
+  }
+
   openDialog(index?: number): void {
     if (index !== undefined) {
       this.selectedPartita = { ...this.partite[index] };
@@ -130,53 +134,97 @@ export class CalendarioComponent implements OnInit, OnDestroy {
 
   handleFileUpload(event: any): void {
     const file = event.target.files[0];
-    if (file && file.type === 'text/plain') {
-      const reader = new FileReader();
-      reader.onload = async (e) => {
-        const content = e.target?.result as string;
-        await this.parsePartiteFromFile(content);
-      };
-      reader.readAsText(file);
+    if (!file) return;
+
+    if (!file.name.endsWith('.json')) {
+      alert('Seleziona un file JSON valido.');
+      event.target.value = '';
+      return;
     }
+
+    const reader = new FileReader();
+    reader.onload = async (e: any) => {
+      try {
+        const data = JSON.parse(e.target.result);
+
+        if (!Array.isArray(data)) {
+          alert('Il file JSON deve contenere un array di partite.');
+          event.target.value = '';
+          return;
+        }
+
+        await this.parsePartiteFromJSON(data);
+        event.target.value = '';
+      } catch (err) {
+        console.error('Errore nel parsing del file JSON:', err);
+        alert('Errore nel parsing del file JSON. Assicurati che il formato sia corretto.');
+        event.target.value = '';
+      }
+    };
+
+    reader.readAsText(file);
   }
 
-  private async parsePartiteFromFile(content: string): Promise<void> {
-    const lines = content.split('\n').filter(line => line.trim() !== '');
+  private async parsePartiteFromJSON(data: any[]): Promise<void> {
     const partite = [];
 
-    for (const line of lines) {
-      const parts = line.split('///');
-      if (parts.length >= 7) {
+    for (const item of data) {
+      // Valida che l'oggetto abbia i campi necessari
+      if (item.numeroGara && item.data && item.ora && item.campionato &&
+          item.indirizzo && item.ospitante && item.ospite) {
         const partita = {
-          numeroGara: parseInt(parts[0]),
-          data: this.parseDate(parts[1]),
-          ora: parts[2],
-          campionato: parts[3],
-          indirizzo: parts[4],
-          ospitante: parts[5],
-          ospite: parts[6]
+          numeroGara: parseInt(item.numeroGara),
+          data: item.data,
+          ora: item.ora,
+          campionato: item.campionato,
+          indirizzo: item.indirizzo,
+          ospitante: item.ospitante,
+          ospite: item.ospite,
+          risultato: item.risultato || ''
         };
         partite.push(partita);
       }
     }
 
-    // Aggiungi le partite a Firestore
-    try {
-      for (const partita of partite) {
-        await this.calendarioService.addPartita(partita);
+    if (partite.length > 0) {
+      try {
+        for (const partita of partite) {
+          await this.calendarioService.addPartita(partita);
+        }
+        alert(`${partite.length} partite caricate con successo!`);
+      } catch (error) {
+        console.error('Errore nel caricamento delle partite:', error);
+        alert('Errore nel caricamento. Riprova.');
       }
-      alert(`${partite.length} partite caricate con successo!`);
-    } catch (error) {
-      console.error('Errore nel caricamento delle partite:', error);
-      alert('Errore nel caricamento. Riprova.');
+    } else {
+      alert('Nessuna partita valida trovata nel file');
     }
   }
 
-  private parseDate(dateString: string): string {
-    // Converte "Gio 20/11/2025" in formato ISO "2025-11-20"
-    const datePart = dateString.split(' ')[1]; // "20/11/2025"
-    const [day, month, year] = datePart.split('/');
-    return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+  exportToJSON(): void {
+    if (this.partite.length === 0) {
+      alert('Nessuna partita da esportare.');
+      return;
+    }
+
+    // Crea una copia delle partite senza l'id di Firestore
+    const partiteToExport = this.partite.map(p => {
+      const { id, ...partitaData } = p as any;
+      return partitaData;
+    });
+
+    const dataStr = JSON.stringify(partiteToExport, null, 2);
+    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+
+    const url = window.URL.createObjectURL(dataBlob);
+    const link = document.createElement('a');
+    link.href = url;
+
+    const today = new Date().toISOString().split('T')[0];
+    link.download = `partite_${today}.json`;
+
+    link.click();
+    window.URL.revokeObjectURL(url);
   }
 
   apriDialogRisultato(index: number) {
