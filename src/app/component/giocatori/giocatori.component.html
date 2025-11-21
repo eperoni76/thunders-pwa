@@ -29,8 +29,8 @@
       <tbody>
       <tr *ngFor="let giocatore of giocatoriOrdinati">
         <td>{{ giocatore.numeroMaglia }}</td>
-        <td>{{ giocatore.cognome }}</td>
-        <td>{{ giocatore.nome }}</td>
+        <td>{{ giocatore.cognome | capitalize }}</td>
+        <td>{{ giocatore.nome | capitalize }}</td>
         <td>{{ giocatore.dataDiNascita | date: 'dd/MM/yyyy' }}</td>
         <td>{{ giocatore.ruolo }}</td>
         <td>{{ giocatore.tesseraUisp }}</td>
@@ -63,7 +63,7 @@
           <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                   [attr.data-bs-target]="'#collapseGiocatore' + i" aria-expanded="false" [attr.aria-controls]="'collapseGiocatore' + i">
             <span class="badge bg-primary me-2">{{ giocatore.numeroMaglia }}</span>
-            {{ giocatore.cognome }} {{ giocatore.nome }}
+            {{ giocatore.cognome | capitalize }} {{ giocatore.nome | capitalize }}
           </button>
         </h2>
         <div [attr.id]="'collapseGiocatore' + i" class="accordion-collapse collapse" [attr.aria-labelledby]="'headingGiocatore' + i"

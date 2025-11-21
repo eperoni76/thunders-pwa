@@ -17,6 +17,7 @@ import { DialogRisultatoComponent } from './component/dialog-risultato/dialog-ri
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { environment } from '../environments/environment';
+import { CapitalizePipe } from './pipe/capitalize.pipe';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { environment } from '../environments/environment';
     HeaderComponent,
     CalendarioComponent,
     DialogCalendarioComponent,
-    DialogRisultatoComponent
+    DialogRisultatoComponent,
+    CapitalizePipe
   ],
   imports: [
     BrowserModule,

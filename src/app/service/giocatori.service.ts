@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Firestore, collection, collectionData, addDoc, deleteDoc, doc, updateDoc, query, orderBy } from '@angular/fire/firestore';
 import { Observable, firstValueFrom } from 'rxjs';
-import { Giocatore } from '../model/giocatore';
 
 @Injectable({
   providedIn: 'root'
@@ -33,7 +32,8 @@ export class GiocatoriService {
    */
   async addGiocatore(giocatore: any): Promise<void> {
     const giocatoriCollection = collection(this.firestore, this.collectionName);
-    await addDoc(giocatoriCollection, giocatore);
+    const normalizedGiocatore = this.normalizeGiocatore(giocatore);
+    await addDoc(giocatoriCollection, normalizedGiocatore);
   }
 
   /**
@@ -41,7 +41,8 @@ export class GiocatoriService {
    */
   async updateGiocatore(id: string, giocatore: any): Promise<void> {
     const giocatoreDoc = doc(this.firestore, this.collectionName, id);
-    await updateDoc(giocatoreDoc, giocatore);
+    const normalizedGiocatore = this.normalizeGiocatore(giocatore);
+    await updateDoc(giocatoreDoc, normalizedGiocatore);
   }
 
   /**
@@ -59,7 +60,8 @@ export class GiocatoriService {
     const giocatoriCollection = collection(this.firestore, this.collectionName);
 
     for (const giocatore of giocatori) {
-      await addDoc(giocatoriCollection, giocatore);
+      const normalizedGiocatore = this.normalizeGiocatore(giocatore);
+      await addDoc(giocatoriCollection, normalizedGiocatore);
     }
   }
 
@@ -73,5 +75,16 @@ export class GiocatoriService {
       await this.addMultipleGiocatori(giocatori);
       console.log(`Migrati ${giocatori.length} giocatori da localStorage a Firestore`);
     }
+  }
+
+  /**
+   * Normalizza i dati del giocatore (nome e cognome in lowercase)
+   */
+  private normalizeGiocatore(giocatore: any): any {
+    return {
+      ...giocatore,
+      nome: giocatore.nome ? giocatore.nome.toLowerCase() : '',
+      cognome: giocatore.cognome ? giocatore.cognome.toLowerCase() : ''
+    };
   }
 }
