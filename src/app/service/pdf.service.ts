@@ -267,7 +267,6 @@ export class PdfService {
     });
     yPosition += subtitleBoxHeight + 4;
 
-    // Dati personali (auto-fill se gara in casa)
     const isCasa = (partita.ospitante || '').toUpperCase().includes('THUNDERS');
     const addetto = Costanti.ADDETTO_DEFIBRILLATORE_THUNDERS;
     doc.setFontSize(9);

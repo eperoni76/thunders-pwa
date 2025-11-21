@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Firestore, collection, collectionData, addDoc, deleteDoc, doc, updateDoc, query, orderBy } from '@angular/fire/firestore';
 import { Observable, firstValueFrom } from 'rxjs';
-import { Partita } from '../model/partita';
 
 @Injectable({
   providedIn: 'root'
@@ -52,20 +51,4 @@ export class CalendarioService {
     await deleteDoc(partitaDoc);
   }
 
-  /**
-   * Migra dati da localStorage a Firestore (usa solo una volta)
-   */
-  async migrateFromLocalStorage(): Promise<void> {
-    const localData = localStorage.getItem('partite');
-    if (localData) {
-      const partite = JSON.parse(localData);
-      const partiteCollection = collection(this.firestore, this.collectionName);
-
-      for (const partita of partite) {
-        await addDoc(partiteCollection, partita);
-      }
-
-      console.log(`Migrate ${partite.length} partite da localStorage a Firestore`);
-    }
-  }
 }

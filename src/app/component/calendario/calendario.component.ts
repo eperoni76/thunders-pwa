@@ -27,7 +27,6 @@ export class CalendarioComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    // Usa Observable per aggiornamenti real-time
     this.partiteSubscription = this.calendarioService.getPartiteObservable().subscribe(
       partite => {
         this.partite = partite;
@@ -36,7 +35,6 @@ export class CalendarioComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    // Pulisci la subscription
     if (this.partiteSubscription) {
       this.partiteSubscription.unsubscribe();
     }
@@ -61,12 +59,10 @@ export class CalendarioComponent implements OnInit, OnDestroy {
   async handleSave(partita: Partita): Promise<void> {
     try {
       if (this.isEditMode && this.selectedIndex !== null) {
-        // Aggiorna partita esistente
         const partitaId = (this.partite[this.selectedIndex] as any).id;
-        const { id, ...partitaData } = partita as any; // Rimuovi id dai dati da aggiornare
+        const { id, ...partitaData } = partita as any;
         await this.calendarioService.updatePartita(partitaId, partitaData);
       } else {
-        // Aggiungi nuova partita
         await this.calendarioService.addPartita(partita);
       }
       this.closeModal();
@@ -105,7 +101,6 @@ export class CalendarioComponent implements OnInit, OnDestroy {
     }
   }
 
-  // Metodo per verificare se è una vittoria
   isVittoria(partita: Partita): boolean | null {
     if (!partita.risultato) return null;
 
@@ -117,14 +112,11 @@ export class CalendarioComponent implements OnInit, OnDestroy {
 
     if (isNaN(punteggioOspitante) || isNaN(punteggioOspite)) return null;
 
-    // Determina se i Thunders sono ospitanti o ospiti
     const thundersOspitanti = partita.ospitante.toLowerCase().includes('thunders');
     const thundersOspiti = partita.ospite.toLowerCase().includes('thunders');
 
-    // Se i Thunders non sono né ospitanti né ospiti, ritorna null
     if (!thundersOspitanti && !thundersOspiti) return null;
 
-    // Calcola se è vittoria in base a chi sono i Thunders
     if (thundersOspitanti) {
       return punteggioOspitante > punteggioOspite;
     } else {
@@ -169,7 +161,6 @@ export class CalendarioComponent implements OnInit, OnDestroy {
     const partite = [];
 
     for (const item of data) {
-      // Valida che l'oggetto abbia i campi necessari
       if (item.numeroGara && item.data && item.ora && item.campionato &&
           item.indirizzo && item.ospitante && item.ospite) {
         const partita = {
@@ -207,7 +198,6 @@ export class CalendarioComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // Crea una copia delle partite senza l'id di Firestore
     const partiteToExport = this.partite.map(p => {
       const { id, ...partitaData } = p as any;
       return partitaData;

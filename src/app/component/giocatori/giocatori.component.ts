@@ -1,7 +1,6 @@
 import {Component, OnInit, OnDestroy} from '@angular/core';
 import {GiocatoriService} from "../../service/giocatori.service";
-import { Subscription } from 'rxjs';
-import {PdfService} from "../../service/pdf.service";
+import {Subscription} from 'rxjs';
 import {GenericUtils} from "../../utils/generic-utils";
 
 declare var bootstrap: any;
@@ -19,12 +18,10 @@ export class GiocatoriComponent implements OnInit, OnDestroy {
   private giocatoriSubscription?: Subscription;
 
   constructor(
-    private giocatoriService: GiocatoriService,
-    private pdfService: PdfService
+    private giocatoriService: GiocatoriService
   ) { }
 
   ngOnInit(): void {
-    // Usa Observable per aggiornamenti real-time
     this.giocatoriSubscription = this.giocatoriService.getGiocatoriObservable().subscribe(
       giocatori => {
         this.giocatori = giocatori;
@@ -33,7 +30,6 @@ export class GiocatoriComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    // Pulisci la subscription
     if (this.giocatoriSubscription) {
       this.giocatoriSubscription.unsubscribe();
     }
@@ -63,12 +59,10 @@ export class GiocatoriComponent implements OnInit, OnDestroy {
   async handleSave(giocatore: any): Promise<void> {
     try {
       if (this.isEditMode && this.selectedGiocatore) {
-        // Aggiorna giocatore esistente
         const giocatoreId = this.selectedGiocatore.id;
-        const { id, ...giocatoreData } = giocatore; // Rimuovi id dai dati da aggiornare
+        const { id, ...giocatoreData } = giocatore;
         await this.giocatoriService.updateGiocatore(giocatoreId, giocatoreData);
       } else {
-        // Aggiungi nuovo giocatore
         await this.giocatoriService.addGiocatore(giocatore);
       }
       this.closeModal();
@@ -134,14 +128,11 @@ export class GiocatoriComponent implements OnInit, OnDestroy {
         data.forEach((giocatore: any) => {
           const nome = (giocatore.nome || '').toLowerCase();
           const cognome = (giocatore.cognome || '').toLowerCase();
-
-          // Controlla se esiste già un giocatore con lo stesso nome e cognome
           const exists = currentGiocatori.some(g =>
             g.nome.toLowerCase() === nome && g.cognome.toLowerCase() === cognome
           );
 
           if (!exists) {
-            // Normalizza nome e cognome a lowercase prima di salvare
             newGiocatori.push({
               ...giocatore,
               nome: nome,
@@ -191,7 +182,6 @@ export class GiocatoriComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // Crea una copia dei giocatori senza l'id di Firestore
     const giocatoriToExport = this.giocatori.map(g => {
       const { id, ...giocatoreData } = g as any;
       return giocatoreData;
