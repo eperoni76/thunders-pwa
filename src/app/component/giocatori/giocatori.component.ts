@@ -1,6 +1,8 @@
 import {Component, OnInit, OnDestroy} from '@angular/core';
 import {GiocatoriService} from "../../service/giocatori.service";
 import { Subscription } from 'rxjs';
+import {PdfService} from "../../service/pdf.service";
+import {GenericUtils} from "../../utils/generic-utils";
 
 declare var bootstrap: any;
 
@@ -14,11 +16,11 @@ export class GiocatoriComponent implements OnInit, OnDestroy {
   giocatori: any[] = [];
   selectedGiocatore: any = null;
   isEditMode: boolean = false;
-  selectedIndex: number | null = null;
   private giocatoriSubscription?: Subscription;
 
   constructor(
-    private giocatoriService: GiocatoriService
+    private giocatoriService: GiocatoriService,
+    private pdfService: PdfService
   ) { }
 
   ngOnInit(): void {
@@ -26,7 +28,6 @@ export class GiocatoriComponent implements OnInit, OnDestroy {
     this.giocatoriSubscription = this.giocatoriService.getGiocatoriObservable().subscribe(
       giocatori => {
         this.giocatori = giocatori;
-        this.sortGiocatoriByNumeroMaglia();
       }
     );
   }
@@ -38,31 +39,25 @@ export class GiocatoriComponent implements OnInit, OnDestroy {
     }
   }
 
-  private sortGiocatoriByNumeroMaglia(): void {
-    this.giocatori.sort((a, b) => {
-      const numA = parseInt(a.numeroMaglia) || 0;
-      const numB = parseInt(b.numeroMaglia) || 0;
-      return numA - numB;
-    });
+  get giocatoriOrdinati(): any[] {
+    return GenericUtils.ordinaGiocatoriPerCognome(this.giocatori);
   }
 
-  openDialog(index?: number): void {
-    if (index !== undefined) {
-      this.selectedGiocatore = {...this.giocatori[index]};
-      this.selectedIndex = index;
+  openDialog(giocatore?: any): void {
+    if (giocatore !== undefined) {
+      this.selectedGiocatore = {...giocatore};
       this.isEditMode = true;
     } else {
       this.selectedGiocatore = null;
-      this.selectedIndex = null;
       this.isEditMode = false;
     }
   }
 
   async handleSave(giocatore: any): Promise<void> {
     try {
-      if (this.isEditMode && this.selectedIndex !== null) {
+      if (this.isEditMode && this.selectedGiocatore) {
         // Aggiorna giocatore esistente
-        const giocatoreId = this.giocatori[this.selectedIndex].id;
+        const giocatoreId = this.selectedGiocatore.id;
         const { id, ...giocatoreData } = giocatore; // Rimuovi id dai dati da aggiornare
         await this.giocatoriService.updateGiocatore(giocatoreId, giocatoreData);
       } else {
@@ -79,14 +74,13 @@ export class GiocatoriComponent implements OnInit, OnDestroy {
 
   handleClose(): void {
     this.selectedGiocatore = null;
-    this.selectedIndex = null;
     this.isEditMode = false;
   }
 
-  async eliminaGiocatore(index: number): Promise<void> {
+  async eliminaGiocatore(giocatore: any): Promise<void> {
     if (confirm('Sei sicuro di voler eliminare questo giocatore?')) {
       try {
-        const giocatoreId = this.giocatori[index].id;
+        const giocatoreId = giocatore.id;
         await this.giocatoriService.deleteGiocatore(giocatoreId);
       } catch (error) {
         console.error('Errore nell\'eliminazione del giocatore:', error);

@@ -1,6 +1,6 @@
 <div class="container mt-4">
   <div class="d-flex justify-content-between align-items-center mb-3">
-    <h2>Elenco Giocatori</h2>
+    <h2>Elenco Giocatori: <span *ngIf="giocatori.length">{{giocatori.length}}</span></h2>
     <div>
       <input type="file" #fileInput accept=".txt" (change)="handleFileUpload($event)" style="display: none">
       <button class="btn btn-primary me-2" (click)="fileInput.click()">
@@ -18,8 +18,8 @@
       <thead class="table-primary">
       <tr>
         <th>Numero Maglia</th>
-        <th>Nome</th>
         <th>Cognome</th>
+        <th>Nome</th>
         <th>Data di Nascita</th>
         <th>Ruolo</th>
         <th>Tessera UISP</th>
@@ -27,18 +27,18 @@
       </tr>
       </thead>
       <tbody>
-      <tr *ngFor="let giocatore of giocatori; let i = index">
+      <tr *ngFor="let giocatore of giocatoriOrdinati">
         <td>{{ giocatore.numeroMaglia }}</td>
-        <td>{{ giocatore.nome }}</td>
         <td>{{ giocatore.cognome }}</td>
+        <td>{{ giocatore.nome }}</td>
         <td>{{ giocatore.dataDiNascita | date: 'dd/MM/yyyy' }}</td>
         <td>{{ giocatore.ruolo }}</td>
         <td>{{ giocatore.tesseraUisp }}</td>
         <td>
-          <button class="btn btn-sm btn-primary me-2" data-bs-toggle="modal" data-bs-target="#giocatoreModal" (click)="openDialog(i)">
+          <button class="btn btn-sm btn-primary me-2" data-bs-toggle="modal" data-bs-target="#giocatoreModal" (click)="openDialog(giocatore)">
             <i class="bi bi-pencil"></i>
           </button>
-          <button class="btn btn-sm btn-danger" (click)="eliminaGiocatore(i)">
+          <button class="btn btn-sm btn-danger" (click)="eliminaGiocatore(giocatore)">
             <i class="bi bi-trash"></i>
           </button>
         </td>
@@ -52,42 +52,36 @@
     </table>
   </div>
 
-  <!-- Vista mobile (card) -->
+  <!-- Vista mobile (accordion) -->
   <div class="d-md-none">
     <div *ngIf="giocatori.length === 0" class="text-center text-muted py-4">
       Nessun giocatore presente
     </div>
-    <div *ngFor="let giocatore of giocatori; let i = index" class="card mb-3">
-      <div class="card-body">
-        <div class="d-flex justify-content-between align-items-start mb-2">
-          <div>
-            <h5 class="card-title mb-1">
-              <span class="badge bg-primary me-2">{{ giocatore.numeroMaglia }}</span>
-              {{ giocatore.nome }} {{ giocatore.cognome }}
-            </h5>
-          </div>
-          <div>
-            <button class="btn btn-sm btn-primary me-1" data-bs-toggle="modal" data-bs-target="#giocatoreModal" (click)="openDialog(i)">
-              <i class="bi bi-pencil"></i>
-            </button>
-            <button class="btn btn-sm btn-danger" (click)="eliminaGiocatore(i)">
-              <i class="bi bi-trash"></i>
-            </button>
-          </div>
-        </div>
-        <div class="card-text">
-          <div class="row g-2">
-            <div class="col-6">
-              <small class="text-muted">Data di Nascita:</small>
-              <div>{{ giocatore.dataDiNascita | date: 'dd/MM/yyyy' }}</div>
+    <div class="accordion" id="giocatoriAccordion">
+      <div *ngFor="let giocatore of giocatoriOrdinati; let i = index" class="accordion-item">
+        <h2 class="accordion-header" [attr.id]="'headingGiocatore' + i">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                  [attr.data-bs-target]="'#collapseGiocatore' + i" aria-expanded="false" [attr.aria-controls]="'collapseGiocatore' + i">
+            <span class="badge bg-primary me-2">{{ giocatore.numeroMaglia }}</span>
+            {{ giocatore.cognome }} {{ giocatore.nome }}
+          </button>
+        </h2>
+        <div [attr.id]="'collapseGiocatore' + i" class="accordion-collapse collapse" [attr.aria-labelledby]="'headingGiocatore' + i"
+             data-bs-parent="#giocatoriAccordion">
+          <div class="accordion-body">
+            <div>
+              <strong>Data di Nascita:</strong> {{ giocatore.dataDiNascita | date: 'dd/MM/yyyy' }}<br>
+              <strong>Ruolo:</strong> {{ giocatore.ruolo }}<br>
+              <strong>Tessera UISP:</strong> {{ giocatore.tesseraUisp }}<br>
+              <strong>Capitano:</strong> {{ giocatore.capitano ? 'Sì' : 'No' }}
             </div>
-            <div class="col-6">
-              <small class="text-muted">Ruolo:</small>
-              <div>{{ giocatore.ruolo }}</div>
-            </div>
-            <div class="col-12">
-              <small class="text-muted">Tessera UISP:</small>
-              <div>{{ giocatore.tesseraUisp }}</div>
+            <div class="mt-3 d-flex flex-wrap gap-2 justify-content-end">
+              <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#giocatoreModal" (click)="openDialog(giocatore)">
+                <i class="bi bi-pencil"></i> Modifica
+              </button>
+              <button class="btn btn-danger btn-sm" (click)="eliminaGiocatore(giocatore)">
+                <i class="bi bi-trash"></i> Elimina
+              </button>
             </div>
           </div>
         </div>

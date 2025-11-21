@@ -3,6 +3,7 @@ import { jsPDF } from 'jspdf';
 import { Partita } from '../model/partita';
 import { GiocatoriService } from './giocatori.service';
 import { Costanti } from '../costanti';
+import { GenericUtils } from '../utils/generic-utils';
 
 @Injectable({
   providedIn: 'root'
@@ -323,21 +324,10 @@ export class PdfService {
   }
 
   private filtraEOrdinaGiocatori(giocatori: any[]): any[] {
-    return giocatori
-      .filter((g: any) => {
-        const ruolo = (g.ruolo || '').toLowerCase();
-        return ruolo !== 'allenatore' && ruolo !== 'dirigente';
-      })
-      .sort((a: any, b: any) => {
-        const cognomeA = (a.cognome || '').toLowerCase();
-        const cognomeB = (b.cognome || '').toLowerCase();
-        if (cognomeA < cognomeB) return -1;
-        if (cognomeA > cognomeB) return 1;
-        const nomeA = (a.nome || '').toLowerCase();
-        const nomeB = (b.nome || '').toLowerCase();
-        if (nomeA < nomeB) return -1;
-        if (nomeA > nomeB) return 1;
-        return 0;
-      });
+    const giocatoriFiltrati = giocatori.filter((g: any) => {
+      const ruolo = (g.ruolo || '').toLowerCase();
+      return ruolo !== 'allenatore' && ruolo !== 'dirigente';
+    });
+    return GenericUtils.ordinaGiocatoriPerCognome(giocatoriFiltrati);
   }
 }
