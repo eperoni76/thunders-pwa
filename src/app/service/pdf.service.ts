@@ -134,10 +134,7 @@ export class PdfService {
     yPosition += garaRowHeight + 6;
 
     const tuttiGiocatori = await this.giocatoriService.getGiocatori();
-    const giocatoriFiltrati = tuttiGiocatori.filter((g: any) => {
-      const ruolo = (g.ruolo || '').toLowerCase();
-      return ruolo !== 'allenatore' && ruolo !== 'dirigente';
-    });
+    const giocatoriFiltrati = this.filtraEOrdinaGiocatori(tuttiGiocatori);
     const allenatori = tuttiGiocatori.filter((g: any) => (g.ruolo || '').toLowerCase() === 'allenatore');
     const dirigenti = tuttiGiocatori.filter((g: any) => (g.ruolo || '').toLowerCase() === 'dirigente');
 
@@ -323,5 +320,24 @@ export class PdfService {
       reader.onerror = reject;
       reader.readAsDataURL(blob);
     });
+  }
+
+  private filtraEOrdinaGiocatori(giocatori: any[]): any[] {
+    return giocatori
+      .filter((g: any) => {
+        const ruolo = (g.ruolo || '').toLowerCase();
+        return ruolo !== 'allenatore' && ruolo !== 'dirigente';
+      })
+      .sort((a: any, b: any) => {
+        const cognomeA = (a.cognome || '').toLowerCase();
+        const cognomeB = (b.cognome || '').toLowerCase();
+        if (cognomeA < cognomeB) return -1;
+        if (cognomeA > cognomeB) return 1;
+        const nomeA = (a.nome || '').toLowerCase();
+        const nomeB = (b.nome || '').toLowerCase();
+        if (nomeA < nomeB) return -1;
+        if (nomeA > nomeB) return 1;
+        return 0;
+      });
   }
 }
