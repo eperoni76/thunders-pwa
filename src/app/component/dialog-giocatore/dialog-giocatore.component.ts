@@ -8,6 +8,7 @@ import {Costanti} from '../../costanti';
   styleUrls: ['./dialog-giocatore.component.css']
 })
 export class DialogGiocatoreComponent implements OnInit, OnChanges {
+
   @Input() giocatore: any = null;
   @Input() isEditMode: boolean = false;
   @Output() onSave = new EventEmitter<any>();
