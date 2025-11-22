@@ -8,14 +8,15 @@
       </div>
       <div class="modal-body">
         <form [formGroup]="giocatoreForm">
+          <!-- Nome e Cognome sulla stessa riga -->
           <div class="row mb-3">
-            <div class="col-md-6">
+            <div class="col-6">
               <label for="nome" class="form-label">Nome *</label>
               <input type="text" class="form-control" id="nome" formControlName="nome"
                      [class.is-invalid]="giocatoreForm.get('nome')?.invalid && giocatoreForm.get('nome')?.touched">
               <div class="invalid-feedback">Il nome è obbligatorio</div>
             </div>
-            <div class="col-md-6">
+            <div class="col-6">
               <label for="cognome" class="form-label">Cognome *</label>
               <input type="text" class="form-control" id="cognome" formControlName="cognome"
                      [class.is-invalid]="giocatoreForm.get('cognome')?.invalid && giocatoreForm.get('cognome')?.touched">
@@ -23,12 +24,13 @@
             </div>
           </div>
 
+          <!-- Numero Maglia e Data di Nascita sulla stessa riga -->
           <div class="row mb-3">
-            <div class="col-md-6">
+            <div class="col-6">
               <label for="numeroMaglia" class="form-label">Numero Maglia</label>
               <input type="number" class="form-control" id="numeroMaglia" formControlName="numeroMaglia">
             </div>
-            <div class="col-md-6">
+            <div class="col-6">
               <label for="dataDiNascita" class="form-label">Data di Nascita *</label>
               <input type="date" class="form-control" id="dataDiNascita" formControlName="dataDiNascita"
                      [class.is-invalid]="giocatoreForm.get('dataDiNascita')?.invalid && giocatoreForm.get('dataDiNascita')?.touched">
@@ -36,20 +38,28 @@
             </div>
           </div>
 
+          <!-- Ruolo a riga intera -->
           <div class="row mb-3">
-            <div class="col-md-6">
+            <div class="col-12">
+              <label for="ruolo" class="form-label">Ruolo *</label>
+              <select class="form-select" id="ruolo" formControlName="ruolo"
+                      [class.is-invalid]="giocatoreForm.get('ruolo')?.invalid && giocatoreForm.get('ruolo')?.touched">
+                <option value="">Seleziona un ruolo</option>
+                <option *ngFor="let ruolo of ruoli" [value]="ruolo.label">{{ ruolo.label }}</option>
+              </select>
+              <div class="invalid-feedback">Il ruolo è obbligatorio</div>
+            </div>
+          </div>
+
+          <!-- Tessera UISP e Profilo sulla stessa riga -->
+          <div class="row mb-3">
+            <div class="col-6">
               <label for="tesseraUisp" class="form-label">Tessera UISP *</label>
               <input type="text" class="form-control" id="tesseraUisp" formControlName="tesseraUisp"
                      [class.is-invalid]="giocatoreForm.get('tesseraUisp')?.invalid && giocatoreForm.get('tesseraUisp')?.touched">
               <div class="invalid-feedback">La tessera UISP è obbligatoria</div>
             </div>
-            <div class="col-md-6">
-              <label for="codiceFiscale" class="form-label">Codice Fiscale</label>
-              <input type="text" class="form-control" id="codiceFiscale" formControlName="codiceFiscale" maxlength="16">
-            </div>
-          </div>
-          <div class="row mb-3">
-            <div class="col-md-6">
+            <div class="col-6">
               <label for="profilo" class="form-label">Profilo *</label>
               <select class="form-select" id="profilo" formControlName="profilo"
                       [class.is-invalid]="giocatoreForm.get('profilo')?.invalid && giocatoreForm.get('profilo')?.touched">
@@ -59,6 +69,16 @@
               <div class="invalid-feedback">Il profilo è obbligatorio</div>
             </div>
           </div>
+
+          <!-- Codice Fiscale a riga intera -->
+          <div class="row mb-3">
+            <div class="col-12">
+              <label for="codiceFiscale" class="form-label">Codice Fiscale</label>
+              <input type="text" class="form-control" id="codiceFiscale" formControlName="codiceFiscale" maxlength="16">
+            </div>
+          </div>
+
+          <!-- Checkbox Capitano -->
           <div class="form-check mb-3">
             <input class="form-check-input" type="checkbox" id="capitano" formControlName="capitano">
             <label class="form-check-label" for="capitano">
