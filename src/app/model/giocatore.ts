@@ -6,4 +6,6 @@ export interface Giocatore {
   ruolo: string;
   tesseraUisp: string;
   capitano: boolean;
+  codiceFiscale?: string;
+  profilo: string;
 }

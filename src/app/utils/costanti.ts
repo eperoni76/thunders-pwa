@@ -1,6 +1,12 @@
-import {AddettoDefibrillatore} from "./model/addetto-defibrillatore";
+import {AddettoDefibrillatore} from "../model/addetto-defibrillatore";
 
 export class Costanti {
+
+  static readonly PROFILI_UTENTE = {
+    amministratore: { value: 'amministratore', label: 'Amministratore' },
+    giocatore: { value: 'giocatore', label: 'Giocatore' },
+    staff: { value: 'staff', label: 'Staff' }
+  };
 
   static readonly RUOLI = {
     schiacciatore: { value: 'schiacciatore', label: 'Schiacciatore' },
@@ -20,7 +26,7 @@ export class Costanti {
       dataDiNascita: '1997-07-08',
       luogoNascita: 'Genzano di Roma',
       residenza: 'Via Napoli 55, Albano Laziale'
-    }
+    };
 
 
   // Costanti per PDF Lista Gara

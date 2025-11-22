@@ -38,19 +38,25 @@
 
           <div class="row mb-3">
             <div class="col-md-6">
-              <label for="ruolo" class="form-label">Ruolo *</label>
-              <select class="form-select" id="ruolo" formControlName="ruolo"
-                      [class.is-invalid]="giocatoreForm.get('ruolo')?.invalid && giocatoreForm.get('ruolo')?.touched">
-                <option value="">Seleziona un ruolo</option>
-                <option *ngFor="let ruolo of ruoli" [value]="ruolo.label">{{ ruolo.label }}</option>
-              </select>
-              <div class="invalid-feedback">Il ruolo è obbligatorio</div>
-            </div>
-            <div class="col-md-6">
               <label for="tesseraUisp" class="form-label">Tessera UISP *</label>
               <input type="text" class="form-control" id="tesseraUisp" formControlName="tesseraUisp"
                      [class.is-invalid]="giocatoreForm.get('tesseraUisp')?.invalid && giocatoreForm.get('tesseraUisp')?.touched">
               <div class="invalid-feedback">La tessera UISP è obbligatoria</div>
+            </div>
+            <div class="col-md-6">
+              <label for="codiceFiscale" class="form-label">Codice Fiscale</label>
+              <input type="text" class="form-control" id="codiceFiscale" formControlName="codiceFiscale" maxlength="16">
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="profilo" class="form-label">Profilo *</label>
+              <select class="form-select" id="profilo" formControlName="profilo"
+                      [class.is-invalid]="giocatoreForm.get('profilo')?.invalid && giocatoreForm.get('profilo')?.touched">
+                <option value="">Seleziona un profilo</option>
+                <option *ngFor="let profilo of profili" [value]="profilo.label">{{ profilo.label }}</option>
+              </select>
+              <div class="invalid-feedback">Il profilo è obbligatorio</div>
             </div>
           </div>
           <div class="form-check mb-3">

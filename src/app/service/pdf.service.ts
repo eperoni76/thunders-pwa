@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { jsPDF } from 'jspdf';
 import { Partita } from '../model/partita';
 import { GiocatoriService } from './giocatori.service';
-import { Costanti } from '../costanti';
+import { Costanti } from '../utils/costanti';
 import { GenericUtils } from '../utils/generic-utils';
 
 @Injectable({

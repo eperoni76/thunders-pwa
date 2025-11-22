@@ -3,12 +3,15 @@ import { RouterModule, Routes } from '@angular/router';
 import { HomepageComponent } from './component/homepage/homepage.component';
 import { GiocatoriComponent } from "./component/giocatori/giocatori.component";
 import { CalendarioComponent } from './component/calendario/calendario.component';
+import { LoginComponent } from './component/login/login.component';
+import { AuthGuard } from './guards/auth.guard';
 
 const routes: Routes = [
-  { path: '', redirectTo: '/home', pathMatch: 'full' },
-  { path: 'home', component: HomepageComponent },
-  { path: 'squadra', component: GiocatoriComponent },
-  { path: 'calendario', component: CalendarioComponent },
+  { path: 'login', component: LoginComponent },
+  { path: '', redirectTo: '/login', pathMatch: 'full' },
+  { path: 'home', component: HomepageComponent, canActivate: [AuthGuard] },
+  { path: 'squadra', component: GiocatoriComponent, canActivate: [AuthGuard] },
+  { path: 'calendario', component: CalendarioComponent, canActivate: [AuthGuard] },
 ];
 
 @NgModule({

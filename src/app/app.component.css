@@ -1,0 +1,6 @@
+.with-nav {
+  padding-top: 56px;
+  padding-bottom: 56px;
+  min-height: calc(100vh - 112px);
+}
+

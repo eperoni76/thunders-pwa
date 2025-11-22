@@ -4,6 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "start:mobile": "ng serve --host 0.0.0.0 --disable-host-check",
     "build": "node generate-env.js && ng build",
     "build:prod": "PRODUCTION=true node generate-env.js && ng build --configuration production",
     "watch": "ng build --watch --configuration development",

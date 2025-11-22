@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {Costanti} from '../../costanti';
+import {Costanti} from '../../utils/costanti';
 
 @Component({
   selector: 'app-dialog-giocatore',
@@ -16,11 +16,13 @@ export class DialogGiocatoreComponent implements OnInit, OnChanges {
 
   giocatoreForm!: FormGroup;
   ruoli: any[] = [];
+  profili: any[] = [];
 
   constructor(private fb: FormBuilder) {}
 
   ngOnInit(): void {
     this.ruoli = Object.values(Costanti.RUOLI);
+    this.profili = Object.values(Costanti.PROFILI_UTENTE);
 
     this.giocatoreForm = this.fb.group({
       id: [null],
@@ -30,7 +32,9 @@ export class DialogGiocatoreComponent implements OnInit, OnChanges {
       dataDiNascita: ['', Validators.required],
       ruolo: ['', Validators.required],
       tesseraUisp: ['', Validators.required],
-      capitano: [false]
+      capitano: [false],
+      codiceFiscale: [''],
+      profilo: ['', Validators.required]
     });
   }
 
@@ -49,7 +53,7 @@ export class DialogGiocatoreComponent implements OnInit, OnChanges {
       const value = this.giocatoreForm.value;
       this.onSave.emit(value);
       this.giocatoreForm.reset({
-        nome: '', cognome: '', numeroMaglia: '', dataDiNascita: '', ruolo: '', tesseraUisp: '', capitano: false
+        nome: '', cognome: '', numeroMaglia: '', dataDiNascita: '', ruolo: '', tesseraUisp: '', capitano: false, codiceFiscale: '', profilo: ''
       });
     }
   }
