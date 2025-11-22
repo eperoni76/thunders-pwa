@@ -6,7 +6,7 @@
     </div>
   </div>
 
-  <div class="row mb-3">
+  <div *ngIf="authService.hasEditPermission()" class="row mb-3">
     <div class="col-12 d-flex justify-content-end">
       <input type="file" #fileInput accept=".json" (change)="handleFileUpload($event)" class="file-input-hidden">
       <button class="btn btn-primary me-2" (click)="fileInput.click()" title="Importa giocatori da JSON">
@@ -47,7 +47,7 @@
         <td>{{ giocatore.tesseraUisp }}</td>
         <td>{{ giocatore.codiceFiscale }}</td>
         <td>{{ giocatore.profilo }}</td>
-        <td>
+        <td *ngIf="authService.hasEditPermission()">
           <button class="btn btn-sm btn-primary me-2" data-bs-toggle="modal" data-bs-target="#giocatoreModal" (click)="openDialog(giocatore)">
             <i class="bi bi-pencil"></i>
           </button>

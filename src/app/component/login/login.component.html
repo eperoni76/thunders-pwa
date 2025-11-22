@@ -5,14 +5,14 @@
       <h2>PuntoVolley Thunders</h2>
     </div>
 
-    <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+    <form [formGroup]="loginForm" (ngSubmit)="onLogin()" autocomplete="on">
       <div class="mb-3">
         <label for="codiceFiscale" class="form-label">Codice Fiscale</label>
         <input
           type="text"
           class="form-control form-control-lg"
           id="codiceFiscale"
-          name="codiceFiscale"
+          name="username"
           formControlName="codiceFiscale"
           maxlength="16"
           autocomplete="username"
@@ -22,6 +22,9 @@
           Il codice fiscale deve essere di 16 caratteri
         </div>
       </div>
+
+      <!-- Campo password nascosto per aiutare il browser a riconoscere il form di login -->
+      <input type="password" name="password" autocomplete="current-password" value="dummy" style="display:none;">
 
       <div class="alert alert-danger" *ngIf="errorMessage">
         <i class="bi bi-exclamation-triangle-fill me-2"></i>
