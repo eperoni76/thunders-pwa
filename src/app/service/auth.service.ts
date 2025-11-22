@@ -46,5 +46,11 @@ export class AuthService {
   isAuthenticated(): boolean {
     return this.currentUserValue !== null;
   }
+
+  hasEditPermission(): boolean {
+    const user = this.currentUserValue;
+    if (!user) return false;
+    return user.profilo === 'Amministratore' || user.profilo === 'Staff';
+  }
 }
 

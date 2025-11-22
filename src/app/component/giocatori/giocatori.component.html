@@ -32,7 +32,9 @@
         <th>Data di Nascita</th>
         <th>Ruolo</th>
         <th>Tessera UISP</th>
-        <th>Azioni</th>
+        <th>Codice Fiscale</th>
+        <th>Profilo</th>
+        <th *ngIf="authService.hasEditPermission()">Azioni</th>
       </tr>
       </thead>
       <tbody>
@@ -43,6 +45,8 @@
         <td>{{ giocatore.dataDiNascita | date: 'dd/MM/yyyy' }}</td>
         <td>{{ giocatore.ruolo }}</td>
         <td>{{ giocatore.tesseraUisp }}</td>
+        <td>{{ giocatore.codiceFiscale }}</td>
+        <td>{{ giocatore.profilo }}</td>
         <td>
           <button class="btn btn-sm btn-primary me-2" data-bs-toggle="modal" data-bs-target="#giocatoreModal" (click)="openDialog(giocatore)">
             <i class="bi bi-pencil"></i>
@@ -53,7 +57,7 @@
         </td>
       </tr>
       <tr *ngIf="giocatori.length === 0">
-        <td colspan="7" class="text-center text-muted">
+        <td colspan="9" class="text-center text-muted">
           Nessun giocatore presente
         </td>
       </tr>
@@ -82,9 +86,11 @@
               <strong>Data di Nascita:</strong> {{ giocatore.dataDiNascita | date: 'dd/MM/yyyy' }}<br>
               <strong>Ruolo:</strong> {{ giocatore.ruolo }}<br>
               <strong>Tessera UISP:</strong> {{ giocatore.tesseraUisp }}<br>
+              <strong>Codice Fiscale:</strong> {{ giocatore.codiceFiscale || '-' }}<br>
+              <strong>Profilo:</strong> {{ giocatore.profilo }}<br>
               <strong>Capitano:</strong> {{ giocatore.capitano ? 'Sì' : 'No' }}
             </div>
-            <div class="mt-3 d-flex flex-wrap gap-2 justify-content-end">
+            <div class="mt-3 d-flex flex-wrap gap-2 justify-content-end" *ngIf="authService.hasEditPermission()">
               <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#giocatoreModal" (click)="openDialog(giocatore)">
                 <i class="bi bi-pencil"></i> Modifica
               </button>

@@ -4,6 +4,7 @@ import { PdfService } from '../../service/pdf.service';
 import { Partita } from '../../model/partita';
 import { DialogRisultatoComponent } from '../dialog-risultato/dialog-risultato.component';
 import { Subscription } from 'rxjs';
+import { AuthService } from '../../service/auth.service';
 
 declare var bootstrap: any;
 
@@ -23,7 +24,8 @@ export class CalendarioComponent implements OnInit, OnDestroy {
 
   constructor(
     private calendarioService: CalendarioService,
-    private pdfService: PdfService
+    private pdfService: PdfService,
+    public authService: AuthService
   ) { }
 
   ngOnInit(): void {

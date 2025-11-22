@@ -2,6 +2,7 @@ import {Component, OnInit, OnDestroy} from '@angular/core';
 import {GiocatoriService} from "../../service/giocatori.service";
 import {Subscription} from 'rxjs';
 import {GenericUtils} from "../../utils/generic-utils";
+import {AuthService} from "../../service/auth.service";
 
 declare var bootstrap: any;
 
@@ -18,7 +19,8 @@ export class GiocatoriComponent implements OnInit, OnDestroy {
   private giocatoriSubscription?: Subscription;
 
   constructor(
-    private giocatoriService: GiocatoriService
+    private giocatoriService: GiocatoriService,
+    public authService: AuthService
   ) { }
 
   ngOnInit(): void {
