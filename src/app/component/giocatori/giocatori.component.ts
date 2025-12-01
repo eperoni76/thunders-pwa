@@ -14,9 +14,26 @@ declare var bootstrap: any;
 export class GiocatoriComponent implements OnInit, OnDestroy {
 
   giocatori: any[] = [];
+  filteredGiocatori: any[] = [];
   selectedGiocatore: any = null;
   isEditMode: boolean = false;
   private giocatoriSubscription?: Subscription;
+
+  // Filtri per colonna
+  filters = {
+    numeroMaglia: '',
+    cognome: '',
+    nome: '',
+    dataDiNascita: '',
+    ruolo: '',
+    tesseraUisp: '',
+    codiceFiscale: '',
+    profilo: ''
+  };
+
+  // Ordinamento
+  sortColumn: string = 'cognome';
+  sortDirection: 'asc' | 'desc' = 'asc';
 
   constructor(
     private giocatoriService: GiocatoriService,
@@ -27,6 +44,7 @@ export class GiocatoriComponent implements OnInit, OnDestroy {
     this.giocatoriSubscription = this.giocatoriService.getGiocatoriObservable().subscribe(
       giocatori => {
         this.giocatori = giocatori;
+        this.applyFilters();
       }
     );
   }
@@ -38,7 +56,83 @@ export class GiocatoriComponent implements OnInit, OnDestroy {
   }
 
   get giocatoriOrdinati(): any[] {
-    return GenericUtils.ordinaGiocatoriPerCognome(this.giocatori);
+    return this.filteredGiocatori;
+  }
+
+  applyFilters(): void {
+    let result = [...this.giocatori];
+
+    // Applica filtri
+    Object.keys(this.filters).forEach(key => {
+      const filterValue = (this.filters as any)[key].toLowerCase().trim();
+      if (filterValue) {
+        result = result.filter(item => {
+          let value = item[key];
+          if (key === 'dataDiNascita' && value) {
+            // Formatta la data per il filtro
+            const date = new Date(value);
+            value = `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear()}`;
+          }
+          return value?.toString().toLowerCase().includes(filterValue);
+        });
+      }
+    });
+
+    // Applica ordinamento
+    result.sort((a, b) => {
+      let aVal = a[this.sortColumn];
+      let bVal = b[this.sortColumn];
+
+      // Gestione date
+      if (this.sortColumn === 'dataDiNascita') {
+        aVal = aVal ? new Date(aVal).getTime() : 0;
+        bVal = bVal ? new Date(bVal).getTime() : 0;
+      }
+      // Gestione numeri
+      else if (this.sortColumn === 'numeroMaglia') {
+        aVal = parseInt(aVal) || 0;
+        bVal = parseInt(bVal) || 0;
+      }
+      // Gestione stringhe
+      else {
+        aVal = aVal?.toString().toLowerCase() || '';
+        bVal = bVal?.toString().toLowerCase() || '';
+      }
+
+      if (aVal < bVal) return this.sortDirection === 'asc' ? -1 : 1;
+      if (aVal > bVal) return this.sortDirection === 'asc' ? 1 : -1;
+      return 0;
+    });
+
+    this.filteredGiocatori = result;
+  }
+
+  onFilterChange(): void {
+    this.applyFilters();
+  }
+
+  sortBy(column: string): void {
+    if (this.sortColumn === column) {
+      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.sortColumn = column;
+      this.sortDirection = 'asc';
+    }
+    this.applyFilters();
+  }
+
+  clearFilters(): void {
+    this.filters = {
+      numeroMaglia: '',
+      cognome: '',
+      nome: '',
+      dataDiNascita: '',
+      ruolo: '',
+      tesseraUisp: '',
+      codiceFiscale: '',
+      profilo: ''
+    };
+    this.applyFilters();
   }
 
   get numeroGiocatori(): number {

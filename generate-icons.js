@@ -2,7 +2,7 @@ const sharp = require('sharp');
 const fs = require('fs');
 const path = require('path');
 
-const sourceImage = './src/assets/images/thunders.JPG';
+const sourceImage = './src/assets/images/thunders_app.JPG';
 const srcDir = './src';
 const iconsDir = path.join(srcDir, 'assets', 'icons');
 

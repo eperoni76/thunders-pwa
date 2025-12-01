@@ -16,11 +16,28 @@ declare var bootstrap: any;
 export class CalendarioComponent implements OnInit, OnDestroy {
 
   partite: Partita[] = [];
+  filteredPartite: Partita[] = [];
   selectedPartita: Partita | null = null;
   isEditMode: boolean = false;
   selectedIndex: number | null = null;
   private partiteSubscription?: Subscription;
   @ViewChild(DialogRisultatoComponent) dialogRisultatoComp!: DialogRisultatoComponent;
+
+  // Filtri per colonna
+  filters = {
+    numeroGara: '',
+    data: '',
+    ora: '',
+    campionato: '',
+    indirizzo: '',
+    ospitante: '',
+    ospite: '',
+    risultato: ''
+  };
+
+  // Ordinamento
+  sortColumn: string = 'numeroGara';
+  sortDirection: 'asc' | 'desc' = 'asc';
 
   constructor(
     private calendarioService: CalendarioService,
@@ -32,6 +49,7 @@ export class CalendarioComponent implements OnInit, OnDestroy {
     this.partiteSubscription = this.calendarioService.getPartiteObservable().subscribe(
       partite => {
         this.partite = partite;
+        this.applyFilters();
       }
     );
   }
@@ -46,10 +64,91 @@ export class CalendarioComponent implements OnInit, OnDestroy {
     return this.partite.filter(p => !p.risultato || p.risultato.trim() === '').length;
   }
 
+  get partiteOrdinateEFiltrate(): Partita[] {
+    return this.filteredPartite;
+  }
+
+  applyFilters(): void {
+    let result = [...this.partite];
+
+    // Applica filtri
+    Object.keys(this.filters).forEach(key => {
+      const filterValue = (this.filters as any)[key].toLowerCase().trim();
+      if (filterValue) {
+        result = result.filter(item => {
+          let value = (item as any)[key];
+          if (key === 'data' && value) {
+            // Formatta la data per il filtro
+            const date = new Date(value);
+            value = `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear()}`;
+          }
+          return value?.toString().toLowerCase().includes(filterValue);
+        });
+      }
+    });
+
+    // Applica ordinamento
+    result.sort((a, b) => {
+      let aVal = (a as any)[this.sortColumn];
+      let bVal = (b as any)[this.sortColumn];
+
+      // Gestione date
+      if (this.sortColumn === 'data') {
+        aVal = aVal ? new Date(aVal).getTime() : 0;
+        bVal = bVal ? new Date(bVal).getTime() : 0;
+      }
+      // Gestione numeri
+      else if (this.sortColumn === 'numeroGara') {
+        aVal = parseInt(aVal) || 0;
+        bVal = parseInt(bVal) || 0;
+      }
+      // Gestione stringhe
+      else {
+        aVal = aVal?.toString().toLowerCase() || '';
+        bVal = bVal?.toString().toLowerCase() || '';
+      }
+
+      if (aVal < bVal) return this.sortDirection === 'asc' ? -1 : 1;
+      if (aVal > bVal) return this.sortDirection === 'asc' ? 1 : -1;
+      return 0;
+    });
+
+    this.filteredPartite = result;
+  }
+
+  onFilterChange(): void {
+    this.applyFilters();
+  }
+
+  sortBy(column: string): void {
+    if (this.sortColumn === column) {
+      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.sortColumn = column;
+      this.sortDirection = 'asc';
+    }
+    this.applyFilters();
+  }
+
+  clearFilters(): void {
+    this.filters = {
+      numeroGara: '',
+      data: '',
+      ora: '',
+      campionato: '',
+      indirizzo: '',
+      ospitante: '',
+      ospite: '',
+      risultato: ''
+    };
+    this.applyFilters();
+  }
+
   openDialog(index?: number): void {
     if (index !== undefined) {
-      this.selectedPartita = { ...this.partite[index] };
-      this.selectedIndex = index;
+      this.selectedPartita = { ...this.filteredPartite[index] };
+      // Trova l'indice originale nell'array delle partite
+      this.selectedIndex = this.partite.findIndex(p => (p as any).id === (this.filteredPartite[index] as any).id);
       this.isEditMode = true;
     } else {
       this.selectedPartita = null;
@@ -84,7 +183,7 @@ export class CalendarioComponent implements OnInit, OnDestroy {
   async eliminaPartita(index: number): Promise<void> {
     if (confirm('Sei sicuro di voler eliminare questa partita?')) {
       try {
-        const partitaId = (this.partite[index] as any).id;
+        const partitaId = (this.filteredPartite[index] as any).id;
         await this.calendarioService.deletePartita(partitaId);
       } catch (error) {
         console.error('Errore nell\'eliminazione della partita:', error);
@@ -220,7 +319,7 @@ export class CalendarioComponent implements OnInit, OnDestroy {
   }
 
   apriDialogRisultato(index: number) {
-    this.selectedPartita = this.partite[index];
+    this.selectedPartita = this.filteredPartite[index];
     if (this.dialogRisultatoComp) {
       this.dialogRisultatoComp.open();
     }
@@ -263,7 +362,7 @@ export class CalendarioComponent implements OnInit, OnDestroy {
 
   async creaListaGara(index: number): Promise<void> {
     try {
-      const partita = this.partite[index];
+      const partita = this.filteredPartite[index];
       await this.pdfService.generaListaGara(partita);
     } catch (error) {
       console.error('Errore nella generazione del PDF:', error);

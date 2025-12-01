@@ -1,90 +1,188 @@
-<div class="container mt-4">
+<div class="container-fluid px-3 custom-spacing">
 
   <div class="row mb-2">
-    <div class="col-12 text-center">
-      <h2>Calendario Partite: <span *ngIf="partite.length">{{partiteRimanenti}} rimanenti</span></h2>
-    </div>
-  </div>
-
-  <div *ngIf="authService.hasEditPermission()" class="row mb-3">
-    <div class="col-12 d-flex justify-content-end">
-      <input type="file" #fileInput accept=".json" (change)="handleFileUpload($event)" class="file-input-hidden">
-      <button class="btn btn-primary me-2" (click)="fileInput.click()" title="Importa partite da JSON">
-        <i class="bi bi-upload"></i>
-      </button>
-      <button class="btn btn-success me-2" (click)="exportToJSON()" title="Esporta partite in JSON">
-        <i class="bi bi-download"></i>
-      </button>
-      <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#calendarioModal" (click)="openDialog()">
-        <i class="bi bi-plus-circle"></i>
-      </button>
+    <div class="col-12 d-flex justify-content-between align-items-center">
+      <div>
+        <h2 class="mb-0"><span class="badge bg-primary fs-4 text-uppercase">Calendario</span></h2>
+        <div class="mt-2" *ngIf="partite.length">
+          <span class="badge bg-primary">{{partiteRimanenti}} partite rimanenti</span>
+        </div>
+      </div>
+      <div class="d-flex gap-2" *ngIf="authService.hasEditPermission()">
+        <input type="file" #fileInput accept=".json" (change)="handleFileUpload($event)" class="file-input-hidden">
+        <button class="btn btn-sm btn-primary" (click)="fileInput.click()" title="Importa partite da JSON">
+          <i class="bi bi-upload"></i> <span class="d-none d-lg-inline">Importa</span>
+        </button>
+        <button class="btn btn-sm btn-success" (click)="exportToJSON()" title="Esporta partite in JSON">
+          <i class="bi bi-download"></i> <span class="d-none d-lg-inline">Esporta</span>
+        </button>
+        <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#calendarioModal" (click)="openDialog()">
+          <i class="bi bi-plus-circle"></i> <span class="d-none d-lg-inline">Aggiungi</span>
+        </button>
+      </div>
     </div>
   </div>
 
   <!-- Vista desktop (tabella) -->
-  <div class="table-responsive d-none d-md-block">
-    <table class="table table-striped table-hover">
-      <thead class="table-primary">
-      <tr>
-        <th>N. Gara</th>
-        <th>Data</th>
-        <th>Ora</th>
-        <th>Campionato</th>
-        <th>Indirizzo</th>
-        <th>Ospitante</th>
-        <th>Ospite</th>
-        <th>Risultato</th>
-        <th *ngIf="authService.hasEditPermission()">Azioni</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr *ngFor="let partita of partite; let i = index">
-        <td>{{ partita.numeroGara }}</td>
-        <td>{{ partita.data | date: 'dd/MM/yyyy' }}</td>
-        <td>{{ partita.ora }}</td>
-        <td>{{ partita.campionato }}</td>
-        <td>
-          <a href="javascript:void(0)"
-             (click)="openMaps(partita.indirizzo)"
-             class="text-decoration-none text-primary d-inline-flex align-items-center maps-link"
-             title="Apri in Google Maps">
-            <i class="bi bi-geo-alt-fill me-1"></i>
-            {{ partita.indirizzo }}
-          </a>
-        </td>
-        <td>{{ partita.ospitante }}</td>
-        <td>{{ partita.ospite }}</td>
-        <td>
-          {{ partita.risultato }}
-          <span *ngIf="partita.risultato && isVittoria(partita) === true" class="ms-2">
-            <i class="bi bi-check-circle-fill text-success"></i>
-          </span>
-          <span *ngIf="partita.risultato && isVittoria(partita) === false" class="ms-2">
-            <i class="bi bi-x-circle-fill text-danger"></i>
-          </span>
-        </td>
-        <td *ngIf="authService.hasEditPermission()" class="text-end actions-cell">
-          <button *ngIf="!partita.risultato" class="btn btn-success btn-sm me-1" title="Inserisci risultato" (click)="apriDialogRisultato(i)">
-            <i class="bi bi-check2-square"></i>
-          </button>
-          <button *ngIf="!partita.risultato" class="btn btn-secondary btn-sm me-1" title="Crea lista gara" (click)="creaListaGara(i)">
-            <i class="bi bi-list-check"></i>
-          </button>
-          <button class="btn btn-primary btn-sm me-1" data-bs-toggle="modal" data-bs-target="#calendarioModal" (click)="openDialog(i)" title="Modifica">
-            <i class="bi bi-pencil"></i>
-          </button>
-          <button class="btn btn-danger btn-sm" (click)="eliminaPartita(i)" title="Elimina">
-            <i class="bi bi-trash"></i>
-          </button>
-        </td>
-      </tr>
-      <tr *ngIf="partite.length === 0">
-        <td [attr.colspan]="authService.hasEditPermission() ? 9 : 8" class="text-center text-muted">
-          Nessuna partita in calendario
-        </td>
-      </tr>
-      </tbody>
-    </table>
+  <div class="table-container d-none d-md-block">
+    <div class="table-wrapper">
+      <table class="table table-hover modern-table">
+        <thead class="table-header sticky-header">
+          <tr>
+            <th (click)="sortBy('numeroGara')" class="sortable">
+              <div class="th-content">
+                <span>N. Gara</span>
+                <i class="bi" [ngClass]="{
+                  'bi-arrow-down': sortColumn === 'numeroGara' && sortDirection === 'asc',
+                  'bi-arrow-up': sortColumn === 'numeroGara' && sortDirection === 'desc',
+                  'bi-arrow-down-up': sortColumn !== 'numeroGara'
+                }"></i>
+              </div>
+            </th>
+            <th (click)="sortBy('data')" class="sortable">
+              <div class="th-content">
+                <span>Data</span>
+                <i class="bi" [ngClass]="{
+                  'bi-arrow-down': sortColumn === 'data' && sortDirection === 'asc',
+                  'bi-arrow-up': sortColumn === 'data' && sortDirection === 'desc',
+                  'bi-arrow-down-up': sortColumn !== 'data'
+                }"></i>
+              </div>
+            </th>
+            <th (click)="sortBy('ora')" class="sortable">
+              <div class="th-content">
+                <span>Ora</span>
+                <i class="bi" [ngClass]="{
+                  'bi-arrow-down': sortColumn === 'ora' && sortDirection === 'asc',
+                  'bi-arrow-up': sortColumn === 'ora' && sortDirection === 'desc',
+                  'bi-arrow-down-up': sortColumn !== 'ora'
+                }"></i>
+              </div>
+            </th>
+            <th (click)="sortBy('campionato')" class="sortable">
+              <div class="th-content">
+                <span>Campionato</span>
+                <i class="bi" [ngClass]="{
+                  'bi-arrow-down': sortColumn === 'campionato' && sortDirection === 'asc',
+                  'bi-arrow-up': sortColumn === 'campionato' && sortDirection === 'desc',
+                  'bi-arrow-down-up': sortColumn !== 'campionato'
+                }"></i>
+              </div>
+            </th>
+            <th (click)="sortBy('indirizzo')" class="sortable">
+              <div class="th-content">
+                <span>Indirizzo</span>
+                <i class="bi" [ngClass]="{
+                  'bi-arrow-down': sortColumn === 'indirizzo' && sortDirection === 'asc',
+                  'bi-arrow-up': sortColumn === 'indirizzo' && sortDirection === 'desc',
+                  'bi-arrow-down-up': sortColumn !== 'indirizzo'
+                }"></i>
+              </div>
+            </th>
+            <th (click)="sortBy('ospitante')" class="sortable">
+              <div class="th-content">
+                <span>Ospitante</span>
+                <i class="bi" [ngClass]="{
+                  'bi-arrow-down': sortColumn === 'ospitante' && sortDirection === 'asc',
+                  'bi-arrow-up': sortColumn === 'ospitante' && sortDirection === 'desc',
+                  'bi-arrow-down-up': sortColumn !== 'ospitante'
+                }"></i>
+              </div>
+            </th>
+            <th (click)="sortBy('ospite')" class="sortable">
+              <div class="th-content">
+                <span>Ospite</span>
+                <i class="bi" [ngClass]="{
+                  'bi-arrow-down': sortColumn === 'ospite' && sortDirection === 'asc',
+                  'bi-arrow-up': sortColumn === 'ospite' && sortDirection === 'desc',
+                  'bi-arrow-down-up': sortColumn !== 'ospite'
+                }"></i>
+              </div>
+            </th>
+            <th (click)="sortBy('risultato')" class="sortable">
+              <div class="th-content">
+                <span>Risultato</span>
+                <i class="bi" [ngClass]="{
+                  'bi-arrow-down': sortColumn === 'risultato' && sortDirection === 'asc',
+                  'bi-arrow-up': sortColumn === 'risultato' && sortDirection === 'desc',
+                  'bi-arrow-down-up': sortColumn !== 'risultato'
+                }"></i>
+              </div>
+            </th>
+            <th *ngIf="authService.hasEditPermission()" class="actions-column">
+              <div class="th-content">
+                <span>Azioni</span>
+                <button class="btn btn-sm btn-link text-white" (click)="clearFilters()" title="Pulisci filtri">
+                  <i class="bi bi-x-circle"></i>
+                </button>
+              </div>
+            </th>
+          </tr>
+          <tr class="filter-row">
+            <th><input type="text" class="form-control form-control-sm filter-input" [(ngModel)]="filters.numeroGara" (input)="onFilterChange()" placeholder="Filtra..."></th>
+            <th><input type="text" class="form-control form-control-sm filter-input" [(ngModel)]="filters.data" (input)="onFilterChange()" placeholder="gg/mm/aaaa"></th>
+            <th><input type="text" class="form-control form-control-sm filter-input" [(ngModel)]="filters.ora" (input)="onFilterChange()" placeholder="Filtra..."></th>
+            <th><input type="text" class="form-control form-control-sm filter-input" [(ngModel)]="filters.campionato" (input)="onFilterChange()" placeholder="Filtra..."></th>
+            <th><input type="text" class="form-control form-control-sm filter-input" [(ngModel)]="filters.indirizzo" (input)="onFilterChange()" placeholder="Filtra..."></th>
+            <th><input type="text" class="form-control form-control-sm filter-input" [(ngModel)]="filters.ospitante" (input)="onFilterChange()" placeholder="Filtra..."></th>
+            <th><input type="text" class="form-control form-control-sm filter-input" [(ngModel)]="filters.ospite" (input)="onFilterChange()" placeholder="Filtra..."></th>
+            <th><input type="text" class="form-control form-control-sm filter-input" [(ngModel)]="filters.risultato" (input)="onFilterChange()" placeholder="Filtra..."></th>
+            <th *ngIf="authService.hasEditPermission()"></th>
+          </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let partita of partiteOrdinateEFiltrate; let i = index">
+          <td><span class="badge bg-primary">{{ partita.numeroGara }}</span></td>
+          <td>{{ partita.data | date: 'dd/MM/yyyy' }}</td>
+          <td>{{ partita.ora }}</td>
+          <td>{{ partita.campionato }}</td>
+          <td>
+            <a href="javascript:void(0)"
+               (click)="openMaps(partita.indirizzo)"
+               class="text-decoration-none text-primary d-inline-flex align-items-center maps-link"
+               title="Apri in Google Maps">
+              <i class="bi bi-geo-alt-fill me-1"></i>
+              {{ partita.indirizzo }}
+            </a>
+          </td>
+          <td>{{ partita.ospitante }}</td>
+          <td>{{ partita.ospite }}</td>
+          <td>
+            <span *ngIf="!partita.risultato" class="text-muted">-</span>
+            <span *ngIf="partita.risultato">
+              {{ partita.risultato }}
+              <span *ngIf="isVittoria(partita) === true" class="ms-2">
+                <i class="bi bi-check-circle-fill text-success"></i>
+              </span>
+              <span *ngIf="isVittoria(partita) === false" class="ms-2">
+                <i class="bi bi-x-circle-fill text-danger"></i>
+              </span>
+            </span>
+          </td>
+          <td *ngIf="authService.hasEditPermission()" class="actions-cell">
+            <button *ngIf="!partita.risultato" class="btn btn-success btn-sm me-1" title="Inserisci risultato" (click)="apriDialogRisultato(i)">
+              <i class="bi bi-check2-square"></i>
+            </button>
+            <button *ngIf="!partita.risultato" class="btn btn-secondary btn-sm me-1" title="Crea lista gara" (click)="creaListaGara(i)">
+              <i class="bi bi-list-check"></i>
+            </button>
+            <button class="btn btn-primary btn-sm me-1" data-bs-toggle="modal" data-bs-target="#calendarioModal" (click)="openDialog(i)" title="Modifica">
+              <i class="bi bi-pencil"></i>
+            </button>
+            <button class="btn btn-danger btn-sm" (click)="eliminaPartita(i)" title="Elimina">
+              <i class="bi bi-trash"></i>
+            </button>
+          </td>
+        </tr>
+        <tr *ngIf="filteredPartite.length === 0">
+          <td [attr.colspan]="authService.hasEditPermission() ? 9 : 8" class="text-center text-muted py-4">
+            <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+            {{ partite.length === 0 ? 'Nessuna partita in calendario' : 'Nessun risultato trovato' }}
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 
   <!-- Vista mobile (accordion) -->

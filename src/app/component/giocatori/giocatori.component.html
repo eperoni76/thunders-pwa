@@ -1,68 +1,163 @@
-<div class="container mt-4">
+<div class="container-fluid px-3 custom-spacing">
 
   <div class="row mb-2">
-    <div class="col-12 text-center">
-      <h2>Elenco Giocatori: <span *ngIf="giocatori.length">{{numeroGiocatori}}</span></h2>
-    </div>
-  </div>
-
-  <div *ngIf="authService.hasEditPermission()" class="row mb-3">
-    <div class="col-12 d-flex justify-content-end">
-      <input type="file" #fileInput accept=".json" (change)="handleFileUpload($event)" class="file-input-hidden">
-      <button class="btn btn-primary me-2" (click)="fileInput.click()" title="Importa giocatori da JSON">
-        <i class="bi bi-upload"></i>
-      </button>
-      <button class="btn btn-success me-2" (click)="exportToJSON()" title="Esporta giocatori in JSON">
-        <i class="bi bi-download"></i>
-      </button>
-      <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#giocatoreModal" (click)="openDialog()">
-        <i class="bi bi-plus-circle"></i>
-      </button>
+    <div class="col-12 d-flex justify-content-between align-items-center">
+      <div>
+        <h2 class="mb-0"><span class="badge bg-primary fs-4 text-uppercase">Giocatori</span></h2>
+        <div class="mt-2" *ngIf="giocatori.length">
+          <span class="badge bg-primary">{{numeroGiocatori}} giocatori</span>
+        </div>
+      </div>
+      <div class="d-flex gap-2" *ngIf="authService.hasEditPermission()">
+        <input type="file" #fileInput accept=".json" (change)="handleFileUpload($event)" class="file-input-hidden">
+        <button class="btn btn-sm btn-primary" (click)="fileInput.click()" title="Importa giocatori da JSON">
+          <i class="bi bi-upload"></i> <span class="d-none d-lg-inline">Importa</span>
+        </button>
+        <button class="btn btn-sm btn-success" (click)="exportToJSON()" title="Esporta giocatori in JSON">
+          <i class="bi bi-download"></i> <span class="d-none d-lg-inline">Esporta</span>
+        </button>
+        <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#giocatoreModal" (click)="openDialog()">
+          <i class="bi bi-plus-circle"></i> <span class="d-none d-lg-inline">Aggiungi</span>
+        </button>
+      </div>
     </div>
   </div>
 
   <!-- Vista desktop (tabella) -->
-  <div class="table-responsive d-none d-md-block">
-    <table class="table table-striped table-hover">
-      <thead class="table-primary">
-      <tr>
-        <th>Numero Maglia</th>
-        <th>Cognome</th>
-        <th>Nome</th>
-        <th>Data di Nascita</th>
-        <th>Ruolo</th>
-        <th>Tessera UISP</th>
-        <th>Codice Fiscale</th>
-        <th>Profilo</th>
-        <th *ngIf="authService.hasEditPermission()">Azioni</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr *ngFor="let giocatore of giocatoriOrdinati">
-        <td>{{ giocatore.numeroMaglia }}</td>
-        <td>{{ giocatore.cognome | capitalize }}</td>
-        <td>{{ giocatore.nome | capitalize }}</td>
-        <td>{{ giocatore.dataDiNascita | date: 'dd/MM/yyyy' }}</td>
-        <td>{{ giocatore.ruolo }}</td>
-        <td>{{ giocatore.tesseraUisp }}</td>
-        <td>{{ giocatore.codiceFiscale }}</td>
-        <td>{{ giocatore.profilo }}</td>
-        <td *ngIf="authService.hasEditPermission()">
-          <button class="btn btn-sm btn-primary me-2" data-bs-toggle="modal" data-bs-target="#giocatoreModal" (click)="openDialog(giocatore)">
-            <i class="bi bi-pencil"></i>
-          </button>
-          <button class="btn btn-sm btn-danger" (click)="eliminaGiocatore(giocatore)">
-            <i class="bi bi-trash"></i>
-          </button>
-        </td>
-      </tr>
-      <tr *ngIf="giocatori.length === 0">
-        <td colspan="9" class="text-center text-muted">
-          Nessun giocatore presente
-        </td>
-      </tr>
-      </tbody>
-    </table>
+  <div class="table-container d-none d-md-block">
+    <div class="table-wrapper">
+      <table class="table table-hover modern-table">
+        <thead class="table-header sticky-header">
+          <tr>
+            <th (click)="sortBy('numeroMaglia')" class="sortable">
+              <div class="th-content">
+                <span>N. Maglia</span>
+                <i class="bi" [ngClass]="{
+                  'bi-arrow-down': sortColumn === 'numeroMaglia' && sortDirection === 'asc',
+                  'bi-arrow-up': sortColumn === 'numeroMaglia' && sortDirection === 'desc',
+                  'bi-arrow-down-up': sortColumn !== 'numeroMaglia'
+                }"></i>
+              </div>
+            </th>
+            <th (click)="sortBy('cognome')" class="sortable">
+              <div class="th-content">
+                <span>Cognome</span>
+                <i class="bi" [ngClass]="{
+                  'bi-arrow-down': sortColumn === 'cognome' && sortDirection === 'asc',
+                  'bi-arrow-up': sortColumn === 'cognome' && sortDirection === 'desc',
+                  'bi-arrow-down-up': sortColumn !== 'cognome'
+                }"></i>
+              </div>
+            </th>
+            <th (click)="sortBy('nome')" class="sortable">
+              <div class="th-content">
+                <span>Nome</span>
+                <i class="bi" [ngClass]="{
+                  'bi-arrow-down': sortColumn === 'nome' && sortDirection === 'asc',
+                  'bi-arrow-up': sortColumn === 'nome' && sortDirection === 'desc',
+                  'bi-arrow-down-up': sortColumn !== 'nome'
+                }"></i>
+              </div>
+            </th>
+            <th (click)="sortBy('dataDiNascita')" class="sortable">
+              <div class="th-content">
+                <span>Data di Nascita</span>
+                <i class="bi" [ngClass]="{
+                  'bi-arrow-down': sortColumn === 'dataDiNascita' && sortDirection === 'asc',
+                  'bi-arrow-up': sortColumn === 'dataDiNascita' && sortDirection === 'desc',
+                  'bi-arrow-down-up': sortColumn !== 'dataDiNascita'
+                }"></i>
+              </div>
+            </th>
+            <th (click)="sortBy('ruolo')" class="sortable">
+              <div class="th-content">
+                <span>Ruolo</span>
+                <i class="bi" [ngClass]="{
+                  'bi-arrow-down': sortColumn === 'ruolo' && sortDirection === 'asc',
+                  'bi-arrow-up': sortColumn === 'ruolo' && sortDirection === 'desc',
+                  'bi-arrow-down-up': sortColumn !== 'ruolo'
+                }"></i>
+              </div>
+            </th>
+            <th (click)="sortBy('tesseraUisp')" class="sortable">
+              <div class="th-content">
+                <span>Tessera UISP</span>
+                <i class="bi" [ngClass]="{
+                  'bi-arrow-down': sortColumn === 'tesseraUisp' && sortDirection === 'asc',
+                  'bi-arrow-up': sortColumn === 'tesseraUisp' && sortDirection === 'desc',
+                  'bi-arrow-down-up': sortColumn !== 'tesseraUisp'
+                }"></i>
+              </div>
+            </th>
+            <th (click)="sortBy('codiceFiscale')" class="sortable">
+              <div class="th-content">
+                <span>Codice Fiscale</span>
+                <i class="bi" [ngClass]="{
+                  'bi-arrow-down': sortColumn === 'codiceFiscale' && sortDirection === 'asc',
+                  'bi-arrow-up': sortColumn === 'codiceFiscale' && sortDirection === 'desc',
+                  'bi-arrow-down-up': sortColumn !== 'codiceFiscale'
+                }"></i>
+              </div>
+            </th>
+            <th (click)="sortBy('profilo')" class="sortable">
+              <div class="th-content">
+                <span>Profilo</span>
+                <i class="bi" [ngClass]="{
+                  'bi-arrow-down': sortColumn === 'profilo' && sortDirection === 'asc',
+                  'bi-arrow-up': sortColumn === 'profilo' && sortDirection === 'desc',
+                  'bi-arrow-down-up': sortColumn !== 'profilo'
+                }"></i>
+              </div>
+            </th>
+            <th *ngIf="authService.hasEditPermission()" class="actions-column">
+              <div class="th-content">
+                <span>Azioni</span>
+                <button class="btn btn-sm btn-link text-white" (click)="clearFilters()" title="Pulisci filtri">
+                  <i class="bi bi-x-circle"></i>
+                </button>
+              </div>
+            </th>
+          </tr>
+          <tr class="filter-row">
+            <th><input type="text" class="form-control form-control-sm filter-input" [(ngModel)]="filters.numeroMaglia" (input)="onFilterChange()" placeholder="Filtra..."></th>
+            <th><input type="text" class="form-control form-control-sm filter-input" [(ngModel)]="filters.cognome" (input)="onFilterChange()" placeholder="Filtra..."></th>
+            <th><input type="text" class="form-control form-control-sm filter-input" [(ngModel)]="filters.nome" (input)="onFilterChange()" placeholder="Filtra..."></th>
+            <th><input type="text" class="form-control form-control-sm filter-input" [(ngModel)]="filters.dataDiNascita" (input)="onFilterChange()" placeholder="gg/mm/aaaa"></th>
+            <th><input type="text" class="form-control form-control-sm filter-input" [(ngModel)]="filters.ruolo" (input)="onFilterChange()" placeholder="Filtra..."></th>
+            <th><input type="text" class="form-control form-control-sm filter-input" [(ngModel)]="filters.tesseraUisp" (input)="onFilterChange()" placeholder="Filtra..."></th>
+            <th><input type="text" class="form-control form-control-sm filter-input" [(ngModel)]="filters.codiceFiscale" (input)="onFilterChange()" placeholder="Filtra..."></th>
+            <th><input type="text" class="form-control form-control-sm filter-input" [(ngModel)]="filters.profilo" (input)="onFilterChange()" placeholder="Filtra..."></th>
+            <th *ngIf="authService.hasEditPermission()"></th>
+          </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let giocatore of giocatoriOrdinati">
+          <td><span class="badge bg-primary">{{ giocatore.numeroMaglia || '-' }}</span></td>
+          <td>{{ giocatore.cognome | capitalize }}</td>
+          <td>{{ giocatore.nome | capitalize }}</td>
+          <td>{{ giocatore.dataDiNascita | date: 'dd/MM/yyyy' }}</td>
+          <td>{{ giocatore.ruolo }}</td>
+          <td>{{ giocatore.tesseraUisp }}</td>
+          <td>{{ giocatore.codiceFiscale || '-' }}</td>
+          <td>{{ giocatore.profilo }}</td>
+          <td *ngIf="authService.hasEditPermission()" class="actions-cell">
+            <button class="btn btn-sm btn-primary me-1" data-bs-toggle="modal" data-bs-target="#giocatoreModal" (click)="openDialog(giocatore)" title="Modifica">
+              <i class="bi bi-pencil"></i>
+            </button>
+            <button class="btn btn-sm btn-danger" (click)="eliminaGiocatore(giocatore)" title="Elimina">
+              <i class="bi bi-trash"></i>
+            </button>
+          </td>
+        </tr>
+        <tr *ngIf="filteredGiocatori.length === 0">
+          <td [attr.colspan]="authService.hasEditPermission() ? 9 : 8" class="text-center text-muted py-4">
+            <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+            {{ giocatori.length === 0 ? 'Nessun giocatore presente' : 'Nessun risultato trovato' }}
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 
   <!-- Vista mobile (accordion) -->
