@@ -16,6 +16,8 @@
   font-size: 1.5rem;
   text-decoration: none;
   transition: all 0.15s ease-in-out;
+  margin-right: 0.75rem;
+  padding-right: env(safe-area-inset-right, 0);
 }
 
 .instagram-link:hover {
