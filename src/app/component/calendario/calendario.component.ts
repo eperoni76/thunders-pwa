@@ -370,4 +370,82 @@ export class CalendarioComponent implements OnInit, OnDestroy {
     }
   }
 
+  aggiungiAlCalendario(index: number): void {
+    const partita = this.filteredPartite[index];
+    
+    // Parsing della data e ora
+    const dataPartita = new Date(partita.data);
+    const [ore, minuti] = partita.ora.split(':');
+    dataPartita.setHours(parseInt(ore), parseInt(minuti), 0, 0);
+    
+    // Data fine (assumiamo 2 ore di durata)
+    const dataFine = new Date(dataPartita);
+    dataFine.setHours(dataPartita.getHours() + 2);
+    
+    // Formattazione date per iCalendar (formato: YYYYMMDDTHHMMSS)
+    const formatDate = (date: Date): string => {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      const hours = String(date.getHours()).padStart(2, '0');
+      const minutes = String(date.getMinutes()).padStart(2, '0');
+      const seconds = String(date.getSeconds()).padStart(2, '0');
+      return `${year}${month}${day}T${hours}${minutes}${seconds}`;
+    };
+    
+    const dtStart = formatDate(dataPartita);
+    const dtEnd = formatDate(dataFine);
+    const dtStamp = formatDate(new Date());
+    
+    // Creazione contenuto iCalendar
+    const icsContent = [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//PuntoVolley Thunders//Calendario//IT',
+      'CALSCALE:GREGORIAN',
+      'METHOD:PUBLISH',
+      'BEGIN:VEVENT',
+      `DTSTART:${dtStart}`,
+      `DTEND:${dtEnd}`,
+      `DTSTAMP:${dtStamp}`,
+      `UID:partita-${partita.numeroGara}-${dtStamp}@thunders.it`,
+      `SUMMARY:${partita.ospitante} vs ${partita.ospite}`,
+      `DESCRIPTION:Partita ${partita.campionato}\\nGara n. ${partita.numeroGara}`,
+      `LOCATION:${partita.indirizzo}`,
+      'STATUS:CONFIRMED',
+      'SEQUENCE:0',
+      'BEGIN:VALARM',
+      'TRIGGER:-PT1H',
+      'ACTION:DISPLAY',
+      'DESCRIPTION:Partita tra 1 ora',
+      'END:VALARM',
+      'END:VEVENT',
+      'END:VCALENDAR'
+    ].join('\r\n');
+    
+    // Controlla se è mobile
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
+    if (isMobile) {
+      // Su mobile, crea un data URL che iOS e Android possono aprire direttamente
+      const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      
+      // Apri direttamente (iOS e Android gestiranno il file)
+      window.location.href = url;
+      
+      // Cleanup dopo un po'
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    } else {
+      // Su desktop, scarica il file
+      const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `partita-${partita.numeroGara}.ics`;
+      link.click();
+      window.URL.revokeObjectURL(url);
+    }
+  }
+
 }
