@@ -1,8 +1,8 @@
 <div class="container-fluid px-3 custom-spacing">
 
   <div class="row mb-2">
-    <div class="col-12 d-flex justify-content-between align-items-center">
-      <div>
+    <div class="col-12 d-flex justify-content-between align-items-center flex-wrap">
+      <div class="mb-2 mb-md-0">
         <h2 class="mb-0"><span class="badge bg-primary fs-4 text-uppercase">Calendario</span></h2>
         <div class="mt-2" *ngIf="partite.length">
           <span class="badge bg-primary">{{partiteRimanenti}} partite rimanenti</span>
@@ -109,7 +109,7 @@
                 }"></i>
               </div>
             </th>
-            <th *ngIf="authService.hasEditPermission()" class="actions-column">
+            <th class="actions-column">
               <div class="th-content">
                 <span>Azioni</span>
                 <button class="btn btn-sm btn-link text-white" (click)="clearFilters()" title="Pulisci filtri">
@@ -127,7 +127,7 @@
             <th><input type="text" class="form-control form-control-sm filter-input" [(ngModel)]="filters.ospitante" (input)="onFilterChange()" placeholder="Filtra..."></th>
             <th><input type="text" class="form-control form-control-sm filter-input" [(ngModel)]="filters.ospite" (input)="onFilterChange()" placeholder="Filtra..."></th>
             <th><input type="text" class="form-control form-control-sm filter-input" [(ngModel)]="filters.risultato" (input)="onFilterChange()" placeholder="Filtra..."></th>
-            <th *ngIf="authService.hasEditPermission()"></th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -159,26 +159,26 @@
               </span>
             </span>
           </td>
-          <td *ngIf="authService.hasEditPermission()" class="actions-cell">
-            <button *ngIf="!partita.risultato" class="btn btn-success btn-sm me-1" title="Inserisci risultato" (click)="apriDialogRisultato(i)">
-              <i class="bi bi-check2-square"></i>
-            </button>
-            <button *ngIf="!partita.risultato" class="btn btn-secondary btn-sm me-1" title="Crea lista gara" (click)="creaListaGara(i)">
-              <i class="bi bi-list-check"></i>
-            </button>
-            <button class="btn btn-info btn-sm me-1" title="Aggiungi al calendario" (click)="aggiungiAlCalendario(i)">
+          <td class="actions-cell">
+            <button *ngIf="!partita.risultato" class="btn btn-info btn-sm me-1" title="Aggiungi al calendario" (click)="aggiungiAlCalendario(i)">
               <i class="bi bi-calendar-plus"></i>
             </button>
-            <button class="btn btn-primary btn-sm me-1" data-bs-toggle="modal" data-bs-target="#calendarioModal" (click)="openDialog(i)" title="Modifica">
+            <button *ngIf="authService.hasEditPermission() && !partita.risultato" class="btn btn-success btn-sm me-1" title="Inserisci risultato" (click)="apriDialogRisultato(i)">
+              <i class="bi bi-check2-square"></i>
+            </button>
+            <button *ngIf="authService.hasEditPermission() && !partita.risultato" class="btn btn-secondary btn-sm me-1" title="Crea lista gara" (click)="creaListaGara(i)">
+              <i class="bi bi-list-check"></i>
+            </button>
+            <button *ngIf="authService.hasEditPermission()" class="btn btn-primary btn-sm me-1" data-bs-toggle="modal" data-bs-target="#calendarioModal" (click)="openDialog(i)" title="Modifica">
               <i class="bi bi-pencil"></i>
             </button>
-            <button class="btn btn-danger btn-sm" (click)="eliminaPartita(i)" title="Elimina">
+            <button *ngIf="authService.hasEditPermission()" class="btn btn-danger btn-sm" (click)="eliminaPartita(i)" title="Elimina">
               <i class="bi bi-trash"></i>
             </button>
           </td>
         </tr>
         <tr *ngIf="filteredPartite.length === 0">
-          <td [attr.colspan]="authService.hasEditPermission() ? 9 : 8" class="text-center text-muted py-4">
+          <td colspan="9" class="text-center text-muted py-4">
             <i class="bi bi-inbox fs-1 d-block mb-2"></i>
             {{ partite.length === 0 ? 'Nessuna partita in calendario' : 'Nessun risultato trovato' }}
           </td>
@@ -230,15 +230,17 @@
                 </span>
               </div>
             </div>
-            <div class="mt-3 d-flex flex-wrap gap-2 justify-content-end" *ngIf="authService.hasEditPermission()">
+            <div class="mt-3 d-flex flex-wrap gap-2 justify-content-end">
+              <button *ngIf="!partita.risultato" class="btn btn-info btn-sm" (click)="aggiungiAlCalendario(i)">
+                <i class="bi bi-calendar-plus me-1"></i>Calendario
+              </button>
+            </div>
+            <div class="mt-2 d-flex flex-wrap gap-2 justify-content-end" *ngIf="authService.hasEditPermission()">
               <button *ngIf="!partita.risultato" class="btn btn-success btn-sm" (click)="apriDialogRisultato(i)">
                 <i class="bi bi-check2-square me-1"></i>Risultato
               </button>
               <button *ngIf="!partita.risultato" class="btn btn-secondary btn-sm" (click)="creaListaGara(i)">
                 <i class="bi bi-list-check me-1"></i>Lista gara
-              </button>
-              <button class="btn btn-info btn-sm" (click)="aggiungiAlCalendario(i)">
-                <i class="bi bi-calendar-plus me-1"></i>Calendario
               </button>
               <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#calendarioModal" (click)="openDialog(i)">
                 <i class="bi bi-pencil me-1"></i>Modifica

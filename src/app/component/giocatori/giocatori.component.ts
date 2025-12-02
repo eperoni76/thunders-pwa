@@ -28,7 +28,10 @@ export class GiocatoriComponent implements OnInit, OnDestroy {
     ruolo: '',
     tesseraUisp: '',
     codiceFiscale: '',
-    profilo: ''
+    profilo: '',
+    email: '',
+    tagliaDivisa: '',
+    scadenzaCertificatoMedico: ''
   };
 
   // Ordinamento
@@ -39,6 +42,10 @@ export class GiocatoriComponent implements OnInit, OnDestroy {
     private giocatoriService: GiocatoriService,
     public authService: AuthService
   ) { }
+
+  shouldShowActionsColumn(): boolean {
+    return this.authService.hasEditPermission() || this.authService.isAuthenticated();
+  }
 
   ngOnInit(): void {
     this.giocatoriSubscription = this.giocatoriService.getGiocatoriObservable().subscribe(
@@ -84,7 +91,7 @@ export class GiocatoriComponent implements OnInit, OnDestroy {
       let bVal = b[this.sortColumn];
 
       // Gestione date
-      if (this.sortColumn === 'dataDiNascita') {
+      if (this.sortColumn === 'dataDiNascita' || this.sortColumn === 'scadenzaCertificatoMedico') {
         aVal = aVal ? new Date(aVal).getTime() : 0;
         bVal = bVal ? new Date(bVal).getTime() : 0;
       }
@@ -130,7 +137,10 @@ export class GiocatoriComponent implements OnInit, OnDestroy {
       ruolo: '',
       tesseraUisp: '',
       codiceFiscale: '',
-      profilo: ''
+      profilo: '',
+      email: '',
+      tagliaDivisa: '',
+      scadenzaCertificatoMedico: ''
     };
     this.applyFilters();
   }
@@ -140,6 +150,23 @@ export class GiocatoriComponent implements OnInit, OnDestroy {
       const ruolo = (g.ruolo || '').toLowerCase();
       return !ruolo.includes('allenatore') && !ruolo.includes('dirigente');
     }).length;
+  }
+
+  getCertificatoClass(scadenza: string | undefined): string {
+    if (!scadenza) return '';
+    
+    const oggi = new Date();
+    const dataScadenza = new Date(scadenza);
+    const differenzaMs = dataScadenza.getTime() - oggi.getTime();
+    const differenzaGiorni = Math.ceil(differenzaMs / (1000 * 60 * 60 * 24));
+    
+    if (differenzaGiorni > 30) {
+      return 'badge bg-success';
+    } else if (differenzaGiorni > 14) {
+      return 'badge bg-warning text-dark';
+    } else {
+      return 'badge bg-danger';
+    }
   }
 
   openDialog(giocatore?: any): void {

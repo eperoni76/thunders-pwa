@@ -53,13 +53,13 @@
 
           <!-- Tessera UISP e Profilo sulla stessa riga -->
           <div class="row mb-3">
-            <div class="col-6">
+            <div [ngClass]="authService.hasEditPermission() ? 'col-6' : 'col-12'">
               <label for="tesseraUisp" class="form-label">Tessera UISP *</label>
               <input type="text" class="form-control" id="tesseraUisp" formControlName="tesseraUisp"
                      [class.is-invalid]="giocatoreForm.get('tesseraUisp')?.invalid && giocatoreForm.get('tesseraUisp')?.touched">
               <div class="invalid-feedback">La tessera UISP è obbligatoria</div>
             </div>
-            <div class="col-6">
+            <div class="col-6" *ngIf="authService.hasEditPermission()">
               <label for="profilo" class="form-label">Profilo *</label>
               <select class="form-select" id="profilo" formControlName="profilo"
                       [class.is-invalid]="giocatoreForm.get('profilo')?.invalid && giocatoreForm.get('profilo')?.touched">
@@ -78,8 +78,32 @@
             </div>
           </div>
 
+          <!-- Email a riga intera -->
+          <div class="row mb-3">
+            <div class="col-12">
+              <label for="email" class="form-label">Email</label>
+              <input type="email" class="form-control" id="email" formControlName="email"
+                     [class.is-invalid]="giocatoreForm.get('email')?.invalid && giocatoreForm.get('email')?.touched"
+                     placeholder="esempio@email.it">
+              <div class="invalid-feedback">Inserisci un indirizzo email valido</div>
+            </div>
+          </div>
+
+          <!-- Taglia Divisa e Scadenza Certificato Medico sulla stessa riga -->
+          <div class="row mb-3">
+            <div class="col-6">
+              <label for="tagliaDivisa" class="form-label">Taglia Divisa</label>
+              <input type="text" class="form-control" id="tagliaDivisa" formControlName="tagliaDivisa" 
+                     style="text-transform: uppercase" placeholder="Es: M, L, XL">
+            </div>
+            <div class="col-6">
+              <label for="scadenzaCertificatoMedico" class="form-label">Scadenza Certificato Medico</label>
+              <input type="date" class="form-control" id="scadenzaCertificatoMedico" formControlName="scadenzaCertificatoMedico">
+            </div>
+          </div>
+
           <!-- Checkbox Capitano -->
-          <div class="form-check mb-3">
+          <div class="form-check mb-3" *ngIf="authService.hasEditPermission()">
             <input class="form-check-input" type="checkbox" id="capitano" formControlName="capitano">
             <label class="form-check-label" for="capitano">
               Capitano

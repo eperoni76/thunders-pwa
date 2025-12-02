@@ -45,6 +45,10 @@ export class CalendarioComponent implements OnInit, OnDestroy {
     public authService: AuthService
   ) { }
 
+  shouldShowActionsColumn(): boolean {
+    return true; // La colonna azioni è sempre visibile perché tutti possono aggiungere al calendario
+  }
+
   ngOnInit(): void {
     this.partiteSubscription = this.calendarioService.getPartiteObservable().subscribe(
       partite => {
@@ -370,7 +374,7 @@ export class CalendarioComponent implements OnInit, OnDestroy {
     }
   }
 
-  aggiungiAlCalendario(index: number): void {
+   aggiungiAlCalendario(index: number): void {
     const partita = this.filteredPartite[index];
     
     // Parsing della data e ora

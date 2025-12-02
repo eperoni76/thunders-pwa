@@ -52,5 +52,11 @@ export class AuthService {
     if (!user) return false;
     return user.profilo === 'Amministratore' || user.profilo === 'Staff';
   }
+
+  isCurrentUser(giocatore: Giocatore): boolean {
+    const user = this.currentUserValue;
+    if (!user || !giocatore) return false;
+    return user.nome === giocatore.nome && user.cognome === giocatore.cognome;
+  }
 }
 

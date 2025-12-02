@@ -1,6 +1,7 @@
 import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Costanti} from '../../utils/costanti';
+import {AuthService} from '../../service/auth.service';
 
 @Component({
   selector: 'app-dialog-giocatore',
@@ -18,7 +19,7 @@ export class DialogGiocatoreComponent implements OnInit, OnChanges {
   ruoli: any[] = [];
   profili: any[] = [];
 
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: FormBuilder, public authService: AuthService) {}
 
   ngOnInit(): void {
     this.ruoli = Object.values(Costanti.RUOLI);
@@ -34,7 +35,10 @@ export class DialogGiocatoreComponent implements OnInit, OnChanges {
       tesseraUisp: ['', Validators.required],
       capitano: [false],
       codiceFiscale: [''],
-      profilo: ['', Validators.required]
+      profilo: ['', Validators.required],
+      email: ['', [Validators.email]],
+      tagliaDivisa: [''],
+      scadenzaCertificatoMedico: ['']
     });
   }
 
@@ -51,9 +55,14 @@ export class DialogGiocatoreComponent implements OnInit, OnChanges {
   salvaGiocatore(): void {
     if (this.giocatoreForm.valid) {
       const value = this.giocatoreForm.value;
+      // Trasforma taglia divisa in maiuscolo
+      if (value.tagliaDivisa) {
+        value.tagliaDivisa = value.tagliaDivisa.toUpperCase();
+      }
       this.onSave.emit(value);
       this.giocatoreForm.reset({
-        nome: '', cognome: '', numeroMaglia: '', dataDiNascita: '', ruolo: '', tesseraUisp: '', capitano: false, codiceFiscale: '', profilo: ''
+        nome: '', cognome: '', numeroMaglia: '', dataDiNascita: '', ruolo: '', tesseraUisp: '', 
+        capitano: false, codiceFiscale: '', profilo: '', email: '', tagliaDivisa: '', scadenzaCertificatoMedico: ''
       });
     }
   }

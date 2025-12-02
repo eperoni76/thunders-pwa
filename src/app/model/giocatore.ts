@@ -8,4 +8,7 @@ export interface Giocatore {
   capitano: boolean;
   codiceFiscale?: string;
   profilo: string;
+  email?: string;
+  tagliaDivisa?: string;
+  scadenzaCertificatoMedico?: string;
 }

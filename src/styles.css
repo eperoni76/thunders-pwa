@@ -1,3 +1,9 @@
 /* You can add global styles to this file, and also import other style files */
 
 /* Rimuovo l'import di Bootstrap, ora gestito da angular.json */
+
+/* Sfondo generale dell'app */
+body {
+  background-color: #f0f2f5;
+  min-height: 100vh;
+}
