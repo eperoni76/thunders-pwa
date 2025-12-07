@@ -20,6 +20,7 @@ import { environment } from '../environments/environment';
 import { CapitalizePipe } from './pipe/capitalize.pipe';
 import { FooterComponent } from './component/footer/footer.component';
 import { LoginComponent } from './component/login/login.component';
+import { ClassificaComponent } from './component/classifica/classifica.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { LoginComponent } from './component/login/login.component';
     DialogRisultatoComponent,
     CapitalizePipe,
     FooterComponent,
-    LoginComponent
+    LoginComponent,
+    ClassificaComponent
   ],
   imports: [
     BrowserModule,

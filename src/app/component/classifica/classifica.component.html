@@ -1,0 +1,54 @@
+<div class="container-fluid py-4">
+  <div class="row">
+    <div class="col-12">
+      <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+          <h5 class="mb-0">
+            <i class="bi bi-trophy-fill me-2"></i>Classifica
+          </h5>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-hover table-striped mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th class="text-center">Pos.</th>
+                  <th>Squadra</th>
+                  <th class="text-center">Punti</th>
+                  <th class="text-center">V</th>
+                  <th class="text-center">P</th>
+                  <th class="text-center">Set V</th>
+                  <th class="text-center">Set P</th>
+                  <th class="text-center">Q. Set</th>
+                  <th class="text-center">Pt. F</th>
+                  <th class="text-center">Pt. S</th>
+                  <th class="text-center">Q. Pt.</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let squadra of classifica; let i = index">
+                  <td class="text-center fw-bold">{{ i + 1 }}</td>
+                  <td class="fw-semibold">{{ squadra.squadra }}</td>
+                  <td class="text-center fw-bold text-primary">{{ squadra.punti }}</td>
+                  <td class="text-center">{{ squadra.partiteVinte }}</td>
+                  <td class="text-center">{{ squadra.partitePerse }}</td>
+                  <td class="text-center">{{ squadra.setVinti }}</td>
+                  <td class="text-center">{{ squadra.setPersi }}</td>
+                  <td class="text-center">{{ squadra.quozienteSet | number:'1.2-2' }}</td>
+                  <td class="text-center">{{ squadra.puntiFatti }}</td>
+                  <td class="text-center">{{ squadra.puntiSubiti }}</td>
+                  <td class="text-center">{{ squadra.quozientePunti | number:'1.2-2' }}</td>
+                </tr>
+                <tr *ngIf="classifica.length === 0">
+                  <td colspan="11" class="text-center text-muted py-4">
+                    <i class="bi bi-info-circle me-2"></i>Nessun dato disponibile
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
