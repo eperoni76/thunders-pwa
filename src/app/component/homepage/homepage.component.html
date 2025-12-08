@@ -3,7 +3,7 @@
     <div class="col-12 col-md-8 col-lg-6">
       <div class="card shadow rounded-4 overflow-hidden">
         <div class="position-relative">
-          <a routerLink="/squadra" class="text-decoration-none d-block">
+          <a *ngIf="authService.hasEditPermission()" routerLink="/squadra" class="text-decoration-none d-block">
             <img src="assets/images/thunders.JPG"
                  alt="Punto Volley CR ASD Thunders"
                  class="img-fluid w-100 team-image-enhanced clickable-image">
@@ -15,6 +15,14 @@
               </small>
             </div>
           </a>
+          <div *ngIf="!authService.hasEditPermission()">
+            <img src="assets/images/thunders.JPG"
+                 alt="Punto Volley CR ASD Thunders"
+                 class="img-fluid w-100 team-image-enhanced">
+            <div class="position-absolute bottom-0 start-0 end-0 bg-dark bg-opacity-75 text-white text-center py-3">
+              <h4 class="mb-0 fw-bold">Punto Volley Thunders 2025/2026</h4>
+            </div>
+          </div>
         </div>
       </div>
     </div>

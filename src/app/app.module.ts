@@ -21,6 +21,7 @@ import { CapitalizePipe } from './pipe/capitalize.pipe';
 import { FooterComponent } from './component/footer/footer.component';
 import { LoginComponent } from './component/login/login.component';
 import { ClassificaComponent } from './component/classifica/classifica.component';
+import { ProfiloComponent } from './component/profilo/profilo.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +36,8 @@ import { ClassificaComponent } from './component/classifica/classifica.component
     CapitalizePipe,
     FooterComponent,
     LoginComponent,
-    ClassificaComponent
+    ClassificaComponent,
+    ProfiloComponent
   ],
   imports: [
     BrowserModule,

@@ -1,3 +1,11 @@
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1030;
+}
+
 .navbar-brand {
   position: absolute;
   left: 50%;
@@ -85,6 +93,21 @@
 
 .user-info-section {
   background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+.user-info-link {
+  transition: background-color 0.2s ease;
+  border-radius: 8px;
+  padding: 4px;
+  margin: -4px;
+}
+
+.user-info-link:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.user-info-link.active {
+  background-color: rgba(var(--bs-primary-rgb), 0.1);
 }
 
 .user-avatar {

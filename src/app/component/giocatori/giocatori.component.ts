@@ -39,13 +39,8 @@ export class GiocatoriComponent implements OnInit, OnDestroy {
   sortDirection: 'asc' | 'desc' = 'asc';
 
   constructor(
-    private giocatoriService: GiocatoriService,
-    public authService: AuthService
+    private giocatoriService: GiocatoriService
   ) { }
-
-  shouldShowActionsColumn(): boolean {
-    return this.authService.hasEditPermission() || this.authService.isAuthenticated();
-  }
 
   ngOnInit(): void {
     this.giocatoriSubscription = this.giocatoriService.getGiocatoriObservable().subscribe(

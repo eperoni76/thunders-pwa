@@ -23,10 +23,11 @@
             <table class="table table-hover table-striped mb-0">
               <thead class="table-light">
                 <tr>
-                  <th class="text-center">Pos.</th>
-                  <th>Squadra</th>
-                  <th class="text-center">Punti</th>
-                  <th class="text-center">V</th>
+                <th class="text-center">Pos</th>
+                <th>Squadra</th>
+                <th class="text-center">Punti</th>
+                <th class="text-center">GIOCATE</th>
+                <th class="text-center">V</th>
                   <th class="text-center">P</th>
                   <th class="text-center">Set V</th>
                   <th class="text-center">Set P</th>
@@ -41,17 +42,18 @@
                   <td class="text-center fw-bold">{{ i + 1 }}</td>
                   <td [class.fw-bold]="isThunders(squadra)" [class.fw-semibold]="!isThunders(squadra)">{{ squadra.squadra }}</td>
                   <td class="text-center fw-bold text-primary">{{ squadra.punti }}</td>
+                  <td class="text-center" [class.fw-bold]="isThunders(squadra)">{{ squadra.partiteVinte + squadra.partitePerse }}</td>
                   <td class="text-center" [class.fw-bold]="isThunders(squadra)">{{ squadra.partiteVinte }}</td>
                   <td class="text-center" [class.fw-bold]="isThunders(squadra)">{{ squadra.partitePerse }}</td>
                   <td class="text-center" [class.fw-bold]="isThunders(squadra)">{{ squadra.setVinti }}</td>
                   <td class="text-center" [class.fw-bold]="isThunders(squadra)">{{ squadra.setPersi }}</td>
-                  <td class="text-center" [class.fw-bold]="isThunders(squadra)">{{ squadra.quozienteSet | number:'1.2-2' }}</td>
+                  <td class="text-center" [class.fw-bold]="isThunders(squadra)">{{ (squadra.quozienteSet / 100) | percent:'1.0-0' }}</td>
                   <td class="text-center" [class.fw-bold]="isThunders(squadra)">{{ squadra.puntiFatti }}</td>
                   <td class="text-center" [class.fw-bold]="isThunders(squadra)">{{ squadra.puntiSubiti }}</td>
-                  <td class="text-center" [class.fw-bold]="isThunders(squadra)">{{ squadra.quozientePunti | number:'1.2-2' }}</td>
+                  <td class="text-center" [class.fw-bold]="isThunders(squadra)">{{ (squadra.quozientePunti / 100) | percent:'1.2-2' }}</td>
                 </tr>
                 <tr *ngIf="classifica.length === 0">
-                  <td colspan="11" class="text-center text-muted py-4">
+                  <td colspan="12" class="text-center text-muted py-4">
                     <i class="bi bi-info-circle me-2"></i>Nessun dato disponibile
                   </td>
                 </tr>
@@ -81,7 +83,6 @@
                     {{ squadra.squadra }}
                   </div>
                   <div class="punti-badge">
-                    <span class="punti-label">Punti</span>
                     <span class="punti-value">{{ squadra.punti }}</span>
                   </div>
                 </button>
@@ -92,6 +93,10 @@
                    data-bs-parent="#classificaAccordion">
                 <div class="accordion-body mobile-squadra-stats">
                   <div class="stat-row">
+                    <div class="stat-item">
+                      <span class="stat-label">GIOCATE</span>
+                      <span class="stat-value" [class.fw-bold]="isThunders(squadra)">{{ squadra.partiteVinte + squadra.partitePerse }}</span>
+                    </div>
                     <div class="stat-item">
                       <span class="stat-label">Vittorie</span>
                       <span class="stat-value" [class.fw-bold]="isThunders(squadra)">{{ squadra.partiteVinte }}</span>
@@ -112,7 +117,7 @@
                     </div>
                     <div class="stat-item">
                       <span class="stat-label">Q. Set</span>
-                      <span class="stat-value" [class.fw-bold]="isThunders(squadra)">{{ squadra.quozienteSet | number:'1.2-2' }}</span>
+                      <span class="stat-value" [class.fw-bold]="isThunders(squadra)">{{ (squadra.quozienteSet / 100) | percent:'1.0-0' }}</span>
                     </div>
                   </div>
                   <div class="stat-row">
@@ -126,7 +131,7 @@
                     </div>
                     <div class="stat-item">
                       <span class="stat-label">Q. Punti</span>
-                      <span class="stat-value" [class.fw-bold]="isThunders(squadra)">{{ squadra.quozientePunti | number:'1.2-2' }}</span>
+                      <span class="stat-value" [class.fw-bold]="isThunders(squadra)">{{ (squadra.quozientePunti / 100) | percent:'1.2-2' }}</span>
                     </div>
                   </div>
                 </div>

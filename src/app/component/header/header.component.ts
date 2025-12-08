@@ -27,6 +27,10 @@ export class HeaderComponent implements OnInit {
     this.menuOpen = !this.menuOpen;
   }
 
+  isAdmin(): boolean {
+    return this.authService.hasEditPermission();
+  }
+
   logout() {
     this.authService.logout();
     this.menuOpen = false;

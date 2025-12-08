@@ -22,15 +22,20 @@
   </div>
   <div class="offcanvas-body p-0">
     <div class="user-info-section p-3 bg-light border-bottom">
-      <div class="d-flex align-items-center" *ngIf="currentUser">
+      <a class="d-flex align-items-center text-decoration-none text-dark user-info-link" 
+         routerLink="/profilo" 
+         routerLinkActive="active" 
+         (click)="toggleMenu()" 
+         *ngIf="currentUser">
         <div class="user-avatar me-3">
           <i class="bi bi-person-circle"></i>
         </div>
-        <div>
+        <div class="flex-grow-1">
           <p class="mb-0 fw-semibold">{{ currentUser.nome | capitalize }} {{ currentUser.cognome | capitalize }}</p>
           <small class="text-muted">{{ currentUser.profilo }}</small>
         </div>
-      </div>
+        <i class="bi bi-chevron-right"></i>
+      </a>
     </div>
     <ul class="nav flex-column menu-items">
       <li class="nav-item">
@@ -40,7 +45,7 @@
           <i class="bi bi-chevron-right ms-auto"></i>
         </a>
       </li>
-      <li class="nav-item">
+      <li class="nav-item" *ngIf="isAdmin()">
         <a class="nav-link menu-link" routerLink="/squadra" routerLinkActive="active" (click)="toggleMenu()">
           <i class="bi bi-people-fill me-3"></i>
           <span>Squadra</span>

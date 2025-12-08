@@ -1,0 +1,190 @@
+<div class="profilo-container">
+  <div class="profilo-card" *ngIf="currentUser">
+    <div class="profilo-header">
+      <div class="user-avatar-large">
+        <i class="bi bi-person-circle"></i>
+      </div>
+      <h2 class="mt-3">{{ currentUser.nome | capitalize }} {{ currentUser.cognome | capitalize }}</h2>
+      <p class="text-muted">{{ currentUser.profilo }}</p>
+    </div>
+
+    <div class="profilo-body">
+      <div class="info-section" *ngIf="!isEditMode">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="info-row">
+              <div class="info-label">
+                <i class="bi bi-person-badge"></i>
+                <span>Numero Maglia</span>
+              </div>
+              <div class="info-value">{{ currentUser.numeroMaglia }}</div>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="info-row">
+              <div class="info-label">
+                <i class="bi bi-calendar3"></i>
+                <span>Data di Nascita</span>
+              </div>
+              <div class="info-value">{{ formatDate(currentUser.dataDiNascita) }}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6">
+            <div class="info-row">
+              <div class="info-label">
+                <i class="bi bi-trophy"></i>
+                <span>Ruolo</span>
+              </div>
+              <div class="info-value">{{ currentUser.ruolo | capitalize }}</div>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="info-row">
+              <div class="info-label">
+                <i class="bi bi-card-text"></i>
+                <span>Tessera UISP</span>
+              </div>
+              <div class="info-value">{{ currentUser.tesseraUisp }}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6">
+            <div class="info-row">
+              <div class="info-label">
+                <i class="bi bi-envelope"></i>
+                <span>Email</span>
+              </div>
+              <div class="info-value">{{ currentUser.email || 'Non specificata' }}</div>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="info-row">
+              <div class="info-label">
+                <i class="bi bi-credit-card"></i>
+                <span>Codice Fiscale</span>
+              </div>
+              <div class="info-value">{{ currentUser.codiceFiscale || 'Non specificato' }}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6">
+            <div class="info-row">
+              <div class="info-label">
+                <i class="bi bi-rulers"></i>
+                <span>Taglia Divisa</span>
+              </div>
+              <div class="info-value">{{ currentUser.tagliaDivisa || 'Non specificata' }}</div>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="info-row">
+              <div class="info-label">
+                <i class="bi bi-file-medical"></i>
+                <span>Scadenza Certificato Medico</span>
+              </div>
+              <div class="info-value">{{ formatDate(currentUser.scadenzaCertificatoMedico) || 'Non specificata' }}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row" *ngIf="currentUser.capitano">
+          <div class="col-12">
+            <div class="info-row">
+              <div class="info-label">
+                <i class="bi bi-star-fill text-warning"></i>
+                <span>Capitano</span>
+              </div>
+              <div class="info-value">
+                <span class="badge bg-warning">Sì</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Edit Mode -->
+      <div class="edit-section" *ngIf="isEditMode && editedUser">
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label">
+              <i class="bi bi-envelope me-2"></i>Email
+            </label>
+            <input type="email" class="form-control" [(ngModel)]="editedUser.email" placeholder="esempio@email.com">
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <label class="form-label">
+              <i class="bi bi-credit-card me-2"></i>Codice Fiscale
+            </label>
+            <input type="text" class="form-control text-uppercase" [(ngModel)]="editedUser.codiceFiscale" maxlength="16" placeholder="RSSMRA80A01H501U">
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label">
+              <i class="bi bi-calendar3 me-2"></i>Data di Nascita
+            </label>
+            <input type="date" class="form-control" [(ngModel)]="editedUser.dataDiNascita">
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <label class="form-label">
+              <i class="bi bi-person-badge me-2"></i>Numero Maglia
+            </label>
+            <input type="text" class="form-control" [(ngModel)]="editedUser.numeroMaglia" placeholder="10">
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label">
+              <i class="bi bi-rulers me-2"></i>Taglia Divisa
+            </label>
+            <select class="form-select" [(ngModel)]="editedUser.tagliaDivisa">
+              <option value="">Seleziona...</option>
+              <option value="XS">XS</option>
+              <option value="S">S</option>
+              <option value="M">M</option>
+              <option value="L">L</option>
+              <option value="XL">XL</option>
+              <option value="XXL">XXL</option>
+            </select>
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <label class="form-label">
+              <i class="bi bi-file-medical me-2"></i>Scadenza Certificato Medico
+            </label>
+            <input type="date" class="form-control" [(ngModel)]="editedUser.scadenzaCertificatoMedico">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="profilo-footer">
+      <button class="btn btn-primary w-100" *ngIf="!isEditMode" (click)="toggleEditMode()">
+        <i class="bi bi-pencil me-2"></i>Modifica Dati
+      </button>
+      <div class="d-flex gap-2" *ngIf="isEditMode">
+        <button class="btn btn-success flex-fill" (click)="saveChanges()">
+          <i class="bi bi-check-lg me-2"></i>Salva
+        </button>
+        <button class="btn btn-secondary flex-fill" (click)="cancelEdit()">
+          <i class="bi bi-x-lg me-2"></i>Annulla
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

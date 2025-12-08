@@ -1,0 +1,127 @@
+.profilo-container {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.profilo-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.profilo-header {
+  background: linear-gradient(135deg, var(--bs-primary) 0%, var(--bs-primary-dark, #0056b3) 100%);
+  color: white;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.user-avatar-large {
+  font-size: 80px;
+  color: white;
+  margin-bottom: 10px;
+}
+
+.profilo-header h2 {
+  margin: 0;
+  font-weight: bold;
+}
+
+.profilo-body {
+  padding: 20px;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 0;
+  border-bottom: 1px solid #e9ecef;
+}
+
+/* Desktop: rimuovi border-bottom per le row interne, lo aggiungiamo solo alla fine della row */
+@media (min-width: 768px) {
+  .info-section .row {
+    border-bottom: 1px solid #e9ecef;
+  }
+  
+  .info-section .row:last-child {
+    border-bottom: none;
+  }
+  
+  .info-section .info-row {
+    border-bottom: none;
+  }
+  
+  /* Bordo verticale tra le colonne */
+  .info-section .col-md-6:first-child {
+    border-right: 1px solid #e9ecef;
+    padding-right: 20px;
+  }
+  
+  .info-section .col-md-6:last-child {
+    padding-left: 20px;
+  }
+}
+
+.info-row:last-child {
+  border-bottom: none;
+}
+
+.info-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 500;
+  color: #495057;
+}
+
+.info-label i {
+  font-size: 1.2rem;
+  color: var(--bs-primary);
+}
+
+.info-value {
+  font-weight: 600;
+  color: #212529;
+}
+
+.profilo-footer {
+  padding: 20px;
+  border-top: 1px solid #e9ecef;
+}
+
+.edit-section {
+  padding-top: 10px;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .profilo-container {
+    padding: 10px;
+  }
+
+  .profilo-header {
+    padding: 30px 15px;
+  }
+
+  .user-avatar-large {
+    font-size: 60px;
+  }
+
+  .profilo-header h2 {
+    font-size: 1.5rem;
+  }
+
+  .info-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .info-value {
+    margin-left: 32px;
+  }
+}
