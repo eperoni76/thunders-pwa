@@ -1,6 +1,14 @@
 .navbar {
   min-height: 56px;
   padding-bottom: calc(0.5rem + env(safe-area-inset-bottom));
+  z-index: 1000;
+}
+
+/* Nascondi footer su desktop */
+@media (min-width: 768px) {
+  .navbar {
+    display: none;
+  }
 }
 
 .navbar-brand {

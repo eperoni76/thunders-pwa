@@ -22,6 +22,7 @@ import { FooterComponent } from './component/footer/footer.component';
 import { LoginComponent } from './component/login/login.component';
 import { ClassificaComponent } from './component/classifica/classifica.component';
 import { ProfiloComponent } from './component/profilo/profilo.component';
+import { ImpostazioniComponent } from './component/impostazioni/impostazioni.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,8 @@ import { ProfiloComponent } from './component/profilo/profilo.component';
     FooterComponent,
     LoginComponent,
     ClassificaComponent,
-    ProfiloComponent
+    ProfiloComponent,
+    ImpostazioniComponent
   ],
   imports: [
     BrowserModule,

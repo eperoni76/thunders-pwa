@@ -1,6 +1,17 @@
+/* Mobile layout */
 .with-nav {
   padding-top: 105px;
-  padding-bottom: 56px;
+  padding-bottom: 80px;
   min-height: calc(100vh - 141px);
+}
+
+/* Desktop layout with sidebar */
+@media (min-width: 768px) {
+  .with-nav {
+    padding-top: 40px;
+    padding-left: 280px;
+    padding-bottom: 0;
+    min-height: 100vh;
+  }
 }
 
