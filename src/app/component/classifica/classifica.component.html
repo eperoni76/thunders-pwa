@@ -3,11 +3,22 @@
     <div class="col-12">
       <div class="card shadow-sm">
         <div class="card-header bg-primary text-white">
-          <h5 class="mb-0">
-            <i class="bi bi-trophy-fill me-2"></i>Classifica
-          </h5>
+          <div class="d-flex justify-content-between align-items-center flex-wrap">
+            <h5 class="mb-0">
+              <i class="bi bi-trophy-fill me-2"></i>Classifica
+              <span *ngIf="season" class="badge bg-light text-primary ms-2">{{ season }}</span>
+            </h5>
+            <small *ngIf="lastUpdate" class="text-white-50 d-none d-md-block">
+              <i class="bi bi-clock me-1"></i>Aggiornato il {{ lastUpdate | date:'dd/MM/yyyy HH:mm' }}
+            </small>
+          </div>
+          <small *ngIf="lastUpdate" class="text-white-50 d-md-none d-block mt-2">
+            <i class="bi bi-clock me-1"></i>Agg. {{ lastUpdate | date:'dd/MM/yy HH:mm' }}
+          </small>
         </div>
-        <div class="card-body p-0">
+
+        <!-- Vista Desktop (tabella) -->
+        <div class="card-body p-0 d-none d-md-block">
           <div class="table-responsive">
             <table class="table table-hover table-striped mb-0">
               <thead class="table-light">
@@ -26,18 +37,18 @@
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let squadra of classifica; let i = index">
+                <tr *ngFor="let squadra of classifica; let i = index" [class.table-primary]="isThunders(squadra)">
                   <td class="text-center fw-bold">{{ i + 1 }}</td>
-                  <td class="fw-semibold">{{ squadra.squadra }}</td>
+                  <td [class.fw-bold]="isThunders(squadra)" [class.fw-semibold]="!isThunders(squadra)">{{ squadra.squadra }}</td>
                   <td class="text-center fw-bold text-primary">{{ squadra.punti }}</td>
-                  <td class="text-center">{{ squadra.partiteVinte }}</td>
-                  <td class="text-center">{{ squadra.partitePerse }}</td>
-                  <td class="text-center">{{ squadra.setVinti }}</td>
-                  <td class="text-center">{{ squadra.setPersi }}</td>
-                  <td class="text-center">{{ squadra.quozienteSet | number:'1.2-2' }}</td>
-                  <td class="text-center">{{ squadra.puntiFatti }}</td>
-                  <td class="text-center">{{ squadra.puntiSubiti }}</td>
-                  <td class="text-center">{{ squadra.quozientePunti | number:'1.2-2' }}</td>
+                  <td class="text-center" [class.fw-bold]="isThunders(squadra)">{{ squadra.partiteVinte }}</td>
+                  <td class="text-center" [class.fw-bold]="isThunders(squadra)">{{ squadra.partitePerse }}</td>
+                  <td class="text-center" [class.fw-bold]="isThunders(squadra)">{{ squadra.setVinti }}</td>
+                  <td class="text-center" [class.fw-bold]="isThunders(squadra)">{{ squadra.setPersi }}</td>
+                  <td class="text-center" [class.fw-bold]="isThunders(squadra)">{{ squadra.quozienteSet | number:'1.2-2' }}</td>
+                  <td class="text-center" [class.fw-bold]="isThunders(squadra)">{{ squadra.puntiFatti }}</td>
+                  <td class="text-center" [class.fw-bold]="isThunders(squadra)">{{ squadra.puntiSubiti }}</td>
+                  <td class="text-center" [class.fw-bold]="isThunders(squadra)">{{ squadra.quozientePunti | number:'1.2-2' }}</td>
                 </tr>
                 <tr *ngIf="classifica.length === 0">
                   <td colspan="11" class="text-center text-muted py-4">
@@ -46,6 +57,81 @@
                 </tr>
               </tbody>
             </table>
+          </div>
+        </div>
+
+        <!-- Vista Mobile (cards verticali) -->
+        <div class="card-body p-0 d-md-none">
+          <div *ngIf="classifica.length === 0" class="text-center text-muted py-4">
+            <i class="bi bi-info-circle me-2"></i>Nessun dato disponibile
+          </div>
+          <div class="accordion mobile-classifica" id="classificaAccordion">
+            <div *ngFor="let squadra of classifica; let i = index" 
+                 class="accordion-item mobile-squadra-card" 
+                 [class.thunders-highlight]="isThunders(squadra)">
+              <h2 class="accordion-header" [attr.id]="'heading' + i">
+                <button class="accordion-button collapsed mobile-squadra-header" 
+                        type="button" 
+                        data-bs-toggle="collapse"
+                        [attr.data-bs-target]="'#collapse' + i" 
+                        aria-expanded="false" 
+                        [attr.aria-controls]="'collapse' + i">
+                  <div class="position-badge">{{ i + 1 }}</div>
+                  <div class="squadra-nome" [class.fw-bold]="isThunders(squadra)">
+                    {{ squadra.squadra }}
+                  </div>
+                  <div class="punti-badge">
+                    <span class="punti-label">Punti</span>
+                    <span class="punti-value">{{ squadra.punti }}</span>
+                  </div>
+                </button>
+              </h2>
+              <div [attr.id]="'collapse' + i" 
+                   class="accordion-collapse collapse" 
+                   [attr.aria-labelledby]="'heading' + i"
+                   data-bs-parent="#classificaAccordion">
+                <div class="accordion-body mobile-squadra-stats">
+                  <div class="stat-row">
+                    <div class="stat-item">
+                      <span class="stat-label">Vittorie</span>
+                      <span class="stat-value" [class.fw-bold]="isThunders(squadra)">{{ squadra.partiteVinte }}</span>
+                    </div>
+                    <div class="stat-item">
+                      <span class="stat-label">Sconfitte</span>
+                      <span class="stat-value" [class.fw-bold]="isThunders(squadra)">{{ squadra.partitePerse }}</span>
+                    </div>
+                  </div>
+                  <div class="stat-row">
+                    <div class="stat-item">
+                      <span class="stat-label">Set Vinti</span>
+                      <span class="stat-value" [class.fw-bold]="isThunders(squadra)">{{ squadra.setVinti }}</span>
+                    </div>
+                    <div class="stat-item">
+                      <span class="stat-label">Set Persi</span>
+                      <span class="stat-value" [class.fw-bold]="isThunders(squadra)">{{ squadra.setPersi }}</span>
+                    </div>
+                    <div class="stat-item">
+                      <span class="stat-label">Q. Set</span>
+                      <span class="stat-value" [class.fw-bold]="isThunders(squadra)">{{ squadra.quozienteSet | number:'1.2-2' }}</span>
+                    </div>
+                  </div>
+                  <div class="stat-row">
+                    <div class="stat-item">
+                      <span class="stat-label">Pt. Fatti</span>
+                      <span class="stat-value" [class.fw-bold]="isThunders(squadra)">{{ squadra.puntiFatti }}</span>
+                    </div>
+                    <div class="stat-item">
+                      <span class="stat-label">Pt. Subiti</span>
+                      <span class="stat-value" [class.fw-bold]="isThunders(squadra)">{{ squadra.puntiSubiti }}</span>
+                    </div>
+                    <div class="stat-item">
+                      <span class="stat-label">Q. Punti</span>
+                      <span class="stat-value" [class.fw-bold]="isThunders(squadra)">{{ squadra.quozientePunti | number:'1.2-2' }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

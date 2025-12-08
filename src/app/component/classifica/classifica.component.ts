@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ClassificaService } from '../../service/classifica.service';
-import { Classifica } from '../../model/classifica';
+import { TeamStanding, StandingsData } from '../../model/classifica';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -10,23 +10,46 @@ import { Subscription } from 'rxjs';
 })
 export class ClassificaComponent implements OnInit, OnDestroy {
 
-  classifica: Classifica[] = [];
-  private classificaSubscription?: Subscription;
+  classifica: TeamStanding[] = [];
+  standingsData: StandingsData | null = null;
+  lastUpdate: Date | null = null;
+  season: string = '';
+  
+  private standingsSubscription?: Subscription;
 
   constructor(private classificaService: ClassificaService) { }
 
   ngOnInit(): void {
-    this.classificaSubscription = this.classificaService.getClassificaObservable().subscribe(
-      classifica => {
-        this.classifica = classifica;
+    this.standingsSubscription = this.classificaService.getStandingsDataObservable().subscribe(
+      data => {
+        if (data) {
+          this.standingsData = data;
+          this.classifica = data.standings || [];
+          this.lastUpdate = data.lastUpdate;
+          this.season = data.season;
+          
+          // Ordina per punti in modo decrescente
+          this.classifica.sort((a, b) => (b.punti || 0) - (a.punti || 0));
+        } else {
+          this.classifica = [];
+          this.lastUpdate = null;
+          this.season = '';
+        }
       }
     );
   }
 
   ngOnDestroy(): void {
-    if (this.classificaSubscription) {
-      this.classificaSubscription.unsubscribe();
+    if (this.standingsSubscription) {
+      this.standingsSubscription.unsubscribe();
     }
+  }
+
+  /**
+   * Verifica se una squadra è quella dei Thunders
+   */
+  isThunders(squadra: TeamStanding): boolean {
+    return squadra.squadra?.toLowerCase().includes('thunders') || false;
   }
 }
 
