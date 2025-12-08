@@ -212,28 +212,49 @@
           <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                   [attr.data-bs-target]="'#collapseGiocatore' + i" aria-expanded="false" [attr.aria-controls]="'collapseGiocatore' + i">
             <span class="badge bg-primary me-2 numero-maglia-badge">{{ giocatore.numeroMaglia || '-' }}</span>
-            {{ giocatore.cognome | capitalize }} {{ giocatore.nome | capitalize }}
+            <span class="flex-grow-1">{{ giocatore.cognome | capitalize }} {{ giocatore.nome | capitalize }}</span>
+            <span *ngIf="giocatore.capitano" class="badge bg-primary">K</span>
           </button>
         </h2>
         <div [attr.id]="'collapseGiocatore' + i" class="accordion-collapse collapse" [attr.aria-labelledby]="'headingGiocatore' + i"
              data-bs-parent="#giocatoriAccordion">
           <div class="accordion-body">
-            <div>
-              <strong>Data di Nascita:</strong> {{ giocatore.dataDiNascita | date: 'dd/MM/yyyy' }}<br>
-              <strong>Ruolo:</strong> {{ giocatore.ruolo }}<br>
-              <strong>Tessera UISP:</strong> {{ giocatore.tesseraUisp }}<br>
-              <strong>Codice Fiscale:</strong> {{ giocatore.codiceFiscale || '-' }}<br>
-              <strong>Profilo:</strong> {{ giocatore.profilo }}<br>
-              <strong>Email:</strong> {{ giocatore.email || '-' }}<br>
-              <strong>Taglia Divisa:</strong> {{ giocatore.tagliaDivisa || '-' }}<br>
-              <strong>Scadenza Certificato Medico:</strong>
-              <span *ngIf="giocatore.scadenzaCertificatoMedico" [ngClass]="getCertificatoClass(giocatore.scadenzaCertificatoMedico)">
-                {{ giocatore.scadenzaCertificatoMedico | date: 'dd/MM/yyyy' }}
-              </span>
-              <span *ngIf="!giocatore.scadenzaCertificatoMedico">-</span><br>
-              <strong>Capitano: </strong>
-              <i *ngIf="giocatore.capitano" class="bi bi-check-circle-fill text-success"></i>
-              <i *ngIf="!giocatore.capitano" class="bi bi-x-circle-fill text-danger"></i>
+            <div class="player-info-grid">
+              <div class="info-item">
+                <span class="info-label">Data di Nascita</span>
+                <span class="info-value">{{ giocatore.dataDiNascita | date: 'dd/MM/yyyy' }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Ruolo</span>
+                <span class="info-value">{{ giocatore.ruolo }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Tessera UISP</span>
+                <span class="info-value">{{ giocatore.tesseraUisp }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Codice Fiscale</span>
+                <span class="info-value">{{ giocatore.codiceFiscale || '-' }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Profilo</span>
+                <span class="info-value">{{ giocatore.profilo }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Email</span>
+                <span class="info-value">{{ giocatore.email || '-' }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Taglia Divisa</span>
+                <span class="info-value">{{ giocatore.tagliaDivisa || '-' }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Certificato Medico</span>
+                <span class="info-value" *ngIf="giocatore.scadenzaCertificatoMedico" [ngClass]="getCertificatoClass(giocatore.scadenzaCertificatoMedico)">
+                  {{ giocatore.scadenzaCertificatoMedico | date: 'dd/MM/yyyy' }}
+                </span>
+                <span class="info-value" *ngIf="!giocatore.scadenzaCertificatoMedico">-</span>
+              </div>
             </div>
             <div class="mt-3 d-flex flex-wrap gap-2 justify-content-end">
               <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#giocatoreModal" (click)="openDialog(giocatore)">

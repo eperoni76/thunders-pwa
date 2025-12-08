@@ -173,3 +173,36 @@
     display: none;
   }
 }
+
+/* Mobile accordion styling */
+.player-info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem 1rem;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem;
+  background-color: #f8f9fa;
+  border-radius: 6px;
+}
+
+.info-label {
+  font-weight: 600;
+  color: #6c757d;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  margin-bottom: 0.25rem;
+}
+
+.info-value {
+  font-weight: 500;
+  color: #212529;
+  font-size: 0.9rem;
+}
+
+.accordion-button::after {
+  display: none;
+}
