@@ -12,11 +12,8 @@
 }
 
 .navbar-brand {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
   font-weight: bold;
-  font-size: 1.25rem;
+  font-size: 1rem;
 }
 
 .instagram-link {

@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../service/auth.service';
 import { CalendarioService } from '../../service/calendario.service';
+import { AllenamentiService } from '../../service/allenamenti.service';
+import { Allenamento } from '../../model/allenamento';
 
 @Component({
   selector: 'app-homepage',
@@ -10,13 +12,20 @@ import { CalendarioService } from '../../service/calendario.service';
 export class HomepageComponent implements OnInit {
   ultimiRisultati: any[] = [];
   prossimiAppuntamenti: any[] = [];
+  allenamenti: Allenamento[] = [];
 
   constructor(
     public authService: AuthService,
-    private calendarioService: CalendarioService
+    private calendarioService: CalendarioService,
+    private allenamentiService: AllenamentiService
   ) {}
 
   ngOnInit(): void {
+    // Carica allenamenti
+    this.allenamentiService.getAllenamenti().subscribe(allenamenti => {
+      this.allenamenti = allenamenti;
+    });
+
     this.calendarioService.getPartiteObservable().subscribe(partite => {
       const oggi = new Date();
       oggi.setHours(0, 0, 0, 0);
@@ -53,6 +62,10 @@ export class HomepageComponent implements OnInit {
       
       this.prossimiAppuntamenti = partiteFuture.slice(0, 3);
     });
+  }
+
+  encodeURIComponent(str: string): string {
+    return encodeURIComponent(str);
   }
 
   isVittoria(partita: any): boolean {

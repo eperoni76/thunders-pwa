@@ -1,1 +1,155 @@
-<p>impostazioni works!</p>
+<div class="container-fluid px-4 mt-3">
+  <div class="row mb-4">
+    <div class="col-12">
+      <h2 class="fw-bold text-primary">
+        <i class="bi bi-gear-fill me-2"></i>
+        Impostazioni
+      </h2>
+    </div>
+  </div>
+
+  <!-- Sezione Allenamenti -->
+  <div class="row">
+    <div class="col-12">
+      <div class="card shadow">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">
+            <i class="bi bi-calendar3 me-2"></i>
+            Gestione Allenamenti
+          </h5>
+          <button class="btn btn-light btn-sm" (click)="startAdding()" *ngIf="!isAdding">
+            <i class="bi bi-plus-circle me-1"></i>
+            Aggiungi Allenamento
+          </button>
+        </div>
+        <div class="card-body">
+          <!-- Form per aggiungere nuovo allenamento -->
+          <div class="alert alert-info" *ngIf="isAdding">
+            <h6 class="fw-bold mb-3">Nuovo Allenamento</h6>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label">Giorno della settimana</label>
+                <select class="form-select" [(ngModel)]="nuovoAllenamento.giorno">
+                  <option value="">Seleziona un giorno</option>
+                  <option *ngFor="let giorno of giorniSettimana" [value]="giorno.nome">
+                    {{ giorno.nome }}
+                  </option>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label class="form-label">Orario Inizio</label>
+                <input type="time" class="form-control" [(ngModel)]="nuovoAllenamento.orarioInizio">
+              </div>
+              <div class="col-md-3">
+                <label class="form-label">Orario Fine</label>
+                <input type="time" class="form-control" [(ngModel)]="nuovoAllenamento.orarioFine">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Nome Palestra</label>
+                <input type="text" class="form-control" [(ngModel)]="nuovoAllenamento.nomePalestra" placeholder="es. Palestra Paolo VI">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Indirizzo</label>
+                <input type="text" class="form-control" [(ngModel)]="nuovoAllenamento.indirizzo" placeholder="es. Via Ercolano 11, Castel Gandolfo">
+              </div>
+              <div class="col-12">
+                <button class="btn btn-primary me-2" (click)="saveAllenamento()" [disabled]="!isFormValid(nuovoAllenamento)">
+                  <i class="bi bi-check-circle me-1"></i>
+                  Salva
+                </button>
+                <button class="btn btn-secondary" (click)="cancelAdding()">
+                  <i class="bi bi-x-circle me-1"></i>
+                  Annulla
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Lista allenamenti -->
+          <div class="row g-3 mt-2">
+            <div class="col-12" *ngIf="allenamenti.length === 0 && !isAdding">
+              <p class="text-muted text-center py-4">
+                <i class="bi bi-info-circle me-2"></i>
+                Nessun allenamento configurato. Clicca su "Aggiungi Allenamento" per iniziare.
+              </p>
+            </div>
+
+            <div class="col-md-6 col-lg-4" *ngFor="let allenamento of allenamenti">
+              <div class="card h-100" [class.border-primary]="editingAllenamento?.id === allenamento.id">
+                <div class="card-body">
+                  <!-- Modalità visualizzazione -->
+                  <div *ngIf="editingAllenamento?.id !== allenamento.id">
+                    <h5 class="card-title text-primary">
+                      <i class="bi bi-calendar-week me-2"></i>
+                      {{ allenamento.giorno }}
+                    </h5>
+                    <p class="mb-2">
+                      <i class="bi bi-clock me-2"></i>
+                      <strong>{{ allenamento.orarioInizio }} - {{ allenamento.orarioFine }}</strong>
+                    </p>
+                    <p class="mb-2">
+                      <i class="bi bi-geo-alt me-2"></i>
+                      <strong>{{ allenamento.nomePalestra }}</strong>
+                    </p>
+                    <p class="mb-3 text-muted small">
+                      {{ allenamento.indirizzo }}
+                    </p>
+                    <div class="d-flex gap-2">
+                      <button class="btn btn-sm btn-outline-primary" (click)="startEditing(allenamento)">
+                        <i class="bi bi-pencil"></i>
+                        Modifica
+                      </button>
+                      <button class="btn btn-sm btn-outline-danger" (click)="deleteAllenamento(allenamento.id)">
+                        <i class="bi bi-trash"></i>
+                        Elimina
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Modalità modifica -->
+                  <div *ngIf="editingAllenamento?.id === allenamento.id">
+                    <h6 class="fw-bold mb-3">Modifica Allenamento</h6>
+                    <div class="mb-2">
+                      <label class="form-label small">Giorno</label>
+                      <select class="form-select form-select-sm" [(ngModel)]="editingAllenamento!.giorno">
+                        <option *ngFor="let giorno of giorniSettimana" [value]="giorno.nome">
+                          {{ giorno.nome }}
+                        </option>
+                      </select>
+                    </div>
+                    <div class="mb-2">
+                      <label class="form-label small">Orario Inizio</label>
+                      <input type="time" class="form-control form-control-sm" [(ngModel)]="editingAllenamento!.orarioInizio">
+                    </div>
+                    <div class="mb-2">
+                      <label class="form-label small">Orario Fine</label>
+                      <input type="time" class="form-control form-control-sm" [(ngModel)]="editingAllenamento!.orarioFine">
+                    </div>
+                    <div class="mb-2">
+                      <label class="form-label small">Nome Palestra</label>
+                      <input type="text" class="form-control form-control-sm" [(ngModel)]="editingAllenamento!.nomePalestra">
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label small">Indirizzo</label>
+                      <input type="text" class="form-control form-control-sm" [(ngModel)]="editingAllenamento!.indirizzo">
+                    </div>
+                    <div class="d-flex gap-2">
+                      <button class="btn btn-sm btn-primary" (click)="updateAllenamento()" [disabled]="!isFormValid(editingAllenamento!)">
+                        <i class="bi bi-check-circle"></i>
+                        Salva
+                      </button>
+                      <button class="btn btn-sm btn-secondary" (click)="cancelEditing()">
+                        <i class="bi bi-x-circle"></i>
+                        Annulla
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

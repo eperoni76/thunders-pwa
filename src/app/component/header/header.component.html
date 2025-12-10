@@ -3,8 +3,8 @@
     <button class="navbar-toggler" type="button" (click)="toggleMenu()">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <span class="navbar-brand mx-auto" *ngIf="currentUser">
-      <i class="bi bi-person-fill me-2"></i>{{ currentUser.nome | capitalize }} {{ currentUser.cognome | capitalize }}
+    <span class="navbar-brand mx-auto">
+      PuntoVolley Thunders <i class="bi bi-lightning-fill"></i>
     </span>
     <a href="assets/files/elenco_tesserati_2526.pdf" download class="btn btn-light download-btn ms-auto">
       <i class="bi bi-download"></i>
@@ -72,7 +72,7 @@
         Elenco tesserati
       </a>
     </div>
-    <div class="p-3 border-top">
+    <div class="p-3 border-top" *ngIf="isAdmin()">
       <a class="nav-link menu-link" routerLink="/impostazioni" routerLinkActive="active">
         <i class="bi bi-gear-fill me-3"></i>
         <span>Impostazioni</span>
@@ -146,6 +146,13 @@
         <a class="nav-link menu-link" routerLink="/classifica" routerLinkActive="active" (click)="toggleMenu()">
           <i class="bi bi-trophy-fill me-3"></i>
           <span>Classifica</span>
+          <i class="bi bi-chevron-right ms-auto"></i>
+        </a>
+      </li>
+      <li class="nav-item" *ngIf="isAdmin()">
+        <a class="nav-link menu-link" routerLink="/impostazioni" routerLinkActive="active" (click)="toggleMenu()">
+          <i class="bi bi-gear-fill me-3"></i>
+          <span>Impostazioni</span>
           <i class="bi bi-chevron-right ms-auto"></i>
         </a>
       </li>

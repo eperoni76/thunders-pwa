@@ -8,7 +8,7 @@
 /* Desktop layout with sidebar */
 @media (min-width: 768px) {
   .with-nav {
-    padding-top: 40px;
+    padding-top: 10px;
     padding-left: 280px;
     padding-bottom: 0;
     min-height: 100vh;

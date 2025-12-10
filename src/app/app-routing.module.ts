@@ -6,6 +6,7 @@ import { CalendarioComponent } from './component/calendario/calendario.component
 import { ClassificaComponent } from './component/classifica/classifica.component';
 import { LoginComponent } from './component/login/login.component';
 import { ProfiloComponent } from './component/profilo/profilo.component';
+import { ImpostazioniComponent } from './component/impostazioni/impostazioni.component';
 import { AuthGuard } from './guards/auth.guard';
 
 const routes: Routes = [
@@ -16,6 +17,7 @@ const routes: Routes = [
   { path: 'squadra', component: GiocatoriComponent, canActivate: [AuthGuard] },
   { path: 'calendario', component: CalendarioComponent, canActivate: [AuthGuard] },
   { path: 'classifica', component: ClassificaComponent, canActivate: [AuthGuard] },
+  { path: 'impostazioni', component: ImpostazioniComponent, canActivate: [AuthGuard] },
 ];
 
 @NgModule({
