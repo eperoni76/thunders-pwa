@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1765203746210,
+  "timestamp": 1765387577469,
   "index": "https://eperoni76.github.io/thunders-pwa/index.html",
   "assetGroups": [
     {
@@ -15,7 +15,7 @@
         "https://eperoni76.github.io/thunders-pwa/627.640556d507627f19.js",
         "https://eperoni76.github.io/thunders-pwa/842.52b5c8142c16f728.js",
         "https://eperoni76.github.io/thunders-pwa/index.html",
-        "https://eperoni76.github.io/thunders-pwa/main.1140b5e523b3246d.js",
+        "https://eperoni76.github.io/thunders-pwa/main.04254919404907c3.js",
         "https://eperoni76.github.io/thunders-pwa/manifest.webmanifest",
         "https://eperoni76.github.io/thunders-pwa/polyfills.522b5daa90ea9dba.js",
         "https://eperoni76.github.io/thunders-pwa/runtime.946387d1b083c9ab.js",
@@ -73,8 +73,8 @@
     "https://eperoni76.github.io/thunders-pwa/assets/images/uisp2.png": "bc44b5a1e916e396b1a31e17d0598643670751c8",
     "https://eperoni76.github.io/thunders-pwa/assets/images/uisp3.jpg": "eba7e806864a77e1c0119d41122face70d63947f",
     "https://eperoni76.github.io/thunders-pwa/favicon.svg": "e08c0b553f6644924a1f22f5236d04b58dd3e9e6",
-    "https://eperoni76.github.io/thunders-pwa/index.html": "c275728b3accf58e23aa4d590dbbab0fe8ce13b9",
-    "https://eperoni76.github.io/thunders-pwa/main.1140b5e523b3246d.js": "b0ce6a7180bfa8de83ac9891488414be1b88a98e",
+    "https://eperoni76.github.io/thunders-pwa/index.html": "f2359491fe0f137853482e9f67a3d4bb5ea42df7",
+    "https://eperoni76.github.io/thunders-pwa/main.04254919404907c3.js": "dc0ae408d2350ac3adcb679b0c62589089a63f26",
     "https://eperoni76.github.io/thunders-pwa/manifest.webmanifest": "7db9f29fa9db4dadf6a5c42ac95124f7b72666ae",
     "https://eperoni76.github.io/thunders-pwa/polyfills.522b5daa90ea9dba.js": "aa9558d9540389b4c7b58c5cea2d1b6b1bb0466c",
     "https://eperoni76.github.io/thunders-pwa/runtime.946387d1b083c9ab.js": "df9a6a4dea1a4e9e462b51601572133600e67591",
