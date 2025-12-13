@@ -1,23 +1,68 @@
-<div class="container-fluid px-3 custom-spacing">
+<div class="container-fluid px-3 py-4 custom-spacing">
 
-  <div class="row mb-2">
-    <div class="col-12 d-flex justify-content-between align-items-center flex-wrap">
-      <div class="mb-2 mb-md-0">
-        <h2 class="mb-0"><span class="badge bg-primary fs-4 text-uppercase">Giocatori</span></h2>
-        <div class="mt-2" *ngIf="giocatori.length">
-          <span class="badge bg-primary">{{numeroGiocatori}} giocatori</span>
+  <!-- Header Desktop -->
+  <div class="desktop-header d-none d-md-block mb-3">
+    <div class="desktop-header-card">
+      <div class="desktop-header-content">
+        <div class="header-left">
+          <div class="header-icon">
+            <i class="bi bi-people-fill"></i>
+          </div>
+          <div class="header-text">
+            <h3 class="header-title">Giocatori</h3>
+            <div class="header-meta">
+              <span class="meta-item" *ngIf="giocatori.length">
+                <i class="bi bi-person-badge me-1"></i>{{ numeroGiocatori }} giocatori
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="header-actions">
+          <input type="file" #fileInput accept=".json" (change)="handleFileUpload($event)" class="file-input-hidden">
+          <button class="btn btn-sm btn-primary" (click)="fileInput.click()" title="Importa giocatori da JSON">
+            <i class="bi bi-upload me-1"></i>Importa
+          </button>
+          <button class="btn btn-sm btn-primary" (click)="exportToJSON()" title="Esporta giocatori in JSON">
+            <i class="bi bi-download me-1"></i>Esporta
+          </button>
+          <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#giocatoreModal" (click)="openDialog()">
+            <i class="bi bi-plus-circle me-1"></i>Aggiungi
+          </button>
         </div>
       </div>
-      <div class="d-flex gap-2">
-        <input type="file" #fileInput accept=".json" (change)="handleFileUpload($event)" class="file-input-hidden">
-        <button class="btn btn-sm btn-primary" (click)="fileInput.click()" title="Importa giocatori da JSON">
-          <i class="bi bi-upload"></i> <span class="d-none d-lg-inline">Importa</span>
+    </div>
+  </div>
+
+  <!-- Header Mobile -->
+  <div class="mobile-header d-md-none mb-3">
+    <div class="mobile-header-card">
+      <div class="mobile-header-title">
+        <i class="bi bi-people-fill me-2"></i>
+        <span class="title-text">Giocatori</span>
+      </div>
+      <div class="mobile-header-info">
+        <div class="info-item" *ngIf="giocatori.length">
+          <span class="info-label">Totale giocatori</span>
+          <span class="info-value">{{ numeroGiocatori }}</span>
+        </div>
+        <div class="info-item" *ngIf="giocatori.length && etaMedia > 0">
+          <span class="info-label">Età media</span>
+          <span class="info-value">{{ etaMedia }} anni</span>
+        </div>
+        <div class="info-item" *ngIf="nomeCapitano">
+          <span class="info-label">Capitano</span>
+          <span class="info-value">{{ nomeCapitano }}</span>
+        </div>
+      </div>
+      <div class="mobile-header-actions">
+        <button class="btn btn-sm btn-header-action" (click)="fileInput.click()" title="Importa giocatori da JSON">
+          <i class="bi bi-upload me-1"></i>Importa
         </button>
-        <button class="btn btn-sm btn-success" (click)="exportToJSON()" title="Esporta giocatori in JSON">
-          <i class="bi bi-download"></i> <span class="d-none d-lg-inline">Esporta</span>
+        <button class="btn btn-sm btn-header-action" (click)="exportToJSON()" title="Esporta giocatori in JSON">
+          <i class="bi bi-download me-1"></i>Esporta
         </button>
-        <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#giocatoreModal" (click)="openDialog()">
-          <i class="bi bi-plus-circle"></i> <span class="d-none d-lg-inline">Aggiungi</span>
+        <button class="btn btn-sm btn-header-action" data-bs-toggle="modal" data-bs-target="#giocatoreModal" (click)="openDialog()">
+          <i class="bi bi-plus-circle me-1"></i>Aggiungi
         </button>
       </div>
     </div>

@@ -1,24 +1,34 @@
-<div class="container-fluid py-4">
+<div class="container-fluid py-4 custom-spacing">
   <div class="row">
     <div class="col-12">
-      <div class="card shadow-sm">
-        <div class="card-header bg-primary text-white">
-          <div class="d-flex justify-content-between align-items-center flex-wrap">
-            <h5 class="mb-0">
-              <i class="bi bi-trophy-fill me-2"></i>Classifica
-              <span *ngIf="season" class="badge bg-light text-primary ms-2">{{ season }}</span>
-            </h5>
-            <small *ngIf="lastUpdate" class="text-white-50 d-none d-md-block">
-              <i class="bi bi-clock me-1"></i>Aggiornato il {{ lastUpdate | date:'dd/MM/yyyy HH:mm' }}
-            </small>
+      <!-- Header Desktop -->
+      <div class="desktop-header d-none d-md-block mb-3">
+        <div class="desktop-header-card">
+          <div class="desktop-header-content">
+            <div class="header-left">
+              <div class="header-icon">
+                <i class="bi bi-trophy-fill"></i>
+              </div>
+              <div class="header-text">
+                <h3 class="header-title">Classifica</h3>
+                <div class="header-meta">
+                  <span class="meta-item" *ngIf="season">
+                    <i class="bi bi-calendar3 me-1"></i>{{ season }}
+                  </span>
+                  <span class="meta-item" *ngIf="lastUpdate">
+                    <i class="bi bi-clock me-1"></i>Agg. {{ lastUpdate | date:'dd/MM/yyyy HH:mm' }}
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
-          <small *ngIf="lastUpdate" class="text-white-50 d-md-none d-block mt-2">
-            <i class="bi bi-clock me-1"></i>Agg. {{ lastUpdate | date:'dd/MM/yy HH:mm' }}
-          </small>
         </div>
+      </div>
+
+      <div class="card shadow-sm d-none d-md-block">
 
         <!-- Vista Desktop (tabella) -->
-        <div class="card-body p-0 d-none d-md-block">
+        <div class="card-body p-0">
           <div class="table-responsive">
             <table class="table table-hover table-striped mb-0">
               <thead class="table-light">
@@ -61,13 +71,34 @@
             </table>
           </div>
         </div>
+      </div>
 
-        <!-- Vista Mobile (cards verticali) -->
-        <div class="card-body p-0 d-md-none">
-          <div *ngIf="classifica.length === 0" class="text-center text-muted py-4">
-            <i class="bi bi-info-circle me-2"></i>Nessun dato disponibile
+      <!-- Header Mobile -->
+      <div class="mobile-header d-md-none mb-3">
+        <div class="mobile-header-card">
+          <div class="mobile-header-title">
+            <i class="bi bi-trophy-fill me-2"></i>
+            <span class="title-text">Classifica</span>
           </div>
-          <div class="accordion mobile-classifica" id="classificaAccordion">
+          <div class="mobile-header-info">
+            <div class="info-item" *ngIf="season">
+              <span class="info-label">Stagione</span>
+              <span class="info-value">{{ season }}</span>
+            </div>
+            <div class="info-item" *ngIf="lastUpdate">
+              <span class="info-label"><i class="bi bi-clock me-1"></i>Aggiornamento</span>
+              <span class="info-value">{{ lastUpdate | date:'dd/MM/yy HH:mm' }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Vista Mobile (cards verticali) -->
+      <div class="d-md-none">
+        <div *ngIf="classifica.length === 0" class="text-center text-muted py-4">
+          <i class="bi bi-info-circle me-2"></i>Nessun dato disponibile
+        </div>
+        <div class="accordion mobile-classifica" id="classificaAccordion">
             <div *ngFor="let squadra of classifica; let i = index" 
                  class="accordion-item mobile-squadra-card" 
                  [class.thunders-highlight]="isThunders(squadra)">
@@ -137,7 +168,6 @@
                 </div>
               </div>
             </div>
-          </div>
         </div>
       </div>
     </div>

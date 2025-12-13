@@ -147,6 +147,42 @@ export class GiocatoriComponent implements OnInit, OnDestroy {
     }).length;
   }
 
+  get etaMedia(): number {
+    const giocatoriConEta = this.giocatori.filter(g => {
+      const ruolo = (g.ruolo || '').toLowerCase();
+      return g.dataDiNascita && !ruolo.includes('allenatore') && !ruolo.includes('dirigente');
+    });
+
+    if (giocatoriConEta.length === 0) return 0;
+
+    const sommaEta = giocatoriConEta.reduce((sum, g) => {
+      const nascita = new Date(g.dataDiNascita);
+      const oggi = new Date();
+      let eta = oggi.getFullYear() - nascita.getFullYear();
+      const meseDiff = oggi.getMonth() - nascita.getMonth();
+      if (meseDiff < 0 || (meseDiff === 0 && oggi.getDate() < nascita.getDate())) {
+        eta--;
+      }
+      return sum + eta;
+    }, 0);
+
+    return Math.round(sommaEta / giocatoriConEta.length);
+  }
+
+  get nomeCapitano(): string {
+    const capitano = this.giocatori.find(g => g.capitano === true);
+    if (!capitano) return '';
+    
+    const capitalize = (str: string) => {
+      if (!str) return '';
+      return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+    };
+    
+    const nome = capitalize(capitano.nome || '');
+    const cognome = capitalize(capitano.cognome || '');
+    return `${nome} ${cognome}`.trim();
+  }
+
   getCertificatoClass(scadenza: string | undefined): string {
     if (!scadenza) return '';
     

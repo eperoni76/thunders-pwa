@@ -94,7 +94,7 @@
                  [class.border-danger]="!isVittoria(partita)">
               <div class="d-flex justify-content-between align-items-center">
                 <div>
-                  <small class="text-muted">{{ partita.data | date: 'dd/MM/yyyy' }}</small>
+                  <small class="text-muted">{{ formatDataBreve(partita.data) }}</small>
                   <p class="mb-0 fw-bold">{{ partita.ospitante }} vs {{ partita.ospite }}</p>
                 </div>
                 <span class="badge fs-6"
@@ -137,7 +137,7 @@
                  [class.bg-light]="!first">
               <div class="d-flex justify-content-between align-items-start">
                 <div>
-                  <small class="text-muted">{{ partita.data | date: 'EEEE dd/MM/yyyy' }}</small>
+                  <small class="text-muted">{{ formatData(partita.data) }}</small>
                   <p class="mb-1 fw-bold">{{ partita.ospitante }} vs {{ partita.ospite }}</p>
                   <small class="text-muted">
                     <i class="bi bi-clock me-1"></i>{{ partita.ora || 'TBD' }}

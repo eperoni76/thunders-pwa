@@ -10,8 +10,6 @@ import { DialogGiocatoreComponent } from './component/dialog-giocatore/dialog-gi
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import { HeaderComponent } from './component/header/header.component';
 import { CalendarioComponent } from './component/calendario/calendario.component';
-import { DialogCalendarioComponent } from './component/dialog-calendario/dialog-calendario.component';
-import { DialogRisultatoComponent } from './component/dialog-risultato/dialog-risultato.component';
 
 // Firebase imports
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
@@ -32,8 +30,6 @@ import { ImpostazioniComponent } from './component/impostazioni/impostazioni.com
     DialogGiocatoreComponent,
     HeaderComponent,
     CalendarioComponent,
-    DialogCalendarioComponent,
-    DialogRisultatoComponent,
     CapitalizePipe,
     FooterComponent,
     LoginComponent,

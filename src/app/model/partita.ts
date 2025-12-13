@@ -8,3 +8,9 @@ export interface Partita {
   ospite: string;
   risultato?: string;
 }
+
+export interface PartiteData {
+  lastUpdate: Date;
+  season: string;
+  partite: Partita[];
+}

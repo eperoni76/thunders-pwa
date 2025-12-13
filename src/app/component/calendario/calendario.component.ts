@@ -1,12 +1,9 @@
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CalendarioService } from '../../service/calendario.service';
 import { PdfService } from '../../service/pdf.service';
 import { Partita } from '../../model/partita';
-import { DialogRisultatoComponent } from '../dialog-risultato/dialog-risultato.component';
 import { Subscription } from 'rxjs';
 import { AuthService } from '../../service/auth.service';
-
-declare var bootstrap: any;
 
 @Component({
   selector: 'app-calendario',
@@ -17,11 +14,9 @@ export class CalendarioComponent implements OnInit, OnDestroy {
 
   partite: Partita[] = [];
   filteredPartite: Partita[] = [];
-  selectedPartita: Partita | null = null;
-  isEditMode: boolean = false;
-  selectedIndex: number | null = null;
+  lastUpdate: Date | null = null;
+  season: string = '';
   private partiteSubscription?: Subscription;
-  @ViewChild(DialogRisultatoComponent) dialogRisultatoComp!: DialogRisultatoComponent;
 
   // Filtri per colonna
   filters = {
@@ -45,14 +40,12 @@ export class CalendarioComponent implements OnInit, OnDestroy {
     public authService: AuthService
   ) { }
 
-  shouldShowActionsColumn(): boolean {
-    return true; // La colonna azioni è sempre visibile perché tutti possono aggiungere al calendario
-  }
-
   ngOnInit(): void {
-    this.partiteSubscription = this.calendarioService.getPartiteObservable().subscribe(
-      partite => {
-        this.partite = partite;
+    this.partiteSubscription = this.calendarioService.getPartiteWithMetadataObservable().subscribe(
+      data => {
+        this.partite = data.partite || [];
+        this.lastUpdate = data.lastUpdate;
+        this.season = data.season;
         this.applyFilters();
       }
     );
@@ -66,6 +59,10 @@ export class CalendarioComponent implements OnInit, OnDestroy {
 
   get partiteRimanenti(): number {
     return this.partite.filter(p => !p.risultato || p.risultato.trim() === '').length;
+  }
+
+  get campionato(): string {
+    return this.partite.length > 0 ? this.partite[0].campionato : '';
   }
 
   get partiteOrdinateEFiltrate(): Partita[] {
@@ -148,64 +145,6 @@ export class CalendarioComponent implements OnInit, OnDestroy {
     this.applyFilters();
   }
 
-  openDialog(index?: number): void {
-    if (index !== undefined) {
-      this.selectedPartita = { ...this.filteredPartite[index] };
-      // Trova l'indice originale nell'array delle partite
-      this.selectedIndex = this.partite.findIndex(p => (p as any).id === (this.filteredPartite[index] as any).id);
-      this.isEditMode = true;
-    } else {
-      this.selectedPartita = null;
-      this.selectedIndex = null;
-      this.isEditMode = false;
-    }
-  }
-
-  async handleSave(partita: Partita): Promise<void> {
-    try {
-      if (this.isEditMode && this.selectedIndex !== null) {
-        const partitaId = (this.partite[this.selectedIndex] as any).id;
-        const { id, ...partitaData } = partita as any;
-        await this.calendarioService.updatePartita(partitaId, partitaData);
-      } else {
-        await this.calendarioService.addPartita(partita);
-      }
-      this.closeModal();
-      this.handleClose();
-    } catch (error) {
-      console.error('Errore nel salvataggio della partita:', error);
-      alert('Errore nel salvataggio. Riprova.');
-    }
-  }
-
-  handleClose(): void {
-    this.selectedPartita = null;
-    this.selectedIndex = null;
-    this.isEditMode = false;
-  }
-
-  async eliminaPartita(index: number): Promise<void> {
-    if (confirm('Sei sicuro di voler eliminare questa partita?')) {
-      try {
-        const partitaId = (this.filteredPartite[index] as any).id;
-        await this.calendarioService.deletePartita(partitaId);
-      } catch (error) {
-        console.error('Errore nell\'eliminazione della partita:', error);
-        alert('Errore nell\'eliminazione. Riprova.');
-      }
-    }
-  }
-
-  private closeModal(): void {
-    const modalElement = document.getElementById('calendarioModal');
-    if (modalElement) {
-      const modal = bootstrap.Modal.getInstance(modalElement);
-      if (modal) {
-        modal.hide();
-      }
-    }
-  }
-
   isVittoria(partita: Partita): boolean | null {
     if (!partita.risultato) return null;
 
@@ -226,130 +165,6 @@ export class CalendarioComponent implements OnInit, OnDestroy {
       return punteggioOspitante > punteggioOspite;
     } else {
       return punteggioOspite > punteggioOspitante;
-    }
-  }
-
-  handleFileUpload(event: any): void {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    if (!file.name.endsWith('.json')) {
-      alert('Seleziona un file JSON valido.');
-      event.target.value = '';
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = async (e: any) => {
-      try {
-        const data = JSON.parse(e.target.result);
-
-        if (!Array.isArray(data)) {
-          alert('Il file JSON deve contenere un array di partite.');
-          event.target.value = '';
-          return;
-        }
-
-        await this.parsePartiteFromJSON(data);
-        event.target.value = '';
-      } catch (err) {
-        console.error('Errore nel parsing del file JSON:', err);
-        alert('Errore nel parsing del file JSON. Assicurati che il formato sia corretto.');
-        event.target.value = '';
-      }
-    };
-
-    reader.readAsText(file);
-  }
-
-  private async parsePartiteFromJSON(data: any[]): Promise<void> {
-    const partite = [];
-
-    for (const item of data) {
-      if (item.numeroGara && item.data && item.ora && item.campionato &&
-          item.indirizzo && item.ospitante && item.ospite) {
-        const partita = {
-          numeroGara: parseInt(item.numeroGara),
-          data: item.data,
-          ora: item.ora,
-          campionato: item.campionato,
-          indirizzo: item.indirizzo,
-          ospitante: item.ospitante,
-          ospite: item.ospite,
-          risultato: item.risultato || ''
-        };
-        partite.push(partita);
-      }
-    }
-
-    if (partite.length > 0) {
-      try {
-        for (const partita of partite) {
-          await this.calendarioService.addPartita(partita);
-        }
-        alert(`${partite.length} partite caricate con successo!`);
-      } catch (error) {
-        console.error('Errore nel caricamento delle partite:', error);
-        alert('Errore nel caricamento. Riprova.');
-      }
-    } else {
-      alert('Nessuna partita valida trovata nel file');
-    }
-  }
-
-  exportToJSON(): void {
-    if (this.partite.length === 0) {
-      alert('Nessuna partita da esportare.');
-      return;
-    }
-
-    const partiteToExport = this.partite.map(p => {
-      const { id, ...partitaData } = p as any;
-      return partitaData;
-    });
-
-    const dataStr = JSON.stringify(partiteToExport, null, 2);
-    const dataBlob = new Blob([dataStr], { type: 'application/json' });
-
-    const url = window.URL.createObjectURL(dataBlob);
-    const link = document.createElement('a');
-    link.href = url;
-
-    const today = new Date().toISOString().split('T')[0];
-    link.download = `partite_${today}.json`;
-
-    link.click();
-    window.URL.revokeObjectURL(url);
-  }
-
-  apriDialogRisultato(index: number) {
-    this.selectedPartita = this.filteredPartite[index];
-    if (this.dialogRisultatoComp) {
-      this.dialogRisultatoComp.open();
-    }
-  }
-
-  chiudiDialogRisultato() {}
-
-  async salvaRisultato(valori: { ospitante: number; ospite: number }): Promise<void> {
-    if (this.selectedPartita == null) {
-      return;
-    }
-    if (
-      valori.ospitante < 0 || valori.ospitante > 3 ||
-      valori.ospite < 0 || valori.ospite > 3
-    ) {
-      return;
-    }
-
-    try {
-      this.selectedPartita.risultato = `${valori.ospitante}-${valori.ospite}`;
-      const partitaId = (this.selectedPartita as any).id;
-      const { id, ...partitaData } = this.selectedPartita as any;
-      await this.calendarioService.updatePartita(partitaId, partitaData);
-    } catch (error) {
-      console.error('Errore nel salvataggio del risultato:', error);
-      alert('Errore nel salvataggio. Riprova.');
     }
   }
 
@@ -374,7 +189,7 @@ export class CalendarioComponent implements OnInit, OnDestroy {
     }
   }
 
-   aggiungiAlCalendario(index: number): void {
+  aggiungiAlCalendario(index: number): void {
     const partita = this.filteredPartite[index];
     
     // Parsing della data e ora
@@ -449,6 +264,31 @@ export class CalendarioComponent implements OnInit, OnDestroy {
       link.download = `partita-${partita.numeroGara}.ics`;
       link.click();
       window.URL.revokeObjectURL(url);
+    }
+  }
+
+  formatDataCompleta(dataString: string): string {
+    if (!dataString) return '';
+    
+    try {
+      // Converti la stringa ISO in Date
+      const data = new Date(dataString);
+      
+      // Array dei giorni della settimana abbreviati
+      const giorni = ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab'];
+      
+      // Ottieni il giorno della settimana
+      const giornoSettimana = giorni[data.getDay()];
+      
+      // Ottieni giorno, mese e anno
+      const giorno = String(data.getDate()).padStart(2, '0');
+      const mese = String(data.getMonth() + 1).padStart(2, '0');
+      const anno = data.getFullYear();
+      
+      // Restituisci nel formato "Sab 13/12/2025"
+      return `${giornoSettimana} ${giorno}/${mese}/${anno}`;
+    } catch (error) {
+      return dataString; // Se c'è un errore, restituisci la stringa originale
     }
   }
 
