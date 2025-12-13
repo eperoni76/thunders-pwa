@@ -1,0 +1,21 @@
+/* Header Styles */
+.card-header .btn-primary {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  backdrop-filter: blur(10px);
+  transition: all 0.2s;
+  font-weight: 500;
+}
+
+.card-header .btn-primary:hover {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.3);
+  color: white;
+  transform: translateY(-1px);
+}
+
+.card-header .btn-primary:active {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(0);
+}
