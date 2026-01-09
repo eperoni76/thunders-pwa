@@ -31,7 +31,7 @@ export class CalendarioComponent implements OnInit, OnDestroy {
   };
 
   // Ordinamento
-  sortColumn: string = 'numeroGara';
+  sortColumn: string = 'data';
   sortDirection: 'asc' | 'desc' = 'asc';
 
   constructor(
