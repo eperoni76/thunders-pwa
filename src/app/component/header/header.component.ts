@@ -21,6 +21,11 @@ export class HeaderComponent implements OnInit {
     this.authService.currentUser.subscribe(user => {
       this.currentUser = user;
     });
+    
+    // Listener per l'evento dal footer
+    window.addEventListener('toggleMenu', () => {
+      this.toggleMenu();
+    });
   }
 
   toggleMenu() {
@@ -29,6 +34,13 @@ export class HeaderComponent implements OnInit {
 
   isAdmin(): boolean {
     return this.authService.hasEditPermission();
+  }
+
+  getInitials(): string {
+    if (!this.currentUser) return '';
+    const nome = this.currentUser.nome?.charAt(0) || '';
+    const cognome = this.currentUser.cognome?.charAt(0) || '';
+    return (nome + cognome).toUpperCase();
   }
 
   logout() {

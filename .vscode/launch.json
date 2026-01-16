@@ -8,7 +8,7 @@
       "request": "launch",
       "preLaunchTask": "npm: start",
       "url": "http://localhost:4200/",
-      "runtimeExecutable": "C:\\Users\\epero\\AppData\\Local\\BraveSoftware\\Brave-Browser\\Application\\brave.exe"
+      "runtimeExecutable": "/Applications/Brave Browser.app/Contents/MacOS/Brave Browser"
     },
     {
       "name": "ng test",
@@ -16,7 +16,7 @@
       "request": "launch",
       "preLaunchTask": "npm: test",
       "url": "http://localhost:9876/debug.html",
-      "runtimeExecutable": "C:\\Users\\epero\\AppData\\Local\\BraveSoftware\\Brave-Browser\\Application\\brave.exe"
+      "runtimeExecutable": "/Applications/Brave Browser.app/Contents/MacOS/Brave Browser"
     }
   ]
 }

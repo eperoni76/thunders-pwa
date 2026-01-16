@@ -1,32 +1,105 @@
-.navbar {
-  min-height: 56px;
-  padding-bottom: calc(0.5rem + env(safe-area-inset-bottom));
-  z-index: 1000;
+.bottom-nav {
+  z-index: 1030;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(10px);
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
-/* Nascondi footer su desktop */
-@media (min-width: 768px) {
-  .navbar {
-    display: none;
+.nav-container {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: 75px;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  color: #6c757d;
+  padding: 0.5rem;
+  border-radius: 12px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  gap: 0.25rem;
+}
+
+.nav-icon {
+  font-size: 1.5rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+}
+
+.nav-item:not(.active):active .nav-icon {
+  transform: scale(0.9);
+}
+
+.nav-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 0.8;
+}
+
+/* Stile per item attivo */
+.nav-item.active {
+  color: var(--bs-primary);
+}
+
+.nav-item.active .nav-icon {
+  background: linear-gradient(135deg, rgba(13, 110, 253, 0.15) 0%, rgba(13, 110, 253, 0.25) 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(13, 110, 253, 0.2);
+}
+
+.nav-item.active .nav-label {
+  font-weight: 600;
+  opacity: 1;
+}
+
+/* Animazione pulse per l'item attivo */
+@keyframes pulse {
+  0% {
+    box-shadow: 0 4px 12px rgba(13, 110, 253, 0.2);
+  }
+  50% {
+    box-shadow: 0 4px 16px rgba(13, 110, 253, 0.3);
+  }
+  100% {
+    box-shadow: 0 4px 12px rgba(13, 110, 253, 0.2);
   }
 }
 
-.navbar-brand {
-  font-weight: bold;
-  font-size: 1rem;
+.nav-item.active .nav-icon {
+  animation: pulse 2s ease-in-out infinite;
 }
 
-.instagram-link {
-  color: white;
-  font-size: 1.5rem;
-  text-decoration: none;
-  transition: all 0.15s ease-in-out;
-  margin-right: 0.75rem;
-  padding-right: env(safe-area-inset-right, 0);
-}
-
-.instagram-link:hover {
-  color: rgba(255, 255, 255, 0.8);
-  transform: scale(1.1);
+/* Hover effect per desktop */
+@media (hover: hover) {
+  .nav-item:hover:not(.active) {
+    color: var(--bs-primary);
+  }
+  
+  .nav-item:hover:not(.active) .nav-icon {
+    background: rgba(13, 110, 253, 0.08);
+    transform: translateY(-2px);
+  }
+  
+  .nav-item:hover:not(.active) .nav-label {
+    opacity: 1;
+  }
 }
 

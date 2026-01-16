@@ -1,8 +1,41 @@
-<nav class="navbar navbar-dark bg-primary fixed-bottom">
-  <div class="container-fluid d-flex justify-content-center align-items-center gap-2">
-    <span class="navbar-brand mb-0">Seguici su Instagram!</span>
-    <a href="https://www.instagram.com/thunders.team_/" target="_blank" rel="noopener noreferrer" class="instagram-link">
-      <i class="bi bi-instagram"></i>
+<nav class="bottom-nav bg-white fixed-bottom shadow-lg d-md-none">
+  <div class="nav-container">
+    <a routerLink="/home" 
+       routerLinkActive="active" 
+       class="nav-item"
+       [class.active]="isActive('/home')">
+      <div class="nav-icon">
+        <i class="bi bi-house-door-fill"></i>
+      </div>
+      <span class="nav-label">Home</span>
+    </a>
+    
+    <a routerLink="/calendario" 
+       routerLinkActive="active" 
+       class="nav-item"
+       [class.active]="isActive('/calendario')">
+      <div class="nav-icon">
+        <i class="bi bi-calendar-event-fill"></i>
+      </div>
+      <span class="nav-label">Calendario</span>
+    </a>
+    
+    <a routerLink="/classifica" 
+       routerLinkActive="active" 
+       class="nav-item"
+       [class.active]="isActive('/classifica')">
+      <div class="nav-icon">
+        <i class="bi bi-trophy-fill"></i>
+      </div>
+      <span class="nav-label">Classifica</span>
+    </a>
+    
+    <a (click)="openMenu()" 
+       class="nav-item">
+      <div class="nav-icon">
+        <i class="bi bi-grid-fill"></i>
+      </div>
+      <span class="nav-label">Altro</span>
     </a>
   </div>
 </nav>

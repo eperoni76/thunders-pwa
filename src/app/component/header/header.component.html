@@ -1,15 +1,8 @@
 <nav class="navbar navbar-dark bg-primary d-md-none">
-  <div class="container-fluid">
-    <button class="navbar-toggler" type="button" (click)="toggleMenu()">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <span class="navbar-brand mx-auto">
+  <div class="container-fluid justify-content-center">
+    <span class="navbar-brand">
       PuntoVolley Thunders <i class="bi bi-lightning-fill"></i>
     </span>
-    <a href="assets/files/elenco_tesserati_2526.pdf" download class="btn btn-light download-btn ms-auto">
-      <i class="bi bi-download"></i>
-      <span class="desktop-label">Elenco tesserati</span>
-    </a>
   </div>
 </nav>
 
@@ -121,13 +114,6 @@
       </a>
     </div>
     <ul class="nav flex-column menu-items">
-      <li class="nav-item">
-        <a class="nav-link menu-link" routerLink="/home" routerLinkActive="active" (click)="toggleMenu()">
-          <i class="bi bi-house-door-fill me-3"></i>
-          <span>Home</span>
-          <i class="bi bi-chevron-right ms-auto"></i>
-        </a>
-      </li>
       <li class="nav-item" *ngIf="isAdmin()">
         <a class="nav-link menu-link" routerLink="/squadra" routerLinkActive="active" (click)="toggleMenu()">
           <i class="bi bi-people-fill me-3"></i>
@@ -135,24 +121,24 @@
           <i class="bi bi-chevron-right ms-auto"></i>
         </a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link menu-link" routerLink="/calendario" routerLinkActive="active" (click)="toggleMenu()">
-          <i class="bi bi-calendar-event-fill me-3"></i>
-          <span>Calendario</span>
-          <i class="bi bi-chevron-right ms-auto"></i>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link menu-link" routerLink="/classifica" routerLinkActive="active" (click)="toggleMenu()">
-          <i class="bi bi-trophy-fill me-3"></i>
-          <span>Classifica</span>
-          <i class="bi bi-chevron-right ms-auto"></i>
-        </a>
-      </li>
       <li class="nav-item" *ngIf="isAdmin()">
         <a class="nav-link menu-link" routerLink="/impostazioni" routerLinkActive="active" (click)="toggleMenu()">
           <i class="bi bi-gear-fill me-3"></i>
           <span>Impostazioni</span>
+          <i class="bi bi-chevron-right ms-auto"></i>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="https://www.instagram.com/thunders.team_/" target="_blank" rel="noopener noreferrer" class="nav-link menu-link instagram-link">
+          <i class="bi bi-instagram me-3"></i>
+          <span>Seguici su Instagram!</span>
+          <i class="bi bi-box-arrow-up-right ms-auto"></i>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="assets/files/elenco_tesserati_2526.pdf" download class="nav-link menu-link download-link">
+          <i class="bi bi-download me-3"></i>
+          <span>Elenco tesserati</span>
           <i class="bi bi-chevron-right ms-auto"></i>
         </a>
       </li>

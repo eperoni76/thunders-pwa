@@ -1,7 +1,7 @@
 /* Mobile layout */
 .with-nav {
-  padding-top: 105px;
-  padding-bottom: 80px;
+  padding-top: 56px;
+  padding-bottom: 85px;
   min-height: calc(100vh - 141px);
 }
 
