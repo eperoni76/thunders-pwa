@@ -14,6 +14,7 @@ import { CalendarioComponent } from './component/calendario/calendario.component
 // Firebase imports
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
+import { getStorage, provideStorage } from '@angular/fire/storage';
 import { environment } from '../environments/environment';
 import { CapitalizePipe } from './pipe/capitalize.pipe';
 import { FooterComponent } from './component/footer/footer.component';
@@ -21,6 +22,7 @@ import { LoginComponent } from './component/login/login.component';
 import { ClassificaComponent } from './component/classifica/classifica.component';
 import { ProfiloComponent } from './component/profilo/profilo.component';
 import { ImpostazioniComponent } from './component/impostazioni/impostazioni.component';
+import { ModuliComponent } from './component/moduli/moduli.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +37,8 @@ import { ImpostazioniComponent } from './component/impostazioni/impostazioni.com
     LoginComponent,
     ClassificaComponent,
     ProfiloComponent,
-    ImpostazioniComponent
+    ImpostazioniComponent,
+    ModuliComponent
   ],
   imports: [
     BrowserModule,
@@ -49,7 +52,8 @@ import { ImpostazioniComponent } from './component/impostazioni/impostazioni.com
     ReactiveFormsModule,
     FormsModule,
     provideFirebaseApp(() => initializeApp(environment.firebase)),
-    provideFirestore(() => getFirestore())
+    provideFirestore(() => getFirestore()),
+    provideStorage(() => getStorage())
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,0 +1,331 @@
+<div class="container-fluid py-4 custom-spacing">
+  
+  <!-- Header Desktop -->
+  <div class="desktop-header d-none d-md-block mb-3">
+    <div class="desktop-header-card">
+      <div class="desktop-header-content">
+        <div class="header-left">
+          <div class="header-icon">
+            <i class="bi bi-file-earmark-text-fill"></i>
+          </div>
+          <div class="header-text">
+            <h3 class="header-title">Moduli e Documenti</h3>
+            <div class="header-meta">
+              <span class="meta-item">
+                <i class="bi bi-files me-1"></i>{{ moduli.length }} documenti disponibili
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header Mobile -->
+  <div class="mobile-header d-md-none mb-3">
+    <div class="mobile-header-card">
+      <div class="mobile-header-title">
+        <i class="bi bi-file-earmark-text-fill me-2"></i>
+        <span class="title-text">Moduli</span>
+      </div>
+      <div class="mobile-header-info">
+        <div class="info-item">
+          <span class="info-label">Documenti</span>
+          <span class="info-value">{{ moduli.length }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Messaggi -->
+  <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show" role="alert">
+    <i class="bi bi-check-circle-fill me-2"></i>{{ successMessage }}
+    <button type="button" class="btn-close" (click)="successMessage = ''"></button>
+  </div>
+
+  <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show" role="alert">
+    <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ errorMessage }}
+    <button type="button" class="btn-close" (click)="errorMessage = ''"></button>
+  </div>
+
+  <!-- Sezione Upload (solo per admin) -->
+  <div *ngIf="authService.hasEditPermission()" class="card mb-4 upload-card">
+    <div class="card-header bg-primary text-white" 
+         [class.collapsed-header]="!isUploadSectionOpen"
+         (click)="toggleUploadSection()"
+         style="cursor: pointer;">
+      <div class="d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">
+          <i class="bi bi-cloud-upload-fill me-2"></i>
+          Carica nuovo documento
+        </h5>
+        <i class="bi" [ngClass]="isUploadSectionOpen ? 'bi-chevron-up' : 'bi-chevron-down'"></i>
+      </div>
+    </div>
+    <div class="card-body upload-body" [class.open]="isUploadSectionOpen">
+      <div class="row g-3">
+        <div class="col-md-5">
+          <label for="nomeModulo" class="form-label fw-semibold">Nome documento</label>
+          <input 
+            type="text" 
+            class="form-control" 
+            id="nomeModulo" 
+            [(ngModel)]="nomeModulo"
+            placeholder="Es: Modulo iscrizione 2025/26"
+            [disabled]="isUploading">
+        </div>
+        <div class="col-md-5">
+          <label for="fileInput" class="form-label fw-semibold">Seleziona file</label>
+          <input 
+            type="file" 
+            class="form-control" 
+            id="fileInput"
+            (change)="onFileSelected($event)"
+            [disabled]="isUploading">
+        </div>
+        <div class="col-md-2 d-flex align-items-end">
+          <button 
+            class="btn btn-primary w-100"
+            (click)="caricaFile()"
+            [disabled]="!fileSelezionato || !nomeModulo.trim() || isUploading">
+            <span *ngIf="!isUploading">
+              <i class="bi bi-upload me-1"></i>Carica
+            </span>
+            <span *ngIf="isUploading">
+              <span class="spinner-border spinner-border-sm me-1"></span>
+              Caricamento...
+            </span>
+          </button>
+        </div>
+      </div>
+      <div *ngIf="fileSelezionato" class="mt-2">
+        <small class="text-muted">
+          <i class="bi bi-file-earmark me-1"></i>
+          File selezionato: <strong>{{ fileSelezionato.name }}</strong> 
+          ({{ formattaDimensione(fileSelezionato.size) }})
+        </small>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lista Moduli - Desktop (Tabella) -->
+  <div class="d-none d-md-block">
+    <div *ngIf="isLoading" class="text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Caricamento...</span>
+      </div>
+    </div>
+
+    <div *ngIf="!isLoading && moduli.length === 0" class="text-center py-5 text-muted">
+      <i class="bi bi-inbox fs-1 d-block mb-3"></i>
+      <p class="mb-0">Nessun documento disponibile</p>
+    </div>
+
+    <div *ngIf="!isLoading && moduli.length > 0" class="table-container">
+      <div class="table-wrapper">
+        <table class="table table-hover modern-table">
+          <thead class="table-header sticky-header">
+            <tr>
+              <th (click)="sortBy('nome')" class="sortable">
+                <div class="th-content">
+                  <span>Nome Documento</span>
+                  <i class="bi" [ngClass]="{
+                    'bi-arrow-down': sortColumn === 'nome' && sortDirection === 'asc',
+                    'bi-arrow-up': sortColumn === 'nome' && sortDirection === 'desc',
+                    'bi-arrow-down-up': sortColumn !== 'nome'
+                  }"></i>
+                </div>
+              </th>
+              <th (click)="sortBy('nomeFile')" class="sortable">
+                <div class="th-content">
+                  <span>Nome File</span>
+                  <i class="bi" [ngClass]="{
+                    'bi-arrow-down': sortColumn === 'nomeFile' && sortDirection === 'asc',
+                    'bi-arrow-up': sortColumn === 'nomeFile' && sortDirection === 'desc',
+                    'bi-arrow-down-up': sortColumn !== 'nomeFile'
+                  }"></i>
+                </div>
+              </th>
+              <th (click)="sortBy('caricatoDa')" class="sortable">
+                <div class="th-content">
+                  <span>Caricato da</span>
+                  <i class="bi" [ngClass]="{
+                    'bi-arrow-down': sortColumn === 'caricatoDa' && sortDirection === 'asc',
+                    'bi-arrow-up': sortColumn === 'caricatoDa' && sortDirection === 'desc',
+                    'bi-arrow-down-up': sortColumn !== 'caricatoDa'
+                  }"></i>
+                </div>
+              </th>
+              <th (click)="sortBy('dataCaricamento')" class="sortable">
+                <div class="th-content">
+                  <span>Data Caricamento</span>
+                  <i class="bi" [ngClass]="{
+                    'bi-arrow-down': sortColumn === 'dataCaricamento' && sortDirection === 'asc',
+                    'bi-arrow-up': sortColumn === 'dataCaricamento' && sortDirection === 'desc',
+                    'bi-arrow-down-up': sortColumn !== 'dataCaricamento'
+                  }"></i>
+                </div>
+              </th>
+              <th (click)="sortBy('dimensione')" class="sortable">
+                <div class="th-content">
+                  <span>Dimensione</span>
+                  <i class="bi" [ngClass]="{
+                    'bi-arrow-down': sortColumn === 'dimensione' && sortDirection === 'asc',
+                    'bi-arrow-up': sortColumn === 'dimensione' && sortDirection === 'desc',
+                    'bi-arrow-down-up': sortColumn !== 'dimensione'
+                  }"></i>
+                </div>
+              </th>
+              <th class="actions-column">
+                <div class="th-content">
+                  <span>Azioni</span>
+                  <button class="btn btn-sm btn-link text-white" (click)="clearFilters()" title="Pulisci filtri">
+                    <i class="bi bi-x-circle"></i>
+                  </button>
+                </div>
+              </th>
+            </tr>
+            <tr class="filter-row">
+              <th>
+                <input type="text" class="form-control form-control-sm filter-input" 
+                       [(ngModel)]="filters.nome" 
+                       placeholder="Filtra nome..."
+                       (input)="$event.stopPropagation()">
+              </th>
+              <th>
+                <input type="text" class="form-control form-control-sm filter-input" 
+                       [(ngModel)]="filters.nomeFile" 
+                       placeholder="Filtra file..."
+                       (input)="$event.stopPropagation()">
+              </th>
+              <th>
+                <input type="text" class="form-control form-control-sm filter-input" 
+                       [(ngModel)]="filters.caricatoDa" 
+                       placeholder="Filtra utente..."
+                       (input)="$event.stopPropagation()">
+              </th>
+              <th>
+                <input type="text" class="form-control form-control-sm filter-input" 
+                       [(ngModel)]="filters.dataCaricamento" 
+                       placeholder="Filtra data..."
+                       (input)="$event.stopPropagation()">
+              </th>
+              <th>
+                <input type="text" class="form-control form-control-sm filter-input" 
+                       [(ngModel)]="filters.dimensione" 
+                       placeholder="Filtra dimensione..."
+                       (input)="$event.stopPropagation()">
+              </th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let modulo of moduliFiltrati">
+              <td>
+                <div class="d-flex align-items-center">
+                  <div class="file-icon-small me-2">
+                    <i class="bi" [ngClass]="getIconaFile(modulo.tipo)"></i>
+                  </div>
+                  <strong>{{ modulo.nome }}</strong>
+                </div>
+              </td>
+              <td>{{ modulo.nomeFile }}</td>
+              <td>{{ modulo.caricatoDa }}</td>
+              <td>{{ formatDate(modulo.dataCaricamento) }}</td>
+              <td>{{ formattaDimensione(modulo.dimensione) }}</td>
+              <td class="actions-cell">
+                <button 
+                  class="btn btn-sm btn-primary me-1"
+                  (click)="scaricaModulo(modulo)"
+                  title="Scarica">
+                  <i class="bi bi-download"></i>
+                </button>
+                <button 
+                  *ngIf="authService.hasEditPermission()"
+                  class="btn btn-sm btn-danger"
+                  (click)="eliminaModulo(modulo)"
+                  title="Elimina">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lista Moduli - Mobile -->
+  <div class="d-md-none">
+    <div *ngIf="isLoading" class="text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Caricamento...</span>
+      </div>
+    </div>
+
+    <div *ngIf="!isLoading && moduli.length === 0" class="text-center py-5 text-muted">
+      <i class="bi bi-inbox fs-1 d-block mb-3"></i>
+      <p class="mb-0">Nessun documento disponibile</p>
+    </div>
+
+    <div *ngIf="!isLoading && moduli.length > 0" class="accordion" id="moduliAccordion">
+      <div *ngFor="let modulo of moduli; let i = index" class="accordion-item mobile-modulo-card">
+        <h2 class="accordion-header" [attr.id]="'heading' + i">
+          <button class="accordion-button collapsed mobile-modulo-header"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  [attr.data-bs-target]="'#collapse' + i"
+                  aria-expanded="false"
+                  [attr.aria-controls]="'collapse' + i">
+            <div class="file-icon-mobile me-3">
+              <i class="bi" [ngClass]="getIconaFile(modulo.tipo)"></i>
+            </div>
+            <div class="flex-grow-1">
+              <div class="modulo-nome">{{ modulo.nome }}</div>
+              <small class="text-muted">{{ formattaDimensione(modulo.dimensione) }}</small>
+            </div>
+          </button>
+        </h2>
+        <div [attr.id]="'collapse' + i"
+             class="accordion-collapse collapse"
+             [attr.aria-labelledby]="'heading' + i"
+             data-bs-parent="#moduliAccordion">
+          <div class="accordion-body mobile-modulo-details">
+            <div class="detail-row">
+              <div class="detail-item">
+                <span class="detail-label">Nome file</span>
+                <span class="detail-value">{{ modulo.nomeFile }}</span>
+              </div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-item">
+                <span class="detail-label">Caricato il</span>
+                <span class="detail-value">{{ modulo.dataCaricamento | date:'dd/MM/yyyy HH:mm' }}</span>
+              </div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-item">
+                <span class="detail-label">Caricato da</span>
+                <span class="detail-value">{{ modulo.caricatoDa }}</span>
+              </div>
+            </div>
+            <div class="action-buttons mt-3">
+              <button 
+                class="btn btn-primary btn-sm flex-fill"
+                (click)="scaricaModulo(modulo)">
+                <i class="bi bi-download me-1"></i>Scarica
+              </button>
+              <button 
+                *ngIf="authService.hasEditPermission()"
+                class="btn btn-danger btn-sm"
+                (click)="eliminaModulo(modulo)">
+                <i class="bi bi-trash me-1"></i>Elimina
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
