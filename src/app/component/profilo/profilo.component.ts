@@ -85,7 +85,10 @@ export class ProfiloComponent implements OnInit {
 
   onClickCaricaFoto(): void {
     if (this.isMobile) {
-      this.showFotoSourceDialog = true;
+      // Usa setTimeout per evitare conflitti con altri event handler
+      setTimeout(() => {
+        this.showFotoSourceDialog = true;
+      }, 0);
     } else {
       // Desktop: apri direttamente il file picker
       const input = document.getElementById('fotoInputGallery') as HTMLInputElement;
@@ -95,7 +98,10 @@ export class ProfiloComponent implements OnInit {
 
   onClickCaricaCertificato(): void {
     if (this.isMobile) {
-      this.showCertificatoSourceDialog = true;
+      // Usa setTimeout per evitare conflitti con altri event handler
+      setTimeout(() => {
+        this.showCertificatoSourceDialog = true;
+      }, 0);
     } else {
       // Desktop: apri direttamente il file picker
       const input = document.getElementById('certificatoInputGallery') as HTMLInputElement;
@@ -123,15 +129,29 @@ export class ProfiloComponent implements OnInit {
 
     const file = input.files[0];
     
-    // Valida tipo file
-    if (!file.type.startsWith('image/')) {
+    console.log('File selezionato:', file.name, 'Tipo:', file.type, 'Dimensione:', file.size);
+    
+    // Valida tipo file - accetta anche se il tipo è vuoto (alcune fotocamere non impostano il MIME type)
+    if (file.type && !file.type.startsWith('image/')) {
       alert('Seleziona un file immagine valido');
+      input.value = '';
       return;
+    }
+
+    // Se il tipo è vuoto, prova a validare dall'estensione
+    if (!file.type) {
+      const ext = file.name.split('.').pop()?.toLowerCase();
+      if (!ext || !['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'].includes(ext)) {
+        alert('Seleziona un file immagine valido');
+        input.value = '';
+        return;
+      }
     }
 
     // Valida dimensione (max 5MB)
     if (file.size > 5 * 1024 * 1024) {
       alert('Il file è troppo grande. Massimo 5MB');
+      input.value = '';
       return;
     }
 
@@ -172,7 +192,8 @@ export class ProfiloComponent implements OnInit {
       alert('Foto caricata con successo!');
     } catch (error) {
       console.error('Errore durante il caricamento della foto:', error);
-      alert('Errore durante il caricamento della foto');
+      const errorMessage = error instanceof Error ? error.message : 'Errore sconosciuto';
+      alert(`Errore durante il caricamento della foto: ${errorMessage}`);
     } finally {
       this.uploadingFoto = false;
       input.value = '';
@@ -185,18 +206,26 @@ export class ProfiloComponent implements OnInit {
 
     const file = input.files[0];
     
-    // Valida tipo file (PDF o immagine)
+    console.log('Certificato selezionato:', file.name, 'Tipo:', file.type, 'Dimensione:', file.size);
+    
+    // Valida tipo file (PDF o immagine) - accetta anche tipo vuoto per foto da fotocamera
     const isPdf = file.type === 'application/pdf';
-    const isImage = file.type.startsWith('image/');
+    const isImage = file.type ? file.type.startsWith('image/') : true; // Se tipo vuoto, assume immagine
     
     if (!isPdf && !isImage) {
-      alert('Seleziona un file PDF o un\'immagine');
-      return;
+      // Se non è PDF e non è immagine, controlla l'estensione
+      const ext = file.name.split('.').pop()?.toLowerCase();
+      if (!ext || !['pdf', 'jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'].includes(ext)) {
+        alert('Seleziona un file PDF o un\'immagine');
+        input.value = '';
+        return;
+      }
     }
 
     // Valida dimensione (max 10MB)
     if (file.size > 10 * 1024 * 1024) {
       alert('Il file è troppo grande. Massimo 10MB');
+      input.value = '';
       return;
     }
 
@@ -263,7 +292,8 @@ export class ProfiloComponent implements OnInit {
       }
     } catch (error) {
       console.error('Errore durante il caricamento del certificato:', error);
-      alert('Errore durante il caricamento del certificato');
+      const errorMessage = error instanceof Error ? error.message : 'Errore sconosciuto';
+      alert(`Errore durante il caricamento del certificato: ${errorMessage}`);
     } finally {
       this.uploadingCertificato = false;
       input.value = '';
