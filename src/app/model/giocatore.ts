@@ -11,4 +11,7 @@ export interface Giocatore {
   email?: string;
   tagliaDivisa?: string;
   scadenzaCertificatoMedico?: string;
+  fotoUrl?: string;
+  certificatoMedicoUrl?: string;
+  certificatoMedicoNomeFile?: string;
 }
