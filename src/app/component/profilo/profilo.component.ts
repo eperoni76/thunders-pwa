@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../service/auth.service';
 import { GiocatoriService } from '../../service/giocatori.service';
 import { Giocatore } from '../../model/giocatore';
+import { GenericUtils } from '../../utils/generic-utils';
 
 @Component({
   selector: 'app-profilo',
@@ -65,17 +66,6 @@ export class ProfiloComponent implements OnInit {
   }
 
   formatDate(date: string | undefined): string {
-    if (!date) return 'Non specificata';
-    
-    // Se la data è in formato YYYY-MM-DD, convertila in formato italiano DD/MM/YYYY
-    if (date.includes('-')) {
-      const parts = date.split('-');
-      if (parts.length === 3) {
-        return `${parts[2]}/${parts[1]}/${parts[0]}`;
-      }
-    }
-    
-    // Se è già in formato DD/MM/YYYY o altro, restituiscila così com'è
-    return date;
+    return GenericUtils.formatDate(date);
   }
 }

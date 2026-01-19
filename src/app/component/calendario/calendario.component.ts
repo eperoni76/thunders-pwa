@@ -4,6 +4,8 @@ import { PdfService } from '../../service/pdf.service';
 import { Partita } from '../../model/partita';
 import { Subscription } from 'rxjs';
 import { AuthService } from '../../service/auth.service';
+import { GenericUtils } from '../../utils/generic-utils';
+import { Costanti } from 'src/app/utils/costanti';
 
 @Component({
   selector: 'app-calendario',
@@ -169,14 +171,7 @@ export class CalendarioComponent implements OnInit, OnDestroy {
   }
 
   openMaps(indirizzo: string): void {
-    const encodedAddress = encodeURIComponent(indirizzo);
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-
-    if (isMobile) {
-      window.location.href = `https://maps.google.com/?q=${encodedAddress}`;
-    } else {
-      window.open(`https://www.google.com/maps?q=${encodedAddress}`, '_blank');
-    }
+    GenericUtils.openMaps(indirizzo);
   }
 
   async creaListaGara(index: number): Promise<void> {
@@ -191,17 +186,14 @@ export class CalendarioComponent implements OnInit, OnDestroy {
 
   aggiungiAlCalendario(index: number): void {
     const partita = this.filteredPartite[index];
-    
-    // Parsing della data e ora
+
     const dataPartita = new Date(partita.data);
     const [ore, minuti] = partita.ora.split(':');
     dataPartita.setHours(parseInt(ore), parseInt(minuti), 0, 0);
-    
-    // Data fine (assumiamo 2 ore di durata)
+
     const dataFine = new Date(dataPartita);
     dataFine.setHours(dataPartita.getHours() + 2);
-    
-    // Formattazione date per iCalendar (formato: YYYYMMDDTHHMMSS)
+
     const formatDate = (date: Date): string => {
       const year = date.getFullYear();
       const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -216,47 +208,16 @@ export class CalendarioComponent implements OnInit, OnDestroy {
     const dtEnd = formatDate(dataFine);
     const dtStamp = formatDate(new Date());
     
-    // Creazione contenuto iCalendar
-    const icsContent = [
-      'BEGIN:VCALENDAR',
-      'VERSION:2.0',
-      'PRODID:-//PuntoVolley Thunders//Calendario//IT',
-      'CALSCALE:GREGORIAN',
-      'METHOD:PUBLISH',
-      'BEGIN:VEVENT',
-      `DTSTART:${dtStart}`,
-      `DTEND:${dtEnd}`,
-      `DTSTAMP:${dtStamp}`,
-      `UID:partita-${partita.numeroGara}-${dtStamp}@thunders.it`,
-      `SUMMARY:${partita.ospitante} vs ${partita.ospite}`,
-      `DESCRIPTION:Partita ${partita.campionato}\\nGara n. ${partita.numeroGara}`,
-      `LOCATION:${partita.indirizzo}`,
-      'STATUS:CONFIRMED',
-      'SEQUENCE:0',
-      'BEGIN:VALARM',
-      'TRIGGER:-PT1H',
-      'ACTION:DISPLAY',
-      'DESCRIPTION:Partita tra 1 ora',
-      'END:VALARM',
-      'END:VEVENT',
-      'END:VCALENDAR'
-    ].join('\r\n');
+    const icsContent = GenericUtils.getIcsConstants(dtStart, dtEnd, dtStamp, partita);
     
-    // Controlla se è mobile
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    
-    if (isMobile) {
-      // Su mobile, crea un data URL che iOS e Android possono aprire direttamente
+    if (Costanti.isMobile) {
       const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
       const url = URL.createObjectURL(blob);
-      
-      // Apri direttamente (iOS e Android gestiranno il file)
+    
       window.location.href = url;
       
-      // Cleanup dopo un po'
       setTimeout(() => URL.revokeObjectURL(url), 1000);
     } else {
-      // Su desktop, scarica il file
       const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
@@ -268,28 +229,6 @@ export class CalendarioComponent implements OnInit, OnDestroy {
   }
 
   formatDataCompleta(dataString: string): string {
-    if (!dataString) return '';
-    
-    try {
-      // Converti la stringa ISO in Date
-      const data = new Date(dataString);
-      
-      // Array dei giorni della settimana abbreviati
-      const giorni = ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab'];
-      
-      // Ottieni il giorno della settimana
-      const giornoSettimana = giorni[data.getDay()];
-      
-      // Ottieni giorno, mese e anno
-      const giorno = String(data.getDate()).padStart(2, '0');
-      const mese = String(data.getMonth() + 1).padStart(2, '0');
-      const anno = data.getFullYear();
-      
-      // Restituisci nel formato "Sab 13/12/2025"
-      return `${giornoSettimana} ${giorno}/${mese}/${anno}`;
-    } catch (error) {
-      return dataString; // Se c'è un errore, restituisci la stringa originale
-    }
+    return GenericUtils.formatDateWithDay(dataString);
   }
-
 }

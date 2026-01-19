@@ -38,4 +38,6 @@ export class Costanti {
   static readonly SOTTOTITOLO_DEFIBRILLATORE = 'AUTOCERTIFICAZIONE DELL\'ADDETTO ALL\'UTILIZZO DEL DEFIBRILLATORE (ART. 45 E 46 DPR 28 DICEMBRE 2000 N. 445)';
   static readonly TESTO_DICHIARAZIONE_DEFIBRILLATORE = 'CONSAPEVOLE della responsabilità penale e civile derivante da dichiarazioni mendaci, DICHIARA che nella struttura sportiva ove si svolge la gara è presente un defibrillatore semiautomatico esterno conforme alla vigente normativa e che è presente una persona adeguatamente formata al suo utilizzo.';
 
+  static readonly isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
 }
