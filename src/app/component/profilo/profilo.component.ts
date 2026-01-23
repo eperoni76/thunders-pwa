@@ -4,11 +4,6 @@ import { GiocatoriService } from '../../service/giocatori.service';
 import { Giocatore } from '../../model/giocatore';
 import { GenericUtils } from '../../utils/generic-utils';
 import { Storage, ref, uploadBytes, getDownloadURL, deleteObject } from '@angular/fire/storage';
-import * as pdfjsLib from 'pdfjs-dist';
-import { createWorker } from 'tesseract.js';
-
-// Configura PDF.js worker
-pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
 
 @Component({
   selector: 'app-profilo',
@@ -252,44 +247,29 @@ export class ProfiloComponent implements OnInit {
       const certificatoRef = ref(this.storage, `giocatori/${giocatoreId}/certificato`);
       await uploadBytes(certificatoRef, file);
       const certificatoMedicoUrl = await getDownloadURL(certificatoRef);
-
-      // Prova ad estrarre la data di scadenza
-      const dataScadenza = await this.estraiDataScadenza(file);
       
       // Aggiorna Firestore
-      const updateData: any = { 
+      await this.giocatoriService.updateGiocatore(giocatoreId, { 
         certificatoMedicoUrl,
         certificatoMedicoNomeFile: file.name
-      };
-      
-      if (dataScadenza) {
-        updateData.scadenzaCertificatoMedico = dataScadenza;
-      }
-      
-      await this.giocatoriService.updateGiocatore(giocatoreId, updateData);
+      });
       
       // Aggiorna currentUser
       this.currentUser = { 
         ...this.currentUser, 
         certificatoMedicoUrl,
-        certificatoMedicoNomeFile: file.name,
-        ...(dataScadenza && { scadenzaCertificatoMedico: dataScadenza })
+        certificatoMedicoNomeFile: file.name
       };
       if (this.editedUser) {
         this.editedUser = { 
           ...this.editedUser, 
           certificatoMedicoUrl,
-          certificatoMedicoNomeFile: file.name,
-          ...(dataScadenza && { scadenzaCertificatoMedico: dataScadenza })
+          certificatoMedicoNomeFile: file.name
         };
       }
       localStorage.setItem('currentUser', JSON.stringify(this.currentUser));
 
-      if (dataScadenza) {
-        alert(`Certificato caricato con successo!\n\nData di scadenza rilevata automaticamente: ${this.formatDate(dataScadenza)}`);
-      } else {
-        alert('Certificato caricato con successo!\n\nNon è stato possibile rilevare automaticamente la data di scadenza.');
-      }
+      alert('Certificato caricato con successo!');
     } catch (error) {
       console.error('Errore durante il caricamento del certificato:', error);
       const errorMessage = error instanceof Error ? error.message : 'Errore sconosciuto';
@@ -375,102 +355,5 @@ export class ProfiloComponent implements OnInit {
       console.error('Errore durante la rimozione del certificato:', error);
       alert('Errore durante la rimozione del certificato');
     }
-  }
-
-  private async estraiDataScadenza(file: File): Promise<string | null> {
-    try {
-      let text = '';
-      
-      if (file.type === 'application/pdf') {
-        text = await this.estraiTestoDaPdf(file);
-      } else if (file.type.startsWith('image/')) {
-        text = await this.estraiTestoDaImmagine(file);
-      }
-
-      if (!text) {
-        console.log('Nessun testo estratto dal file');
-        return null;
-      }
-
-      console.log('Testo estratto:', text);
-      return this.trovaDataScadenza(text);
-    } catch (error) {
-      console.error('Errore durante l\'estrazione della data:', error);
-      return null;
-    }
-  }
-
-  private async estraiTestoDaPdf(file: File): Promise<string> {
-    const arrayBuffer = await file.arrayBuffer();
-    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-    let fullText = '';
-
-    // Estrai testo da tutte le pagine (max 3 per performance)
-    const numPages = Math.min(pdf.numPages, 3);
-    for (let i = 1; i <= numPages; i++) {
-      const page = await pdf.getPage(i);
-      const textContent = await page.getTextContent();
-      const pageText = textContent.items.map((item: any) => item.str).join(' ');
-      fullText += pageText + ' ';
-    }
-
-    return fullText;
-  }
-
-  private async estraiTestoDaImmagine(file: File): Promise<string> {
-    const worker = await createWorker('ita+eng');
-    
-    try {
-      const { data } = await worker.recognize(file);
-      return data.text;
-    } finally {
-      await worker.terminate();
-    }
-  }
-
-  private trovaDataScadenza(text: string): string | null {
-    // Pattern per cercare date in vari formati
-    const patterns = [
-      // "Scade il 31/12/2026" o "Scadenza: 31/12/2026"
-      /scad(?:enza|e)?[:\s]*(?:il)?[\s]*(\d{1,2})[\/-](\d{1,2})[\/-](\d{4})/i,
-      // "Valid until 31/12/2026" o "Valido fino al 31/12/2026"
-      /valid(?:o|ità)?[\s]*(?:fino|until)?[\s]*(?:al|to)?[:\s]*(\d{1,2})[\/-](\d{1,2})[\/-](\d{4})/i,
-      // "Expiry date: 31/12/2026"
-      /expir(?:y|ation)?[\s]*date[:\s]*(\d{1,2})[\/-](\d{1,2})[\/-](\d{4})/i,
-      // "31/12/2026" dopo parole chiave
-      /(?:scadenza|scade|valid|valido|expiry|fino)[\s\S]{0,50}?(\d{1,2})[\/-](\d{1,2})[\/-](\d{4})/i,
-      // Data in formato 2026-12-31
-      /scad(?:enza|e)?[:\s]*(?:il)?[\s]*(\d{4})[\/-](\d{1,2})[\/-](\d{1,2})/i,
-    ];
-
-    for (const pattern of patterns) {
-      const match = text.match(pattern);
-      if (match) {
-        let day: string, month: string, year: string;
-        
-        // Gestisci formato YYYY-MM-DD vs DD/MM/YYYY
-        if (match[1].length === 4) {
-          year = match[1];
-          month = match[2].padStart(2, '0');
-          day = match[3].padStart(2, '0');
-        } else {
-          day = match[1].padStart(2, '0');
-          month = match[2].padStart(2, '0');
-          year = match[3];
-        }
-
-        // Valida che sia una data futura e ragionevole (max 5 anni)
-        const dataScadenza = new Date(`${year}-${month}-${day}`);
-        const oggi = new Date();
-        const cinqueAnni = new Date();
-        cinqueAnni.setFullYear(cinqueAnni.getFullYear() + 5);
-
-        if (dataScadenza > oggi && dataScadenza < cinqueAnni) {
-          return `${year}-${month}-${day}`;
-        }
-      }
-    }
-
-    return null;
   }
 }
