@@ -182,7 +182,7 @@ export class ProfiloComponent implements OnInit {
       if (this.editedUser) {
         this.editedUser = { ...this.editedUser, fotoUrl };
       }
-      localStorage.setItem('currentUser', JSON.stringify(this.currentUser));
+      this.authService.updateCurrentUser(this.currentUser);
 
       alert('Foto caricata con successo!');
     } catch (error) {
@@ -267,7 +267,7 @@ export class ProfiloComponent implements OnInit {
           certificatoMedicoNomeFile: file.name
         };
       }
-      localStorage.setItem('currentUser', JSON.stringify(this.currentUser));
+      this.authService.updateCurrentUser(this.currentUser);
 
       alert('Certificato caricato con successo!');
     } catch (error) {
@@ -301,7 +301,7 @@ export class ProfiloComponent implements OnInit {
       if (this.editedUser) {
         this.editedUser = { ...this.editedUser, fotoUrl: undefined };
       }
-      localStorage.setItem('currentUser', JSON.stringify(this.currentUser));
+      this.authService.updateCurrentUser(this.currentUser);
 
       alert('Foto rimossa con successo!');
     } catch (error) {
@@ -348,7 +348,7 @@ export class ProfiloComponent implements OnInit {
           certificatoMedicoNomeFile: undefined
         };
       }
-      localStorage.setItem('currentUser', JSON.stringify(this.currentUser));
+      this.authService.updateCurrentUser(this.currentUser);
 
       alert('Certificato rimosso con successo!');
     } catch (error) {

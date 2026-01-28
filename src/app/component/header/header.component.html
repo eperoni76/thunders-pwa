@@ -20,7 +20,8 @@
          routerLinkActive="active"
          *ngIf="currentUser">
         <div class="user-avatar me-3">
-          <i class="bi bi-person-circle"></i>
+          <i class="bi bi-person-circle" *ngIf="!currentUser.fotoUrl"></i>
+          <img [src]="currentUser.fotoUrl" alt="Foto profilo" class="user-photo" *ngIf="currentUser.fotoUrl">
         </div>
         <div class="flex-grow-1">
           <p class="mb-0 fw-semibold">{{ currentUser.nome | capitalize }} {{ currentUser.cognome | capitalize }}</p>
@@ -107,7 +108,8 @@
          (click)="toggleMenu()" 
          *ngIf="currentUser">
         <div class="user-avatar me-3">
-          <i class="bi bi-person-circle"></i>
+          <i class="bi bi-person-circle" *ngIf="!currentUser.fotoUrl"></i>
+          <img [src]="currentUser.fotoUrl" alt="Foto profilo" class="user-photo" *ngIf="currentUser.fotoUrl">
         </div>
         <div class="flex-grow-1">
           <p class="mb-0 fw-semibold">{{ currentUser.nome | capitalize }} {{ currentUser.cognome | capitalize }}</p>

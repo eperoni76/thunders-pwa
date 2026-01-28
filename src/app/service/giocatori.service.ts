@@ -81,10 +81,16 @@ export class GiocatoriService {
    * Normalizza i dati del giocatore (nome e cognome in lowercase)
    */
   private normalizeGiocatore(giocatore: any): any {
-    return {
-      ...giocatore,
-      nome: giocatore.nome ? giocatore.nome.toLowerCase() : '',
-      cognome: giocatore.cognome ? giocatore.cognome.toLowerCase() : ''
-    };
+    const normalized: any = { ...giocatore };
+    
+    // Normalizza solo se i campi sono presenti nell'oggetto
+    if (giocatore.hasOwnProperty('nome')) {
+      normalized.nome = giocatore.nome ? giocatore.nome.toLowerCase() : '';
+    }
+    if (giocatore.hasOwnProperty('cognome')) {
+      normalized.cognome = giocatore.cognome ? giocatore.cognome.toLowerCase() : '';
+    }
+    
+    return normalized;
   }
 }

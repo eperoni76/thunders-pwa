@@ -58,5 +58,10 @@ export class AuthService {
     if (!user || !giocatore) return false;
     return user.nome === giocatore.nome && user.cognome === giocatore.cognome;
   }
+
+  updateCurrentUser(updatedUser: Giocatore): void {
+    localStorage.setItem(this.STORAGE_KEY, JSON.stringify(updatedUser));
+    this.currentUserSubject.next(updatedUser);
+  }
 }
 
