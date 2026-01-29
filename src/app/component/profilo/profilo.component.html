@@ -16,7 +16,7 @@
         <input type="file" id="fotoInputGallery" accept="image/*" (change)="onFotoSelected($event)" style="display: none;">
         <input type="file" id="fotoInputCamera" accept="image/*" capture="environment" (change)="onFotoSelected($event)" style="display: none;">
         
-        <button class="btn btn-sm btn-light" (click)="onClickCaricaFoto(); $event.stopPropagation()" [disabled]="uploadingFoto">
+        <button class="btn btn-sm btn-light" (click)="onClickCaricaFoto($event)" [disabled]="uploadingFoto">
           <i class="bi" [ngClass]="uploadingFoto ? 'bi-hourglass-split' : 'bi-camera-fill'"></i>
           {{ uploadingFoto ? 'Caricamento...' : (currentUser.fotoUrl ? 'Cambia foto' : 'Carica foto') }}
         </button>
@@ -155,7 +155,7 @@
                 <input type="file" id="certificatoInputGallery" accept="application/pdf,image/*" (change)="onCertificatoSelected($event)" style="display: none;">
                 <input type="file" id="certificatoInputCamera" accept="image/*" capture="environment" (change)="onCertificatoSelected($event)" style="display: none;">
                 
-                <button class="btn btn-outline-primary" (click)="onClickCaricaCertificato(); $event.stopPropagation()" [disabled]="uploadingCertificato">
+                <button class="btn btn-outline-primary" (click)="onClickCaricaCertificato($event)" [disabled]="uploadingCertificato">
                   <i class="bi" [ngClass]="uploadingCertificato ? 'bi-hourglass-split' : 'bi-upload'"></i>
                   {{ uploadingCertificato ? 'Caricamento...' : (currentUser.certificatoMedicoUrl ? 'Sostituisci certificato' : 'Carica certificato (PDF o immagine)') }}
                 </button>
@@ -253,19 +253,19 @@
 
   <!-- Dialog scelta sorgente foto profilo -->
   <div class="modal-backdrop" *ngIf="showFotoSourceDialog" (click)="showFotoSourceDialog = false"></div>
-  <div class="source-dialog" *ngIf="showFotoSourceDialog" (click)="$event.stopPropagation()">
+  <div class="source-dialog" *ngIf="showFotoSourceDialog">
     <div class="source-dialog-header">
       <h5>Seleziona sorgente</h5>
-      <button class="btn-close-dialog" (click)="showFotoSourceDialog = false; $event.stopPropagation()">
+      <button class="btn-close-dialog" (click)="showFotoSourceDialog = false">
         <i class="bi bi-x-lg"></i>
       </button>
     </div>
     <div class="source-dialog-body">
-      <button class="source-option" (click)="scegliSorgenteFoto('fotocamera'); $event.stopPropagation()">
+      <button class="source-option" (click)="scegliSorgenteFoto('fotocamera', $event)">
         <i class="bi bi-camera-fill"></i>
         <span>Scatta foto</span>
       </button>
-      <button class="source-option" (click)="scegliSorgenteFoto('galleria'); $event.stopPropagation()">
+      <button class="source-option" (click)="scegliSorgenteFoto('galleria', $event)">
         <i class="bi bi-images"></i>
         <span>Scegli dalla galleria</span>
       </button>
@@ -274,19 +274,19 @@
 
   <!-- Dialog scelta sorgente certificato -->
   <div class="modal-backdrop" *ngIf="showCertificatoSourceDialog" (click)="showCertificatoSourceDialog = false"></div>
-  <div class="source-dialog" *ngIf="showCertificatoSourceDialog" (click)="$event.stopPropagation()">
+  <div class="source-dialog" *ngIf="showCertificatoSourceDialog">
     <div class="source-dialog-header">
       <h5>Seleziona sorgente</h5>
-      <button class="btn-close-dialog" (click)="showCertificatoSourceDialog = false; $event.stopPropagation()">
+      <button class="btn-close-dialog" (click)="showCertificatoSourceDialog = false">
         <i class="bi bi-x-lg"></i>
       </button>
     </div>
     <div class="source-dialog-body">
-      <button class="source-option" (click)="scegliSorgenteCertificato('fotocamera'); $event.stopPropagation()">
+      <button class="source-option" (click)="scegliSorgenteCertificato('fotocamera', $event)">
         <i class="bi bi-camera-fill"></i>
         <span>Scatta foto</span>
       </button>
-      <button class="source-option" (click)="scegliSorgenteCertificato('galleria'); $event.stopPropagation()">
+      <button class="source-option" (click)="scegliSorgenteCertificato('galleria', $event)">
         <i class="bi bi-images"></i>
         <span>Scegli dalla galleria</span>
       </button>

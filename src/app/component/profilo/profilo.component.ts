@@ -78,12 +78,16 @@ export class ProfiloComponent implements OnInit {
     return GenericUtils.formatDate(date);
   }
 
-  onClickCaricaFoto(): void {
+  onClickCaricaFoto(event?: Event): void {
+    if (event) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+    }
     if (this.isMobile) {
       // Usa setTimeout per evitare conflitti con altri event handler
       setTimeout(() => {
         this.showFotoSourceDialog = true;
-      }, 0);
+      }, 100);
     } else {
       // Desktop: apri direttamente il file picker
       const input = document.getElementById('fotoInputGallery') as HTMLInputElement;
@@ -91,12 +95,16 @@ export class ProfiloComponent implements OnInit {
     }
   }
 
-  onClickCaricaCertificato(): void {
+  onClickCaricaCertificato(event?: Event): void {
+    if (event) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+    }
     if (this.isMobile) {
       // Usa setTimeout per evitare conflitti con altri event handler
       setTimeout(() => {
         this.showCertificatoSourceDialog = true;
-      }, 0);
+      }, 100);
     } else {
       // Desktop: apri direttamente il file picker
       const input = document.getElementById('certificatoInputGallery') as HTMLInputElement;
@@ -104,18 +112,30 @@ export class ProfiloComponent implements OnInit {
     }
   }
 
-  scegliSorgenteFoto(sorgente: 'galleria' | 'fotocamera'): void {
+  scegliSorgenteFoto(sorgente: 'galleria' | 'fotocamera', event?: Event): void {
+    if (event) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+    }
     this.showFotoSourceDialog = false;
-    const inputId = sorgente === 'galleria' ? 'fotoInputGallery' : 'fotoInputCamera';
-    const input = document.getElementById(inputId) as HTMLInputElement;
-    input?.click();
+    setTimeout(() => {
+      const inputId = sorgente === 'galleria' ? 'fotoInputGallery' : 'fotoInputCamera';
+      const input = document.getElementById(inputId) as HTMLInputElement;
+      input?.click();
+    }, 100);
   }
 
-  scegliSorgenteCertificato(sorgente: 'galleria' | 'fotocamera'): void {
+  scegliSorgenteCertificato(sorgente: 'galleria' | 'fotocamera', event?: Event): void {
+    if (event) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+    }
     this.showCertificatoSourceDialog = false;
-    const inputId = sorgente === 'galleria' ? 'certificatoInputGallery' : 'certificatoInputCamera';
-    const input = document.getElementById(inputId) as HTMLInputElement;
-    input?.click();
+    setTimeout(() => {
+      const inputId = sorgente === 'galleria' ? 'certificatoInputGallery' : 'certificatoInputCamera';
+      const input = document.getElementById(inputId) as HTMLInputElement;
+      input?.click();
+    }, 100);
   }
 
   async onFotoSelected(event: Event): Promise<void> {
