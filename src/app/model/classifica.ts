@@ -11,10 +11,16 @@ export interface TeamStanding {
     quozientePunti: number;
 }
 
+export interface SingleStandings {
+    nomeCampionato: string;
+    standings: TeamStanding[];
+}
+
 export interface StandingsData {
     lastUpdate: Date;
     season: string;
-    standings: TeamStanding[];
+    classifiche: SingleStandings[];
+    standings?: TeamStanding[]; // Per retrocompatibilità
 }
 
 // Manteniamo l'alias per retrocompatibilità

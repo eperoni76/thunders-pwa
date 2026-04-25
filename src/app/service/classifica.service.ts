@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Firestore, collection, collectionData, query, orderBy, doc, getDoc } from '@angular/fire/firestore';
+import { Firestore, collection, collectionData } from '@angular/fire/firestore';
 import { Observable, firstValueFrom, map } from 'rxjs';
-import { StandingsData, TeamStanding } from '../model/classifica';
+import { StandingsData, TeamStanding, SingleStandings } from '../model/classifica';
 
 @Injectable({
   providedIn: 'root'
@@ -22,12 +22,12 @@ export class ClassificaService {
       .pipe(
         map(docs => {
           if (docs && docs.length > 0) {
-            // Assumiamo che ci sia un solo documento con i dati della classifica
             const data = docs[0];
             return {
               lastUpdate: data.lastUpdate?.toDate ? data.lastUpdate.toDate() : new Date(data.lastUpdate),
               season: data.season,
-              standings: data.standings || []
+              classifiche: data.classifiche || [],
+              standings: data.standings || [] // Retrocompatibilità
             } as StandingsData;
           }
           return null;
@@ -43,14 +43,40 @@ export class ClassificaService {
   }
 
   /**
-   * Ottiene solo l'array delle squadre in classifica (Observable)
-   * Ordinata per punti in modo decrescente
+   * Ottiene la lista dei campionati disponibili
    */
-  getClassificaObservable(): Observable<TeamStanding[]> {
+  getCampionatiObservable(): Observable<string[]> {
     return this.getStandingsDataObservable().pipe(
       map(data => {
+        if (data && data.classifiche) {
+          return data.classifiche.map(c => c.nomeCampionato);
+        }
+        return [];
+      })
+    );
+  }
+
+  /**
+   * Ottiene la lista dei campionati disponibili (Promise)
+   */
+  async getCampionati(): Promise<string[]> {
+    return await firstValueFrom(this.getCampionatiObservable());
+  }
+
+  /**
+   * Ottiene le squadre di un campionato specifico (Observable)
+   */
+  getClassificaByCampionatoObservable(campionato: string): Observable<TeamStanding[]> {
+    return this.getStandingsDataObservable().pipe(
+      map(data => {
+        if (data && data.classifiche) {
+          const found = data.classifiche.find(c => c.nomeCampionato === campionato);
+          if (found && found.standings) {
+            return [...found.standings].sort((a, b) => (b.punti || 0) - (a.punti || 0));
+          }
+        }
+        // Retrocompatibilità: se non ci sono classifiche multiple, usa la vecchia struttura
         if (data && data.standings) {
-          // Ordina per punti in modo decrescente
           return [...data.standings].sort((a, b) => (b.punti || 0) - (a.punti || 0));
         }
         return [];
@@ -59,9 +85,9 @@ export class ClassificaService {
   }
 
   /**
-   * Ottiene solo l'array delle squadre in classifica (Promise)
+   * Ottiene le squadre di un campionato specifico (Promise)
    */
-  async getClassifica(): Promise<TeamStanding[]> {
-    return await firstValueFrom(this.getClassificaObservable());
+  async getClassificaByCampionato(campionato: string): Promise<TeamStanding[]> {
+    return await firstValueFrom(this.getClassificaByCampionatoObservable(campionato));
   }
 }

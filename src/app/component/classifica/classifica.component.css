@@ -11,6 +11,35 @@
   margin-top: -20px;
 }
 
+.campionato-filter-chips {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.campionato-chip {
+  border: 1px solid #d0d7e2;
+  background: #f8f9fb;
+  color: #4b5563;
+  border-radius: 999px;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.campionato-chip.active {
+  background: #e8f0ff;
+  border-color: #6ea8fe;
+  color: #0d6efd;
+  box-shadow: 0 1px 4px rgba(13, 110, 253, 0.15);
+}
+
+.campionato-chip:hover {
+  border-color: #9fb8e8;
+}
+
 .table {
   margin-bottom: 0;
 }

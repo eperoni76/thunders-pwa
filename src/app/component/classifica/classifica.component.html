@@ -1,4 +1,15 @@
 <div class="container-fluid py-4 custom-spacing">
+  <!-- Chips filtro campionati -->
+  <div class="campionato-filter-chips mb-3" *ngIf="showChips">
+    <button *ngFor="let camp of campionati"
+            type="button"
+            class="campionato-chip"
+            [class.active]="selectedCampionato === camp"
+            (click)="setSelectedCampionato(camp)">
+      {{ camp }}
+    </button>
+  </div>
+
   <div class="row">
     <div class="col-12">
       <!-- Header Desktop -->
@@ -10,7 +21,7 @@
                 <i class="bi bi-trophy-fill"></i>
               </div>
               <div class="header-text">
-                <h3 class="header-title">Classifica</h3>
+                <h3 class="header-title">Classifica<span *ngIf="selectedCampionato"> - {{ selectedCampionato }}</span></h3>
                 <div class="header-meta">
                   <span class="meta-item" *ngIf="season">
                     <i class="bi bi-calendar3 me-1"></i>{{ season }}
@@ -78,7 +89,7 @@
         <div class="mobile-header-card">
           <div class="mobile-header-title">
             <i class="bi bi-trophy-fill me-2"></i>
-            <span class="title-text">Classifica</span>
+            <span class="title-text">Classifica<span *ngIf="selectedCampionato"> - {{ selectedCampionato }}</span></span>
           </div>
           <div class="mobile-header-info">
             <div class="info-item" *ngIf="season">
