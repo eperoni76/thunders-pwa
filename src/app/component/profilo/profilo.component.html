@@ -254,11 +254,11 @@
     </div>
 
   <!-- Dialog scelta sorgente foto profilo -->
-  <div class="modal-backdrop" *ngIf="showFotoSourceDialog" (click)="showFotoSourceDialog = false"></div>
+  <div class="modal-backdrop" *ngIf="showFotoSourceDialog" (click)="closeSourceDialogs($event)"></div>
   <div class="source-dialog" *ngIf="showFotoSourceDialog">
     <div class="source-dialog-header">
       <h5>Seleziona sorgente</h5>
-      <button class="btn-close-dialog" (click)="showFotoSourceDialog = false">
+      <button class="btn-close-dialog" (click)="closeSourceDialogs($event)">
         <i class="bi bi-x-lg"></i>
       </button>
     </div>
@@ -275,11 +275,11 @@
   </div>
 
   <!-- Dialog scelta sorgente certificato -->
-  <div class="modal-backdrop" *ngIf="showCertificatoSourceDialog" (click)="showCertificatoSourceDialog = false"></div>
+  <div class="modal-backdrop" *ngIf="showCertificatoSourceDialog" (click)="closeSourceDialogs($event)"></div>
   <div class="source-dialog" *ngIf="showCertificatoSourceDialog">
     <div class="source-dialog-header">
       <h5>Seleziona sorgente</h5>
-      <button class="btn-close-dialog" (click)="showCertificatoSourceDialog = false">
+      <button class="btn-close-dialog" (click)="closeSourceDialogs($event)">
         <i class="bi bi-x-lg"></i>
       </button>
     </div>

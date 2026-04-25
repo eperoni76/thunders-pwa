@@ -3,7 +3,8 @@
   border-top: 1px solid rgba(0, 0, 0, 0.08);
   backdrop-filter: blur(10px);
   background-color: rgba(255, 255, 255, 0.95) !important;
-  padding-bottom: env(safe-area-inset-bottom);
+  bottom: 0;
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 22px);
 }
 
 .nav-container {
@@ -92,12 +93,12 @@
   .nav-item:hover:not(.active) {
     color: var(--bs-primary);
   }
-  
+
   .nav-item:hover:not(.active) .nav-icon {
     background: rgba(13, 110, 253, 0.08);
     transform: translateY(-2px);
   }
-  
+
   .nav-item:hover:not(.active) .nav-label {
     opacity: 1;
   }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { AuthService } from '../../service/auth.service';
 import { GiocatoriService } from '../../service/giocatori.service';
 import { Giocatore } from '../../model/giocatore';
@@ -19,6 +19,8 @@ export class ProfiloComponent implements OnInit {
   isMobile = false;
   showFotoSourceDialog = false;
   showCertificatoSourceDialog = false;
+  private dialogHistoryPushed = false;
+  private skipNextPopstateHandler = false;
 
   constructor(
     private authService: AuthService,
@@ -28,7 +30,7 @@ export class ProfiloComponent implements OnInit {
 
   ngOnInit(): void {
     this.isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    
+
     this.authService.currentUser.subscribe(user => {
       this.currentUser = user;
       if (user) {
@@ -53,7 +55,7 @@ export class ProfiloComponent implements OnInit {
           alert('Impossibile salvare: ID giocatore non trovato');
           return;
         }
-        
+
         await this.giocatoriService.updateGiocatore(giocatoreId, this.editedUser);
         // Update current user in auth service
         localStorage.setItem('currentUser', JSON.stringify(this.editedUser));
@@ -78,16 +80,81 @@ export class ProfiloComponent implements OnInit {
     return GenericUtils.formatDate(date);
   }
 
-  onClickCaricaFoto(event?: Event): void {
-    if (event) {
-      event.preventDefault();
-      event.stopImmediatePropagation();
+  private stopClickEvent(event?: Event): void {
+    if (!event) {
+      return;
     }
+
+    event.preventDefault();
+    event.stopPropagation();
+  }
+
+  private hasOpenSourceDialog(): boolean {
+    return this.showFotoSourceDialog || this.showCertificatoSourceDialog;
+  }
+
+  private ensureDialogHistoryEntry(): void {
+    if (!this.isMobile || this.dialogHistoryPushed) {
+      return;
+    }
+
+    history.pushState({ sourceDialog: true }, '');
+    this.dialogHistoryPushed = true;
+  }
+
+  private openFotoSourceDialog(): void {
+    this.showCertificatoSourceDialog = false;
+    this.showFotoSourceDialog = true;
+    this.ensureDialogHistoryEntry();
+  }
+
+  private openCertificatoSourceDialog(): void {
+    this.showFotoSourceDialog = false;
+    this.showCertificatoSourceDialog = true;
+    this.ensureDialogHistoryEntry();
+  }
+
+  closeSourceDialogs(event?: Event): void {
+    this.stopClickEvent(event);
+
+    if (!this.hasOpenSourceDialog()) {
+      return;
+    }
+
+    this.showFotoSourceDialog = false;
+    this.showCertificatoSourceDialog = false;
+
+    if (this.dialogHistoryPushed) {
+      this.skipNextPopstateHandler = true;
+      this.dialogHistoryPushed = false;
+      history.back();
+    }
+  }
+
+  @HostListener('window:keydown.escape')
+  onEscapePressed(): void {
+    this.closeSourceDialogs();
+  }
+
+  @HostListener('window:popstate')
+  onPopState(): void {
+    if (this.skipNextPopstateHandler) {
+      this.skipNextPopstateHandler = false;
+      return;
+    }
+
+    if (this.hasOpenSourceDialog()) {
+      this.showFotoSourceDialog = false;
+      this.showCertificatoSourceDialog = false;
+      this.dialogHistoryPushed = false;
+    }
+  }
+
+  onClickCaricaFoto(event?: Event): void {
+    this.stopClickEvent(event);
+
     if (this.isMobile) {
-      // Usa setTimeout per evitare conflitti con altri event handler
-      setTimeout(() => {
-        this.showFotoSourceDialog = true;
-      }, 100);
+      this.openFotoSourceDialog();
     } else {
       // Desktop: apri direttamente il file picker
       const input = document.getElementById('fotoInputGallery') as HTMLInputElement;
@@ -96,15 +163,10 @@ export class ProfiloComponent implements OnInit {
   }
 
   onClickCaricaCertificato(event?: Event): void {
-    if (event) {
-      event.preventDefault();
-      event.stopImmediatePropagation();
-    }
+    this.stopClickEvent(event);
+
     if (this.isMobile) {
-      // Usa setTimeout per evitare conflitti con altri event handler
-      setTimeout(() => {
-        this.showCertificatoSourceDialog = true;
-      }, 100);
+      this.openCertificatoSourceDialog();
     } else {
       // Desktop: apri direttamente il file picker
       const input = document.getElementById('certificatoInputGallery') as HTMLInputElement;
@@ -113,29 +175,27 @@ export class ProfiloComponent implements OnInit {
   }
 
   scegliSorgenteFoto(sorgente: 'galleria' | 'fotocamera', event?: Event): void {
-    if (event) {
-      event.preventDefault();
-      event.stopImmediatePropagation();
-    }
-    this.showFotoSourceDialog = false;
+    this.stopClickEvent(event);
+
+    this.closeSourceDialogs();
+
     setTimeout(() => {
       const inputId = sorgente === 'galleria' ? 'fotoInputGallery' : 'fotoInputCamera';
       const input = document.getElementById(inputId) as HTMLInputElement;
       input?.click();
-    }, 100);
+    }, 0);
   }
 
   scegliSorgenteCertificato(sorgente: 'galleria' | 'fotocamera', event?: Event): void {
-    if (event) {
-      event.preventDefault();
-      event.stopImmediatePropagation();
-    }
-    this.showCertificatoSourceDialog = false;
+    this.stopClickEvent(event);
+
+    this.closeSourceDialogs();
+
     setTimeout(() => {
       const inputId = sorgente === 'galleria' ? 'certificatoInputGallery' : 'certificatoInputCamera';
       const input = document.getElementById(inputId) as HTMLInputElement;
       input?.click();
-    }, 100);
+    }, 0);
   }
 
   async onFotoSelected(event: Event): Promise<void> {
@@ -143,9 +203,9 @@ export class ProfiloComponent implements OnInit {
     if (!input.files || !input.files[0] || !this.currentUser) return;
 
     const file = input.files[0];
-    
+
     console.log('File selezionato:', file.name, 'Tipo:', file.type, 'Dimensione:', file.size);
-    
+
     // Valida tipo file - accetta anche se il tipo è vuoto (alcune fotocamere non impostano il MIME type)
     if (file.type && !file.type.startsWith('image/')) {
       alert('Seleziona un file immagine valido');
@@ -196,7 +256,7 @@ export class ProfiloComponent implements OnInit {
 
       // Aggiorna Firestore
       await this.giocatoriService.updateGiocatore(giocatoreId, { fotoUrl });
-      
+
       // Aggiorna currentUser
       this.currentUser = { ...this.currentUser, fotoUrl };
       if (this.editedUser) {
@@ -220,13 +280,13 @@ export class ProfiloComponent implements OnInit {
     if (!input.files || !input.files[0] || !this.currentUser) return;
 
     const file = input.files[0];
-    
+
     console.log('Certificato selezionato:', file.name, 'Tipo:', file.type, 'Dimensione:', file.size);
-    
+
     // Valida tipo file (PDF o immagine) - accetta anche tipo vuoto per foto da fotocamera
     const isPdf = file.type === 'application/pdf';
     const isImage = file.type ? file.type.startsWith('image/') : true; // Se tipo vuoto, assume immagine
-    
+
     if (!isPdf && !isImage) {
       // Se non è PDF e non è immagine, controlla l'estensione
       const ext = file.name.split('.').pop()?.toLowerCase();
@@ -267,22 +327,22 @@ export class ProfiloComponent implements OnInit {
       const certificatoRef = ref(this.storage, `giocatori/${giocatoreId}/certificato`);
       await uploadBytes(certificatoRef, file);
       const certificatoMedicoUrl = await getDownloadURL(certificatoRef);
-      
+
       // Aggiorna Firestore
-      await this.giocatoriService.updateGiocatore(giocatoreId, { 
+      await this.giocatoriService.updateGiocatore(giocatoreId, {
         certificatoMedicoUrl,
         certificatoMedicoNomeFile: file.name
       });
-      
+
       // Aggiorna currentUser
-      this.currentUser = { 
-        ...this.currentUser, 
+      this.currentUser = {
+        ...this.currentUser,
         certificatoMedicoUrl,
         certificatoMedicoNomeFile: file.name
       };
       if (this.editedUser) {
-        this.editedUser = { 
-          ...this.editedUser, 
+        this.editedUser = {
+          ...this.editedUser,
           certificatoMedicoUrl,
           certificatoMedicoNomeFile: file.name
         };
@@ -315,7 +375,7 @@ export class ProfiloComponent implements OnInit {
 
       // Aggiorna Firestore
       await this.giocatoriService.updateGiocatore(giocatoreId, { fotoUrl: null });
-      
+
       // Aggiorna currentUser
       this.currentUser = { ...this.currentUser, fotoUrl: undefined };
       if (this.editedUser) {
@@ -350,20 +410,20 @@ export class ProfiloComponent implements OnInit {
       await deleteObject(certificatoRef);
 
       // Aggiorna Firestore
-      await this.giocatoriService.updateGiocatore(giocatoreId, { 
+      await this.giocatoriService.updateGiocatore(giocatoreId, {
         certificatoMedicoUrl: null,
         certificatoMedicoNomeFile: null
       });
-      
+
       // Aggiorna currentUser
-      this.currentUser = { 
-        ...this.currentUser, 
+      this.currentUser = {
+        ...this.currentUser,
         certificatoMedicoUrl: undefined,
         certificatoMedicoNomeFile: undefined
       };
       if (this.editedUser) {
-        this.editedUser = { 
-          ...this.editedUser, 
+        this.editedUser = {
+          ...this.editedUser,
           certificatoMedicoUrl: undefined,
           certificatoMedicoNomeFile: undefined
         };
