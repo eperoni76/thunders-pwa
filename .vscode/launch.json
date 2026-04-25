@@ -6,7 +6,7 @@
       "name": "ng serve",
       "type": "chrome",
       "request": "launch",
-      "preLaunchTask": "npm: start",
+      "preLaunchTask": "Start Angular App (ng serve)",
       "url": "http://localhost:4200/",
       "runtimeExecutable": "/Applications/Brave Browser.app/Contents/MacOS/Brave Browser"
     },

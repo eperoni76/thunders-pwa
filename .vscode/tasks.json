@@ -3,9 +3,14 @@
   "version": "2.0.0",
   "tasks": [
     {
+      "label": "Start Angular App (ng serve)",
       "type": "npm",
       "script": "start",
       "isBackground": true,
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
       "problemMatcher": {
         "owner": "typescript",
         "pattern": "$tsc",
@@ -21,6 +26,7 @@
       }
     },
     {
+      "label": "Run Angular Tests",
       "type": "npm",
       "script": "test",
       "isBackground": true,
