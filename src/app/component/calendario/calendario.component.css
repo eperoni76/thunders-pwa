@@ -6,6 +6,34 @@
   margin-top: -20px;
 }
 
+.status-filter-chips {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.status-chip {
+  border: 1px solid #d0d7e2;
+  background: #f8f9fb;
+  color: #4b5563;
+  border-radius: 999px;
+  padding: 0.3rem 0.8rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  transition: all 0.2s ease;
+}
+
+.status-chip.active {
+  background: #e8f0ff;
+  border-color: #6ea8fe;
+  color: #0d6efd;
+  box-shadow: 0 1px 4px rgba(13, 110, 253, 0.15);
+}
+
+.status-chip:hover {
+  border-color: #9fb8e8;
+}
+
 /* Tabella moderna */
 .table-container {
   background: white;
@@ -51,26 +79,45 @@
 .sortable {
   cursor: pointer;
   user-select: none;
+
+.mobile-header-accordion {
+  --bs-accordion-bg: transparent;
+  --bs-accordion-border-color: transparent;
+  --bs-accordion-btn-focus-box-shadow: none;
+}
   transition: background-color 0.2s;
 }
 
 .sortable:hover {
-  background-color: rgba(8, 66, 152, 0.1);
+  border: none;
+  overflow: hidden;
 }
 
 .th-content {
   display: flex;
   align-items: center;
+  width: 100%;
   justify-content: space-between;
   gap: 0.5rem;
-}
-
-.th-content i {
+  padding: 1rem;
+  background: transparent !important;
+  color: white !important;
+  border: none !important;
+  box-shadow: none !important;
   font-size: 0.75rem;
   opacity: 0.7;
 }
 
 .filter-row {
+
+.mobile-header-title::after {
+  filter: brightness(0) invert(1);
+  opacity: 0.9;
+}
+
+.mobile-header-title:not(.collapsed) {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
   background-color: #cfe2ff;
 }
 
@@ -78,6 +125,7 @@
   padding: 0.5rem;
   background-color: #cfe2ff;
   border-top: none;
+  padding: 0.75rem 1rem 1rem !important;
 }
 
 .filter-input {
@@ -190,7 +238,7 @@
   .modern-table {
     font-size: 0.85rem;
   }
-  
+
   .modern-table thead th,
   .modern-table tbody td {
     padding: 0.5rem;
@@ -201,7 +249,7 @@
   .table-container {
     display: none;
   }
-  
+
   .maps-link:hover {
     transform: none;
   }
@@ -295,24 +343,24 @@
   .desktop-header-card {
     padding: 1.25rem 1.5rem;
   }
-  
+
   .header-icon {
     width: 48px;
     height: 48px;
   }
-  
+
   .header-icon i {
     font-size: 1.5rem;
   }
-  
+
   .header-title {
     font-size: 1.5rem;
   }
-  
+
   .header-meta {
     gap: 1rem;
   }
-  
+
   .meta-item {
     font-size: 0.85rem;
   }
@@ -323,7 +371,7 @@
     flex-direction: column;
     align-items: flex-start;
   }
-  
+
   .header-actions {
     width: 100%;
     justify-content: flex-start;
@@ -392,28 +440,36 @@
 }
 
 @media (max-width: 400px) {
-  .mobile-header-card {
-    padding: 0.75rem;
+  .status-chip {
+    font-size: 0.75rem;
+    padding: 0.24rem 0.65rem;
   }
-  
+
+  .mobile-header-card {
+    border-radius: 10px;
+  }
+
   .mobile-header-title {
     font-size: 1.25rem;
-    margin-bottom: 0.5rem;
-    padding-bottom: 0.5rem;
+    padding: 0.75rem;
   }
-  
+
   .mobile-header-title i {
     font-size: 1.25rem;
   }
-  
+
+  .mobile-header-info {
+    padding: 0.5rem 0.75rem 0.75rem !important;
+  }
+
   .info-item {
     padding: 0.35rem 0.4rem;
   }
-  
+
   .info-label {
     font-size: 0.7rem;
   }
-  
+
   .info-value {
     font-size: 0.85rem;
   }
@@ -441,10 +497,9 @@
 }
 
 .mobile-partita-header {
-  padding: 0.75rem !important;
+  padding: 0.8rem 0.95rem !important;
   display: flex !important;
-  align-items: center !important;
-  gap: 0.75rem !important;
+  align-items: flex-start !important;
   background: transparent !important;
   border: none !important;
   box-shadow: none !important;
@@ -460,67 +515,126 @@
   flex-shrink: 0;
 }
 
-.gara-badge {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: #0d6efd;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  font-size: 0.9rem;
-  flex-shrink: 0;
-}
-
-.partita-info {
+.partita-summary {
   flex: 1;
   min-width: 0;
 }
 
-.partita-data {
-  font-size: 0.75rem;
-  color: #6c757d;
-  font-weight: 500;
-  text-transform: uppercase;
-}
-
-.partita-match {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: #212529;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.risultato-badge {
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
-  background: #f8f9fa;
-  font-weight: 600;
-  font-size: 0.85rem;
+.summary-meta-row {
   display: flex;
   align-items: center;
-  gap: 0.25rem;
-  flex-shrink: 0;
+  justify-content: space-between;
+  gap: 0.65rem;
+  flex-wrap: wrap;
 }
 
-.risultato-value {
+.summary-date {
+  font-size: 0.78rem;
+  color: #6c757d;
   font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
 }
 
-.ora-badge {
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
+.summary-time {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.22rem 0.55rem;
+  border-radius: 999px;
   background: #e7f1ff;
   color: #0d6efd;
-  font-weight: 600;
-  font-size: 0.85rem;
+  font-weight: 700;
+  font-size: 0.8rem;
+}
+
+.summary-teams-row {
+  margin-top: 0.45rem;
+  display: flex;
+  align-items: stretch;
+  gap: 0.35rem;
+  line-height: 1.25;
+}
+
+.summary-team-block {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.12rem;
+  background: #f8f9fb;
+  border: 1px solid #e6ebf2;
+  border-radius: 0.55rem;
+  padding: 0.32rem 0.45rem;
+}
+
+.summary-team-label {
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: #6c757d;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.summary-team {
+  font-size: 0.93rem;
+  font-weight: 700;
+  color: #212529;
+  word-break: break-word;
+}
+
+.summary-vs-pill {
+  align-self: center;
+  font-size: 0.68rem;
+  font-weight: 900;
+  color: #0d6efd;
+  background: #edf3ff;
+  border-radius: 999px;
+  padding: 0.14rem 0.42rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.summary-result-row {
+  margin-top: 0.62rem;
   display: flex;
   align-items: center;
-  flex-shrink: 0;
+  justify-content: center;
+}
+
+.summary-result {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  border-radius: 999px;
+  padding: 0.3rem 0.9rem;
+  font-size: 0.95rem;
+  font-weight: 800;
+  min-width: 128px;
+  text-align: center;
+}
+
+.summary-result-text {
+  line-height: 1;
+}
+
+.summary-result-icon {
+  font-size: 0.95rem;
+}
+
+.summary-result.result-pending {
+  background: #f1f3f5;
+  color: #6c757d;
+}
+
+.summary-result.result-win {
+  background: #eaf8ef;
+  color: #198754;
+}
+
+.summary-result.result-lose {
+  background: #fdecec;
+  color: #dc3545;
 }
 
 .mobile-partita-details {
@@ -595,28 +709,43 @@
   }
 
   .mobile-partita-header {
-    padding: 0.5rem !important;
-    gap: 0.5rem !important;
+    padding: 0.65rem 0.7rem !important;
   }
 
-  .gara-badge {
-    width: 32px;
-    height: 32px;
-    font-size: 0.8rem;
-  }
-
-  .partita-data {
+  .summary-date {
     font-size: 0.7rem;
   }
 
-  .partita-match {
-    font-size: 0.85rem;
+  .summary-time {
+    font-size: 0.72rem;
+    padding: 0.18rem 0.45rem;
   }
 
-  .risultato-badge,
-  .ora-badge {
-    font-size: 0.75rem;
-    padding: 0.2rem 0.4rem;
+  .summary-team {
+    font-size: 0.82rem;
+  }
+
+  .summary-team-label {
+    font-size: 0.58rem;
+  }
+
+  .summary-team-block {
+    padding: 0.26rem 0.35rem;
+  }
+
+  .summary-vs-pill {
+    font-size: 0.62rem;
+    padding: 0.12rem 0.34rem;
+  }
+
+  .summary-result {
+    font-size: 0.82rem;
+    padding: 0.22rem 0.64rem;
+    min-width: 108px;
+  }
+
+  .summary-result-icon {
+    font-size: 0.84rem;
   }
 
   .detail-label {

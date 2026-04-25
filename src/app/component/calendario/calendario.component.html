@@ -29,30 +29,66 @@
 
   <!-- Header Mobile -->
   <div class="mobile-header d-md-none mb-3">
-    <div class="mobile-header-card">
-      <div class="mobile-header-title">
-        <i class="bi bi-calendar-event-fill me-2"></i>
-        <span class="title-text">Calendario</span>
-      </div>
-      <div class="mobile-header-info">
-        <div class="info-item" *ngIf="season">
-          <span class="info-label">Stagione</span>
-          <span class="info-value">{{ season }}</span>
-        </div>
-        <div class="info-item" *ngIf="campionato">
-          <span class="info-label">Campionato</span>
-          <span class="info-value">{{ campionato }}</span>
-        </div>
-        <div class="info-item" *ngIf="partite.length">
-          <span class="info-label">Partite rimanenti</span>
-          <span class="info-value">{{ partiteRimanenti }}</span>
-        </div>
-        <div class="info-item" *ngIf="lastUpdate">
-          <span class="info-label"><i class="bi bi-clock me-1"></i>Aggiornamento</span>
-          <span class="info-value">{{ lastUpdate | date:'dd/MM/yy HH:mm' }}</span>
+    <div class="accordion mobile-header-accordion" id="mobileHeaderAccordion">
+      <div class="accordion-item mobile-header-card">
+        <h2 class="accordion-header" id="mobileHeaderHeading">
+          <button class="accordion-button collapsed mobile-header-title"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#mobileHeaderCollapse"
+                  aria-expanded="false"
+                  aria-controls="mobileHeaderCollapse">
+            <i class="bi bi-calendar-event-fill me-2"></i>
+            <span class="title-text">Calendario</span>
+          </button>
+        </h2>
+        <div id="mobileHeaderCollapse"
+             class="accordion-collapse collapse"
+             aria-labelledby="mobileHeaderHeading"
+             data-bs-parent="#mobileHeaderAccordion">
+          <div class="accordion-body mobile-header-info">
+            <div class="info-item" *ngIf="season">
+              <span class="info-label">Stagione</span>
+              <span class="info-value">{{ season }}</span>
+            </div>
+            <div class="info-item" *ngIf="campionato">
+              <span class="info-label">Campionato</span>
+              <span class="info-value">{{ campionato }}</span>
+            </div>
+            <div class="info-item" *ngIf="partite.length">
+              <span class="info-label">Partite rimanenti</span>
+              <span class="info-value">{{ partiteRimanenti }}</span>
+            </div>
+            <div class="info-item" *ngIf="lastUpdate">
+              <span class="info-label"><i class="bi bi-clock me-1"></i>Aggiornamento</span>
+              <span class="info-value">{{ lastUpdate | date:'dd/MM/yy HH:mm' }}</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
+  </div>
+
+  <!-- Chips filtro stato -->
+  <div class="status-filter-chips mb-3">
+    <button type="button"
+            class="status-chip"
+            [class.active]="statusFilter === 'all'"
+            (click)="setStatusFilter('all')">
+      Tutte
+    </button>
+    <button type="button"
+            class="status-chip"
+            [class.active]="statusFilter === 'to-play'"
+            (click)="setStatusFilter('to-play')">
+      Da giocare
+    </button>
+    <button type="button"
+            class="status-chip"
+            [class.active]="statusFilter === 'played'"
+            (click)="setStatusFilter('played')">
+      Giocate
+    </button>
   </div>
 
   <!-- Vista desktop (tabella) -->
@@ -228,22 +264,36 @@
                   [attr.data-bs-target]="'#collapse' + i"
                   aria-expanded="false"
                   [attr.aria-controls]="'collapse' + i">
-            <div class="gara-badge">{{ partita.numeroGara }}</div>
-            <div class="partita-info">
-              <div class="partita-data">{{ formatDataCompleta(partita.data) }}</div>
-              <div class="partita-match">{{ partita.ospitante }} vs {{ partita.ospite }}</div>
-            </div>
-            <div class="risultato-badge" *ngIf="partita.risultato">
-              <span class="risultato-value"
-                    [class.text-success]="isVittoria(partita)"
-                    [class.text-danger]="isVittoria(partita) === false">
-                {{ partita.risultato }}
-              </span>
-              <i *ngIf="isVittoria(partita) === true" class="bi bi-check-circle-fill text-success ms-1"></i>
-              <i *ngIf="isVittoria(partita) === false" class="bi bi-x-circle-fill text-danger ms-1"></i>
-            </div>
-            <div class="ora-badge" *ngIf="!partita.risultato">
-              <i class="bi bi-clock me-1"></i>{{ partita.ora }}
+            <div class="partita-summary">
+              <div class="summary-meta-row">
+                <span class="summary-date">{{ formatDataCompleta(partita.data) }}</span>
+                <span class="summary-time">
+                  <i class="bi bi-clock me-1"></i>{{ partita.ora || 'TBD' }}
+                </span>
+              </div>
+
+              <div class="summary-teams-row">
+                <div class="summary-team-block">
+                  <span class="summary-team-label">Casa</span>
+                  <span class="summary-team">{{ partita.ospitante }}</span>
+                </div>
+                <span class="summary-vs-pill">vs</span>
+                <div class="summary-team-block">
+                  <span class="summary-team-label">Ospite</span>
+                  <span class="summary-team">{{ partita.ospite }}</span>
+                </div>
+              </div>
+
+              <div class="summary-result-row">
+                <span class="summary-result"
+                      [class.result-win]="partita.risultato && isVittoria(partita)"
+                      [class.result-lose]="partita.risultato && isVittoria(partita) === false"
+                      [class.result-pending]="!partita.risultato">
+                  <span class="summary-result-text">{{ partita.risultato || 'In programma' }}</span>
+                  <i *ngIf="partita.risultato && isVittoria(partita) === true" class="bi bi-check-circle-fill summary-result-icon"></i>
+                  <i *ngIf="partita.risultato && isVittoria(partita) === false" class="bi bi-x-circle-fill summary-result-icon"></i>
+                </span>
+              </div>
             </div>
           </button>
         </h2>
@@ -254,14 +304,12 @@
           <div class="accordion-body mobile-partita-details">
             <div class="detail-row">
               <div class="detail-item">
-                <span class="detail-label">Ospitante</span>
-                <span class="detail-value">{{ partita.ospitante }}</span>
+                <span class="detail-label">Campionato</span>
+                <span class="detail-value">{{ partita.campionato || '-' }}</span>
               </div>
-            </div>
-            <div class="detail-row">
               <div class="detail-item">
-                <span class="detail-label">Ospite</span>
-                <span class="detail-value">{{ partita.ospite }}</span>
+                <span class="detail-label">Numero gara</span>
+                <span class="detail-value">{{ partita.numeroGara || '-' }}</span>
               </div>
             </div>
             <div class="detail-row">

@@ -35,6 +35,7 @@ export class CalendarioComponent implements OnInit, OnDestroy {
   // Ordinamento
   sortColumn: string = 'data';
   sortDirection: 'asc' | 'desc' = 'asc';
+  statusFilter: 'all' | 'to-play' | 'played' = 'all';
 
   constructor(
     private calendarioService: CalendarioService,
@@ -73,6 +74,13 @@ export class CalendarioComponent implements OnInit, OnDestroy {
 
   applyFilters(): void {
     let result = [...this.partite];
+
+    // Applica filtro stato partita
+    if (this.statusFilter === 'to-play') {
+      result = result.filter(p => !p.risultato || p.risultato.trim() === '');
+    } else if (this.statusFilter === 'played') {
+      result = result.filter(p => !!p.risultato && p.risultato.trim() !== '');
+    }
 
     // Applica filtri
     Object.keys(this.filters).forEach(key => {
@@ -144,6 +152,12 @@ export class CalendarioComponent implements OnInit, OnDestroy {
       ospite: '',
       risultato: ''
     };
+    this.statusFilter = 'all';
+    this.applyFilters();
+  }
+
+  setStatusFilter(filter: 'all' | 'to-play' | 'played'): void {
+    this.statusFilter = filter;
     this.applyFilters();
   }
 
@@ -203,19 +217,19 @@ export class CalendarioComponent implements OnInit, OnDestroy {
       const seconds = String(date.getSeconds()).padStart(2, '0');
       return `${year}${month}${day}T${hours}${minutes}${seconds}`;
     };
-    
+
     const dtStart = formatDate(dataPartita);
     const dtEnd = formatDate(dataFine);
     const dtStamp = formatDate(new Date());
-    
+
     const icsContent = GenericUtils.getIcsConstants(dtStart, dtEnd, dtStamp, partita);
-    
+
     if (Costanti.isMobile) {
       const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
       const url = URL.createObjectURL(blob);
-    
+
       window.location.href = url;
-      
+
       setTimeout(() => URL.revokeObjectURL(url), 1000);
     } else {
       const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
