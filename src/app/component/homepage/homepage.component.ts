@@ -14,6 +14,7 @@ export class HomepageComponent implements OnInit {
   ultimiRisultati: any[] = [];
   prossimiAppuntamenti: any[] = [];
   allenamenti: Allenamento[] = [];
+  selectedSection: 'partite' | 'risultati' | 'allenamenti' = 'partite';
   indiceProssimaPartita = 0;
   indiceUltimoRisultato = 0;
   prossimaPartitaTransitionClass = '';
@@ -141,14 +142,14 @@ export class HomepageComponent implements OnInit {
   prevUltimoRisultato(): void {
     if (this.indiceUltimoRisultato > 0) {
       this.indiceUltimoRisultato--;
-      this.playUltimoRisultatoTransition('prev');
+      this.playUltimoRisultatoTransition('next');
     }
   }
 
   nextUltimoRisultato(): void {
     if (this.indiceUltimoRisultato < this.ultimiRisultati.length - 1) {
       this.indiceUltimoRisultato++;
-      this.playUltimoRisultatoTransition('next');
+      this.playUltimoRisultatoTransition('prev');
     }
   }
 
@@ -256,9 +257,9 @@ export class HomepageComponent implements OnInit {
 
     if (Math.abs(deltaX) >= this.swipeThreshold) {
       if (deltaX < 0) {
-        this.nextUltimoRisultato();
-      } else {
         this.prevUltimoRisultato();
+      } else {
+        this.nextUltimoRisultato();
       }
     }
 
@@ -357,5 +358,9 @@ export class HomepageComponent implements OnInit {
 
   openMaps(indirizzo: string): void {
     GenericUtils.openMaps(indirizzo);
+  }
+
+  setSelectedSection(section: 'partite' | 'risultati' | 'allenamenti'): void {
+    this.selectedSection = section;
   }
 }

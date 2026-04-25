@@ -10,6 +10,28 @@
     </div>
   </div>
 
+  <!-- Chips filtro sezione (visibili solo su desktop sopra tutto) -->
+  <div class="section-filter-chips mb-3 d-none d-md-flex">
+    <button type="button"
+            class="section-chip"
+            [class.active]="selectedSection === 'partite'"
+            (click)="setSelectedSection('partite')">
+      <i class="bi bi-calendar-event me-1"></i>Prossime Partite
+    </button>
+    <button type="button"
+            class="section-chip"
+            [class.active]="selectedSection === 'risultati'"
+            (click)="setSelectedSection('risultati')">
+      <i class="bi bi-graph-up me-1"></i>Ultimi Risultati
+    </button>
+    <button type="button"
+            class="section-chip"
+            [class.active]="selectedSection === 'allenamenti'"
+            (click)="setSelectedSection('allenamenti')">
+      <i class="bi bi-stopwatch me-1"></i>Allenamenti
+    </button>
+  </div>
+
   <div class="row g-4">
     <!-- Top Left: Team Photo -->
     <div class="col-12 col-lg-6 order-0">
@@ -39,8 +61,32 @@
       </div>
     </div>
 
-    <!-- Top Right (Mobile: 1st) - Prossime Partite -->
-    <div class="col-12 col-lg-6 order-1 order-lg-3">
+    <!-- Chips filtro sezione (visibili solo su mobile dopo la foto) -->
+    <div class="col-12 order-1 d-md-none">
+      <div class="section-filter-chips">
+        <button type="button"
+                class="section-chip"
+                [class.active]="selectedSection === 'partite'"
+                (click)="setSelectedSection('partite')">
+          <i class="bi bi-calendar-event me-1"></i>Prossime Partite
+        </button>
+        <button type="button"
+                class="section-chip"
+                [class.active]="selectedSection === 'risultati'"
+                (click)="setSelectedSection('risultati')">
+          <i class="bi bi-graph-up me-1"></i>Ultimi Risultati
+        </button>
+        <button type="button"
+                class="section-chip"
+                [class.active]="selectedSection === 'allenamenti'"
+                (click)="setSelectedSection('allenamenti')">
+          <i class="bi bi-stopwatch me-1"></i>Allenamenti
+        </button>
+      </div>
+    </div>
+
+    <!-- Top Right (Mobile: 2nd after chips) - Prossime Partite -->
+    <div class="col-12 col-lg-6 order-2 order-lg-3" *ngIf="selectedSection === 'partite'">
       <div class="card shadow h-100 modern-card">
         <div class="card-header bg-white border-0 pb-0 d-flex align-items-center gap-2">
           <i class="bi bi-calendar-event text-primary fs-3"></i>
@@ -130,8 +176,8 @@
       </div>
     </div>
 
-    <!-- Bottom Left (Mobile: 2nd) - Ultimi Risultati -->
-    <div class="col-12 col-lg-6 order-2">
+    <!-- Bottom Left (Mobile: 3rd) - Ultimi Risultati -->
+    <div class="col-12 col-lg-6 order-3" *ngIf="selectedSection === 'risultati'">
       <div class="card shadow h-100 modern-card">
         <div class="card-header bg-white border-0 pb-0 d-flex align-items-center gap-2">
           <i class="bi bi-graph-up text-success fs-3"></i>
@@ -213,8 +259,8 @@
       </div>
     </div>
 
-    <!-- Bottom Right (Mobile: 3rd) - Allenamenti -->
-    <div class="col-12 col-lg-6 order-3 order-lg-1">
+    <!-- Bottom Right (Mobile: 4th) - Allenamenti -->
+    <div class="col-12 col-lg-6 order-4 order-lg-1" *ngIf="selectedSection === 'allenamenti'">
       <div class="card shadow h-100 modern-card">
         <div class="card-header bg-white border-0 pb-0 d-flex align-items-center gap-2">
           <i class="bi bi-stopwatch text-warning fs-3"></i>
