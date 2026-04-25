@@ -9,7 +9,7 @@
       </div>
     </div>
   </div>
-  
+
   <div class="row g-4">
     <!-- Top Left: Team Photo -->
     <div class="col-12 col-lg-6 order-0">
@@ -41,48 +41,87 @@
 
     <!-- Top Right (Mobile: 1st) - Prossime Partite -->
     <div class="col-12 col-lg-6 order-1 order-lg-3">
-      <div class="card shadow h-100">
-        <div class="card-header bg-primary text-white">
-          <h5 class="mb-0">
-            <i class="bi bi-calendar-event me-2"></i>
-            Prossime Partite
-          </h5>
+      <div class="card shadow h-100 modern-card">
+        <div class="card-header bg-white border-0 pb-0 d-flex align-items-center gap-2">
+          <i class="bi bi-calendar-event text-primary fs-3"></i>
+          <h4 class="mb-0 fw-bold text-dark">Prossime Partite</h4>
         </div>
-        <div class="card-body">
-          <div class="d-flex flex-column gap-2" *ngIf="prossimiAppuntamenti.length > 0">
-            <div *ngFor="let partita of prossimiAppuntamenti; let first = first" 
-                 class="p-3 rounded"
-                 [class.bg-warning]="first"
-                 [class.bg-opacity-10]="first"
-                 [class.bg-light]="!first">
-              <div class="d-flex justify-content-between align-items-start">
-                <div class="flex-grow-1">
-                  <small class="text-muted">{{ formatData(partita.data) }}</small>
-                  <p class="mb-1 fw-bold">{{ partita.ospitante }} vs {{ partita.ospite }}</p>
-                  <div class="d-flex flex-column gap-1">
-                    <small class="text-muted">
-                      <i class="bi bi-clock me-1"></i>{{ partita.ora || 'TBD' }}
-                    </small>
-                    <a *ngIf="partita.indirizzo" 
-                       href="javascript:void(0)"
-                       (click)="openMaps(partita.indirizzo)"
-                       class="text-primary text-decoration-none small">
-                      <i class="bi bi-geo-alt-fill me-1"></i>{{ partita.indirizzo }}
-                    </a>
-                    <small *ngIf="!partita.indirizzo" class="text-muted">
-                      <i class="bi bi-geo-alt me-1"></i>Da definire
-                    </small>
-                  </div>
+        <div class="card-body pt-2">
+          <ng-container *ngIf="prossimaPartitaCorrente as partita">
+            <div class="next-match-nav mb-3" *ngIf="prossimiAppuntamenti.length > 1">
+              <button class="btn btn-light btn-sm rounded-circle nav-btn"
+                      (click)="prevProssimaPartita()"
+                      [disabled]="isPrimaProssimaPartita()"
+                      aria-label="Partita precedente">
+                <i class="bi bi-chevron-left"></i>
+              </button>
+              <span class="next-match-counter">{{ indiceProssimaPartita + 1 }} / {{ prossimiAppuntamenti.length }}</span>
+              <button class="btn btn-light btn-sm rounded-circle nav-btn"
+                      (click)="nextProssimaPartita()"
+                      [disabled]="isUltimaProssimaPartita()"
+                      aria-label="Partita successiva">
+                <i class="bi bi-chevron-right"></i>
+              </button>
+            </div>
+
+              <div class="match-card spotlight-card p-3 rounded-4 shadow-sm"
+                [ngClass]="prossimaPartitaTransitionClass"
+                 (touchstart)="onNextMatchTouchStart($event)"
+                 (touchmove)="onNextMatchTouchMove($event)"
+                 (touchend)="onNextMatchTouchEnd()">
+              <div class="spotlight-top-row">
+                <span class="date-pill">
+                  <i class="bi bi-calendar3 me-1"></i>{{ formatDataCompatta(partita.data) }}
+                </span>
+                <span class="badge rounded-pill bg-primary-subtle text-primary fw-semibold time-pill">
+                  <i class="bi bi-clock me-1"></i>{{ partita.ora || 'TBD' }}
+                </span>
+              </div>
+
+              <div class="spotlight-teams-grid mt-3">
+                <div class="team-row-card">
+                  <span class="team-side-badge">Casa</span>
+                  <span class="team-name-card">{{ partita.ospitante }}</span>
+                </div>
+                <div class="vs-divider"><span>VS</span></div>
+                <div class="team-row-card">
+                  <span class="team-side-badge">Ospite</span>
+                  <span class="team-name-card">{{ partita.ospite }}</span>
                 </div>
               </div>
+
+              <a *ngIf="partita.indirizzo"
+                 href="javascript:void(0)"
+                 (click)="openMaps(partita.indirizzo)"
+                 class="maps-link location-pill mt-3">
+                <i class="bi bi-geo-alt-fill me-1"></i>{{ partita.indirizzo }}
+              </a>
+              <div *ngIf="!partita.indirizzo" class="location-pill location-pill-empty mt-3">
+                <i class="bi bi-geo-alt me-1"></i>Luogo da definire
+              </div>
+              <div class="swipe-hint" *ngIf="prossimiAppuntamenti.length > 1">
+                <i class="bi bi-arrow-left-right me-1"></i>Scorri per cambiare partita
+              </div>
             </div>
-          </div>
+
+            <div class="carousel-dots" *ngIf="prossimiAppuntamenti.length > 1">
+              <button
+                *ngFor="let item of prossimiAppuntamenti; let i = index"
+                type="button"
+                class="dot"
+                [class.active]="i === indiceProssimaPartita"
+                (click)="vaiAProssimaPartita(i)"
+                [attr.aria-label]="'Vai alla partita ' + (i + 1)">
+              </button>
+            </div>
+          </ng-container>
+
           <div *ngIf="prossimiAppuntamenti.length === 0" class="text-center text-muted py-4">
             <i class="bi bi-calendar-x fs-2 d-block mb-2"></i>
             Nessuna partita in programma
           </div>
           <div class="mt-3 text-center">
-            <a routerLink="/calendario" class="btn btn-outline-primary btn-sm">
+            <a routerLink="/calendario" class="btn btn-outline-primary btn-sm rounded-pill px-4">
               <i class="bi bi-calendar3 me-1"></i>
               Vedi calendario completo
             </a>
@@ -93,38 +132,79 @@
 
     <!-- Bottom Left (Mobile: 2nd) - Ultimi Risultati -->
     <div class="col-12 col-lg-6 order-2">
-      <div class="card shadow h-100">
-        <div class="card-header bg-primary text-white">
-          <h5 class="mb-0">
-            <i class="bi bi-graph-up me-2"></i>
-            Ultimi Risultati
-          </h5>
+      <div class="card shadow h-100 modern-card">
+        <div class="card-header bg-white border-0 pb-0 d-flex align-items-center gap-2">
+          <i class="bi bi-graph-up text-success fs-3"></i>
+          <h4 class="mb-0 fw-bold text-dark">Ultimi Risultati</h4>
         </div>
-        <div class="card-body">
-          <div class="d-flex flex-column gap-2" *ngIf="ultimiRisultati.length > 0">
-            <div *ngFor="let partita of ultimiRisultati" 
-                 class="p-3 border-start border-4 bg-light rounded"
-                 [class.border-success]="isVittoria(partita)"
-                 [class.border-danger]="!isVittoria(partita)">
-              <div class="d-flex justify-content-between align-items-center">
-                <div>
-                  <small class="text-muted">{{ formatDataBreve(partita.data) }}</small>
-                  <p class="mb-0 fw-bold">{{ partita.ospitante }} vs {{ partita.ospite }}</p>
+        <div class="card-body pt-2">
+          <ng-container *ngIf="ultimoRisultatoCorrente as partita">
+            <div class="next-match-nav mb-3" *ngIf="ultimiRisultati.length > 1">
+              <button class="btn btn-light btn-sm rounded-circle nav-btn"
+                      (click)="nextUltimoRisultato()"
+                      [disabled]="isUltimoUltimoRisultato()"
+                      aria-label="Risultato più vecchio">
+                <i class="bi bi-chevron-left"></i>
+              </button>
+              <span class="next-match-counter">{{ getIndiceUltimoRisultatoVisuale() }} / {{ ultimiRisultati.length }}</span>
+              <button class="btn btn-light btn-sm rounded-circle nav-btn"
+                      (click)="prevUltimoRisultato()"
+                      [disabled]="isPrimoUltimoRisultato()"
+                      aria-label="Risultato più recente">
+                <i class="bi bi-chevron-right"></i>
+              </button>
+            </div>
+
+            <div class="timeline-result-card"
+                 [ngClass]="ultimoRisultatoTransitionClass"
+                 (touchstart)="onResultTouchStart($event)"
+                 (touchmove)="onResultTouchMove($event)"
+                 (touchend)="onResultTouchEnd()">
+              <div class="timeline-rail">
+                <span class="timeline-node" [class.node-win]="isVittoria(partita)" [class.node-lose]="!isVittoria(partita)"></span>
+                <span class="timeline-line"></span>
+              </div>
+
+              <div class="timeline-body">
+                <div class="timeline-meta">
+                  <span class="timeline-date">{{ formatData(partita.data) }}</span>
+                  <span class="timeline-role">{{ getRuoloPartita(partita) }}</span>
                 </div>
-                <span class="badge fs-6"
-                      [class.bg-success]="isVittoria(partita)"
-                      [class.bg-danger]="!isVittoria(partita)">
-                  {{ partita.risultato }}
-                </span>
+
+                <div class="timeline-opponent-row">
+                  <span class="timeline-label">Avversario</span>
+                  <span class="timeline-opponent">{{ getAvversario(partita) }}</span>
+                </div>
+
+                <div class="timeline-result-row">
+                  <span class="timeline-status" [class.status-win]="isVittoria(partita)" [class.status-lose]="!isVittoria(partita)">
+                    {{ getEsitoLabel(partita) }}
+                  </span>
+                  <span class="timeline-score" [class.score-win]="isVittoria(partita)" [class.score-lose]="!isVittoria(partita)">
+                    {{ partita.risultato }}
+                  </span>
+                </div>
               </div>
             </div>
-          </div>
+
+            <div class="carousel-dots carousel-dots-reversed" *ngIf="ultimiRisultati.length > 1">
+              <button
+                *ngFor="let item of ultimiRisultati; let i = index"
+                type="button"
+                class="dot"
+                [class.active]="i === indiceUltimoRisultato"
+                (click)="vaiAUltimoRisultato(i)"
+                [attr.aria-label]="'Vai al risultato ' + (i + 1)">
+              </button>
+            </div>
+          </ng-container>
+
           <div *ngIf="ultimiRisultati.length === 0" class="text-center text-muted py-4">
             <i class="bi bi-calendar-x fs-2 d-block mb-2"></i>
             Nessun risultato disponibile
           </div>
           <div class="mt-3 text-center">
-            <a routerLink="/calendario" class="btn btn-outline-primary btn-sm">
+            <a routerLink="/calendario" class="btn btn-outline-primary btn-sm rounded-pill px-4">
               <i class="bi bi-calendar-check me-1"></i>
               Vedi tutti i risultati
             </a>
@@ -135,34 +215,33 @@
 
     <!-- Bottom Right (Mobile: 3rd) - Allenamenti -->
     <div class="col-12 col-lg-6 order-3 order-lg-1">
-      <div class="card shadow h-100">
-        <div class="card-header bg-primary text-white">
-          <h5 class="mb-0">
-            <i class="bi bi-calendar3 me-2"></i>
-            Allenamenti
-          </h5>
+      <div class="card shadow h-100 modern-card">
+        <div class="card-header bg-white border-0 pb-0 d-flex align-items-center gap-2">
+          <i class="bi bi-stopwatch text-warning fs-3"></i>
+          <h4 class="mb-0 fw-bold text-dark">Allenamenti</h4>
         </div>
-        <div class="card-body">
+        <div class="card-body pt-2">
           <div class="d-flex flex-column gap-3" *ngIf="allenamenti.length > 0">
-            <div class="p-3 bg-light rounded" *ngFor="let allenamento of allenamenti">
-              <div class="mb-2">
-                <h6 class="text-primary mb-1">
-                  <i class="bi bi-calendar-week me-2"></i>{{ allenamento.giorno }}
-                </h6>
-                <p class="mb-1">
-                  <i class="bi bi-clock-fill me-2"></i>
-                  <strong>{{ allenamento.orarioInizio }} - {{ allenamento.orarioFine }}</strong>
-                </p>
-                <p class="mb-1">
-                  <i class="bi bi-geo-alt-fill me-2"></i>
-                  <strong>{{ allenamento.nomePalestra }}</strong>
-                </p>
-                <a href="javascript:void(0)"
-                   (click)="openMaps(allenamento.indirizzo)"
-                   class="text-primary text-decoration-none small d-block">
-                  <i class="bi bi-geo-alt-fill me-1"></i>{{ allenamento.indirizzo }}
-                </a>
+            <div class="training-item-card" *ngFor="let allenamento of allenamenti">
+              <div class="training-top-row">
+                <span class="training-day-pill">
+                  <i class="bi bi-calendar-week me-1"></i>{{ allenamento.giorno }}
+                </span>
+                <span class="training-time-pill">
+                  <i class="bi bi-clock-fill me-1"></i>{{ allenamento.orarioInizio }} - {{ allenamento.orarioFine }}
+                </span>
               </div>
+
+              <div class="training-gym-row mt-2">
+                <span class="training-gym-label">Palestra</span>
+                <span class="training-gym-name">{{ allenamento.nomePalestra }}</span>
+              </div>
+
+              <a href="javascript:void(0)"
+                 (click)="openMaps(allenamento.indirizzo)"
+                 class="training-address-link mt-2">
+                <i class="bi bi-geo-alt-fill me-1"></i>{{ allenamento.indirizzo }}
+              </a>
             </div>
           </div>
           <div *ngIf="allenamenti.length === 0" class="text-center py-4 text-muted">
