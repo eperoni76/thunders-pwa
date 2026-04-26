@@ -91,7 +91,7 @@
   cursor: pointer;
 }
 
-.accordion-button::after {
+.mobile-classifica .accordion-button::after {
   display: none;
 }
 

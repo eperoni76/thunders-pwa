@@ -37,6 +37,7 @@ export class GiocatoriComponent implements OnInit, OnDestroy {
   // Ordinamento
   sortColumn: string = 'cognome';
   sortDirection: 'asc' | 'desc' = 'asc';
+  selectedRuoloFilter: string = 'all';
 
   constructor(
     private giocatoriService: GiocatoriService
@@ -59,6 +60,22 @@ export class GiocatoriComponent implements OnInit, OnDestroy {
 
   get giocatoriOrdinati(): any[] {
     return this.filteredGiocatori;
+  }
+
+  get ruoliDisponibili(): string[] {
+    const ruoliUnici = new Set(
+      this.giocatori
+        .map(g => this.normalizeRuolo(g.ruolo))
+        .filter(Boolean)
+    );
+    return Array.from(ruoliUnici).sort();
+  }
+
+  get giocatoriOrdinatiMobile(): any[] {
+    if (this.selectedRuoloFilter === 'all') {
+      return this.giocatoriOrdinati;
+    }
+    return this.giocatoriOrdinati.filter(g => this.normalizeRuolo(g.ruolo) === this.selectedRuoloFilter);
   }
 
   applyFilters(): void {
@@ -138,6 +155,10 @@ export class GiocatoriComponent implements OnInit, OnDestroy {
       scadenzaCertificatoMedico: ''
     };
     this.applyFilters();
+  }
+
+  setRuoloFilter(ruolo: string): void {
+    this.selectedRuoloFilter = ruolo;
   }
 
   get numeroGiocatori(): number {
@@ -353,6 +374,10 @@ export class GiocatoriComponent implements OnInit, OnDestroy {
 
     link.click();
     window.URL.revokeObjectURL(url);
+  }
+
+  private normalizeRuolo(ruolo: string | undefined): string {
+    return (ruolo || '').toString().trim().toLowerCase();
   }
 
 }

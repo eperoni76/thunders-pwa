@@ -35,35 +35,49 @@
 
   <!-- Header Mobile -->
   <div class="mobile-header d-md-none mb-3">
-    <div class="mobile-header-card">
-      <div class="mobile-header-title">
-        <i class="bi bi-people-fill me-2"></i>
-        <span class="title-text">Giocatori</span>
-      </div>
-      <div class="mobile-header-info">
-        <div class="info-item" *ngIf="giocatori.length">
-          <span class="info-label">Totale giocatori</span>
-          <span class="info-value">{{ numeroGiocatori }}</span>
+    <div class="accordion mobile-header-accordion" id="mobileGiocatoriHeaderAccordion">
+      <div class="accordion-item mobile-header-card">
+        <h2 class="accordion-header" id="mobileGiocatoriHeaderHeading">
+          <button class="accordion-button collapsed mobile-header-title"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#mobileGiocatoriHeaderCollapse"
+                  aria-expanded="false"
+                  aria-controls="mobileGiocatoriHeaderCollapse">
+            <i class="bi bi-people-fill me-2"></i>
+            <span class="title-text">Giocatori</span>
+          </button>
+        </h2>
+        <div id="mobileGiocatoriHeaderCollapse"
+             class="accordion-collapse collapse"
+             aria-labelledby="mobileGiocatoriHeaderHeading"
+             data-bs-parent="#mobileGiocatoriHeaderAccordion">
+          <div class="accordion-body mobile-header-info">
+            <div class="info-item" *ngIf="giocatori.length">
+              <span class="info-label">Totale giocatori</span>
+              <span class="info-value">{{ numeroGiocatori }}</span>
+            </div>
+            <div class="info-item" *ngIf="giocatori.length && etaMedia > 0">
+              <span class="info-label">Età media</span>
+              <span class="info-value">{{ etaMedia }} anni</span>
+            </div>
+            <div class="info-item" *ngIf="nomeCapitano">
+              <span class="info-label">Capitano</span>
+              <span class="info-value">{{ nomeCapitano }}</span>
+            </div>
+          </div>
+          <div class="accordion-body mobile-header-actions pt-0">
+            <button class="btn btn-sm btn-header-action" (click)="fileInput.click()" title="Importa giocatori da JSON">
+              <i class="bi bi-upload me-1"></i>Importa
+            </button>
+            <button class="btn btn-sm btn-header-action" (click)="exportToJSON()" title="Esporta giocatori in JSON">
+              <i class="bi bi-download me-1"></i>Esporta
+            </button>
+            <button class="btn btn-sm btn-header-action" data-bs-toggle="modal" data-bs-target="#giocatoreModal" (click)="openDialog()">
+              <i class="bi bi-plus-circle me-1"></i>Aggiungi
+            </button>
+          </div>
         </div>
-        <div class="info-item" *ngIf="giocatori.length && etaMedia > 0">
-          <span class="info-label">Età media</span>
-          <span class="info-value">{{ etaMedia }} anni</span>
-        </div>
-        <div class="info-item" *ngIf="nomeCapitano">
-          <span class="info-label">Capitano</span>
-          <span class="info-value">{{ nomeCapitano }}</span>
-        </div>
-      </div>
-      <div class="mobile-header-actions">
-        <button class="btn btn-sm btn-header-action" (click)="fileInput.click()" title="Importa giocatori da JSON">
-          <i class="bi bi-upload me-1"></i>Importa
-        </button>
-        <button class="btn btn-sm btn-header-action" (click)="exportToJSON()" title="Esporta giocatori in JSON">
-          <i class="bi bi-download me-1"></i>Esporta
-        </button>
-        <button class="btn btn-sm btn-header-action" data-bs-toggle="modal" data-bs-target="#giocatoreModal" (click)="openDialog()">
-          <i class="bi bi-plus-circle me-1"></i>Aggiungi
-        </button>
       </div>
     </div>
   </div>
@@ -248,11 +262,27 @@
 
   <!-- Vista mobile (accordion) -->
   <div class="d-md-none">
+    <div class="ruolo-filter-chips mb-3" *ngIf="ruoliDisponibili.length">
+      <button type="button"
+              class="ruolo-chip"
+              [class.active]="selectedRuoloFilter === 'all'"
+              (click)="setRuoloFilter('all')">
+        Tutti
+      </button>
+      <button *ngFor="let ruolo of ruoliDisponibili"
+              type="button"
+              class="ruolo-chip"
+              [class.active]="selectedRuoloFilter === ruolo"
+              (click)="setRuoloFilter(ruolo)">
+        {{ ruolo | capitalize }}
+      </button>
+    </div>
+
     <div *ngIf="giocatori.length === 0" class="text-center text-muted py-4">
       Nessun giocatore presente
     </div>
     <div class="accordion" id="giocatoriAccordion">
-      <div *ngFor="let giocatore of giocatoriOrdinati; let i = index" class="accordion-item">
+      <div *ngFor="let giocatore of giocatoriOrdinatiMobile; let i = index" class="accordion-item">
         <h2 class="accordion-header" [attr.id]="'headingGiocatore' + i">
           <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                   [attr.data-bs-target]="'#collapseGiocatore' + i" aria-expanded="false" [attr.aria-controls]="'collapseGiocatore' + i">
@@ -312,6 +342,9 @@
           </div>
         </div>
       </div>
+    </div>
+    <div *ngIf="giocatori.length > 0 && giocatoriOrdinatiMobile.length === 0" class="text-center text-muted py-4">
+      Nessun giocatore trovato per il ruolo selezionato
     </div>
   </div>
 </div>

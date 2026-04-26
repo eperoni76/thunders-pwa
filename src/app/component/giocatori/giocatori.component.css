@@ -210,6 +210,36 @@
   font-weight: 500;
 }
 
+/* --- Mobile role filter chips --- */
+.ruolo-filter-chips {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.ruolo-chip {
+  border: 1px solid #d0d7e2;
+  background: #f8f9fb;
+  color: #4b5563;
+  border-radius: 999px;
+  padding: 0.3rem 0.8rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  transition: all 0.2s ease;
+  text-transform: capitalize;
+}
+
+.ruolo-chip.active {
+  background: #e8f0ff;
+  border-color: #6ea8fe;
+  color: #0d6efd;
+  box-shadow: 0 1px 4px rgba(13, 110, 253, 0.15);
+}
+
+.ruolo-chip:hover {
+  border-color: #9fb8e8;
+}
+
 .btn-header-action {
   background: rgba(255, 255, 255, 0.15);
   border: 1px solid rgba(255, 255, 255, 0.2);
@@ -468,6 +498,10 @@
   font-size: 0.9rem;
 }
 
-.accordion-button::after {
+.accordion .accordion-button::after {
   display: none;
+}
+
+.mobile-header-accordion .accordion-button::after {
+  display: block;
 }

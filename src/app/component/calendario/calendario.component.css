@@ -256,6 +256,7 @@
 .partita-summary {
   flex: 1;
   min-width: 0;
+  padding-right: 0.5rem;
 }
 
 .summary-meta-row {
