@@ -64,6 +64,10 @@ export class CalendarioComponent implements OnInit, OnDestroy {
     return this.partite.filter(p => !p.risultato || p.risultato.trim() === '').length;
   }
 
+  get partiteGiocate(): number {
+    return this.partite.filter(p => !!p.risultato && p.risultato.trim() !== '').length;
+  }
+
   get campionato(): string {
     return this.partite.length > 0 ? this.partite[0].campionato : '';
   }

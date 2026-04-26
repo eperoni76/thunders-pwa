@@ -382,7 +382,16 @@ body {
 .mobile-header-accordion {
   --bs-accordion-bg: transparent;
   --bs-accordion-border-color: transparent;
+  --bs-accordion-color: #ffffff;
+  --bs-accordion-btn-color: #ffffff;
+  --bs-accordion-active-color: #ffffff;
+  --bs-accordion-btn-bg: transparent;
+  --bs-accordion-active-bg: transparent;
   --bs-accordion-btn-focus-box-shadow: none;
+}
+
+.mobile-header-accordion .accordion-item {
+  border: none;
 }
 
 .mobile-header-title {
@@ -392,6 +401,10 @@ body {
   font-weight: 700;
   margin-bottom: 0.75rem;
   padding-bottom: 0.75rem;
+  background: transparent !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+  border: none !important;
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
@@ -405,6 +418,9 @@ body {
 }
 
 .mobile-header-title:not(.collapsed) {
+  background: transparent !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
   border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
 }
 

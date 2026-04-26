@@ -1,15 +1,4 @@
 <div class="container-fluid py-4 custom-spacing">
-  <!-- Chips filtro campionati -->
-  <div class="campionato-filter-chips mb-3" *ngIf="showChips">
-    <button *ngFor="let camp of campionati"
-            type="button"
-            class="campionato-chip"
-            [class.active]="selectedCampionato === camp"
-            (click)="setSelectedCampionato(camp)">
-      {{ camp }}
-    </button>
-  </div>
-
   <div class="row">
     <div class="col-12">
       <!-- Header Desktop -->
@@ -21,7 +10,7 @@
                 <i class="bi bi-trophy-fill"></i>
               </div>
               <div class="header-text">
-                <h3 class="header-title">Classifica<span *ngIf="selectedCampionato"> - {{ selectedCampionato }}</span></h3>
+                <h3 class="header-title">Classifica</h3>
                 <div class="header-meta">
                   <span class="meta-item" *ngIf="season">
                     <i class="bi bi-calendar3 me-1"></i>{{ season }}
@@ -34,6 +23,55 @@
             </div>
           </div>
         </div>
+      </div>
+
+      <!-- Header Mobile -->
+      <div class="mobile-header d-md-none mb-3">
+        <div class="accordion mobile-header-accordion" id="mobileClassificaHeaderAccordion">
+          <div class="accordion-item mobile-header-card">
+            <h2 class="accordion-header" id="mobileClassificaHeaderHeading">
+              <button class="accordion-button collapsed mobile-header-title"
+                      type="button"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#mobileClassificaHeaderCollapse"
+                      aria-expanded="false"
+                      aria-controls="mobileClassificaHeaderCollapse">
+                <i class="bi bi-trophy-fill me-2"></i>
+                <span class="title-text">Classifica</span>
+              </button>
+            </h2>
+            <div id="mobileClassificaHeaderCollapse"
+                 class="accordion-collapse collapse"
+                 aria-labelledby="mobileClassificaHeaderHeading"
+                 data-bs-parent="#mobileClassificaHeaderAccordion">
+              <div class="accordion-body mobile-header-info">
+                <div class="info-item" *ngIf="selectedCampionato">
+                  <span class="info-label">Campionato</span>
+                  <span class="info-value">{{ selectedCampionato | capitalize }}</span>
+                </div>
+                <div class="info-item" *ngIf="season">
+                  <span class="info-label">Stagione</span>
+                  <span class="info-value">{{ season }}</span>
+                </div>
+                <div class="info-item" *ngIf="lastUpdate">
+                  <span class="info-label"><i class="bi bi-clock me-1"></i>Aggiornamento</span>
+                  <span class="info-value">{{ lastUpdate | date:'dd/MM/yy HH:mm' }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chips filtro campionati -->
+      <div class="campionato-filter-chips mb-3" *ngIf="showChips">
+        <button *ngFor="let camp of campionati"
+                type="button"
+                class="campionato-chip"
+                [class.active]="selectedCampionato === camp"
+                (click)="setSelectedCampionato(camp)">
+          {{ camp | capitalize }}
+        </button>
       </div>
 
       <div class="card shadow-sm d-none d-md-block">
@@ -80,26 +118,6 @@
                 </tr>
               </tbody>
             </table>
-          </div>
-        </div>
-      </div>
-
-      <!-- Header Mobile -->
-      <div class="mobile-header d-md-none mb-3">
-        <div class="mobile-header-card">
-          <div class="mobile-header-title">
-            <i class="bi bi-trophy-fill me-2"></i>
-            <span class="title-text">Classifica<span *ngIf="selectedCampionato"> - {{ selectedCampionato }}</span></span>
-          </div>
-          <div class="mobile-header-info">
-            <div class="info-item" *ngIf="season">
-              <span class="info-label">Stagione</span>
-              <span class="info-value">{{ season }}</span>
-            </div>
-            <div class="info-item" *ngIf="lastUpdate">
-              <span class="info-label"><i class="bi bi-clock me-1"></i>Aggiornamento</span>
-              <span class="info-value">{{ lastUpdate | date:'dd/MM/yy HH:mm' }}</span>
-            </div>
           </div>
         </div>
       </div>

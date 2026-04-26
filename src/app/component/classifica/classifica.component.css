@@ -15,7 +15,7 @@
   display: flex;
   gap: 0.5rem;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: flex-start;
 }
 
 .campionato-chip {
@@ -23,8 +23,8 @@
   background: #f8f9fb;
   color: #4b5563;
   border-radius: 999px;
-  padding: 0.5rem 1rem;
-  font-size: 0.9rem;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.82rem;
   font-weight: 600;
   transition: all 0.2s ease;
 }
@@ -470,4 +470,3 @@
     font-size: 0.85rem;
   }
 }
-

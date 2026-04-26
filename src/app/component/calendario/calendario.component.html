@@ -51,13 +51,13 @@
               <span class="info-label">Stagione</span>
               <span class="info-value">{{ season }}</span>
             </div>
-            <div class="info-item" *ngIf="campionato">
-              <span class="info-label">Campionato</span>
-              <span class="info-value">{{ campionato }}</span>
-            </div>
             <div class="info-item" *ngIf="partite.length">
               <span class="info-label">Partite rimanenti</span>
               <span class="info-value">{{ partiteRimanenti }}</span>
+            </div>
+            <div class="info-item" *ngIf="partite.length">
+              <span class="info-label">Partite giocate</span>
+              <span class="info-value">{{ partiteGiocate }}</span>
             </div>
             <div class="info-item" *ngIf="lastUpdate">
               <span class="info-label"><i class="bi bi-clock me-1"></i>Aggiornamento</span>
